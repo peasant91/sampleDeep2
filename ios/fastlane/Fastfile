@@ -1,0 +1,45 @@
+
+default_platform(:ios)
+
+platform :ios do
+
+  before_all do
+    ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"] = "qjnf-rmpg-mewx-pmug"
+    ENV["FASTLANE_SESSION"] = ' session cookie'
+  end
+
+  desc "generate new certificates"
+  lane :cert do
+    sync_code_signing(
+      type: "appstore",
+      app_identifier: ["com.fastlane.test2.fastline2"],
+      force_for_new_devices: true,
+      readonly: false
+    )
+  end
+
+  desc "Upload dev to testflight"
+  lane :build do
+
+    api_key = app_store_connect_api_key(
+      key_id: "9798GP8947",
+      issuer_id: "1b68b333-3d19-4123-9402-30290b20ad4d",
+      key_content: "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR1RBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJIa3dkd0lCQVFRZ0RlTTBLVkRENUJETWU5SmgKcDlpTFZhTzR4bEc3cTN3cEtLSXVmelM0VHVxZ0NnWUlLb1pJemowREFRZWhSQU5DQUFRbnlMZkVjVWZhL1JrawpQMzFmbUVYckJTSlR4NnBUc3U0a2dIWU8wUnRFOTVSeTdWUnFCQ0lFeEQydmFaeDZybnZxMjdOK2UyRndMOWVnCmp5Ym1xRVdnCi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0=",
+      is_key_content_base64: true
+    )
+
+    match(
+      type: 'appstore',
+      force_for_new_devices: true,
+      readonly: true
+    )
+    
+    build_app(workspace: "ReactNativeStarterKit.xcworkspace", scheme: "ReactNativeStarterKit", xcargs: "-allowProvisioningUpdates")
+    upload_to_testflight(
+      api_key: api_key,
+      skip_submission: true,
+      notify_external_testers: false,
+    )
+  end
+
+end

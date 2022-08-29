@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "apk-uploader-fastlane",
+  "private_key_id": "4fae41805a716b6012d2f3d842021ac4749df3ba",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDsxfitGRuWvP/7\nyovW07R9Bu7KnIfM9Mp72bDVHT6t2B1jz07l6CZKdWjsjNlc6mIK634mnn6+TKyK\ny4fLGYvm2Ll9dceP4DlJX8faq1byHxnOnuULnq4r5GoMt/unGKT5gwdB9T5dPTrC\nvatsS2HR3EdBnzhazDK1ia3nmUEeChwlG+BPogZpJyqD8ofIxKz8FhGq3KPZdNYn\ng/Rn/AbkcKJALUcnxWC2+MVvFgSuVsugqpY1cqmzBTiG1ECsYLoQ4cKa5IbPHHUY\nBO6LubtGuaP3DKW8/Qrir5RRtA7Q8cD0+/qzGTF+DpDrf7PrqYKM5plsfyCeo2P2\nMY/VDibRAgMBAAECggEAA/gi/cPjUoOYnFVTmCZfFY7S3KgDHsx7wy0Yac+JCCEM\nsmpR8vNmsO4xnsWTCfEOnmA+8nwgY9BP6YO/+Fz/8L7Gsp5m2g1IPef9Jw1NnSwo\nTUPHUzU1y5voqziVChgVAUR7uqoB1vj6eIlKy7tNHdeI2kYbtmn176p/NS1nNLmu\nZ2AESp3SeOgGs2TQO3E5w5xNSt4msNMbyM26cC1kiFQDv9vozQTjR2WYFeOdlImQ\nu3LL337e4oobJPF8XHGbPR7TtdHs2hCOC2+5B1SRMwmw5hcwyAqgqoCBx2cEIxnz\naMaEXJHYsejqlQxmRjw3Zk8whoPxBcsKs+0sxLR0gQKBgQD+mngQRN4gvwPOUgkY\nSSFlxBNRuTjqlorT6NI1nXHQ8f+f4n+6jrSaeBDYLqFLWsf33VV/QIAWehERNVZP\nSALOWVSf8pK4zlmmv1rTpSnz0l3me5oNIdaM5kDWEMoqr568ug53gYqoJXklb7hF\nMGtFoTu/B6gBVhyX32W89i254wKBgQDuEnbXgZLd4hmCizCrFujmZxA1kwMMwx3A\nFzI7jRCR0WHEkfOb6mF7TjyNX0hrnvEETbHUjwbWAC3bu+iDRcXDAQMABXP6brl1\nzgAOEp3ya5txui8he+jQDY6tf3xUGlBBuxmsug1PTkQ3w3j9B7YXDO2cK+CM3BWY\nIqFozTGKuwKBgQCkH+F741kp1NjYPKveOu5Lkt09VmBpYQg3WKOBqm//WLEHWVQr\nZ+jmlrWNFmolkGzNzKFbubGYS7IK3M45p1sfuBhET3PjrCnAwyQCwTrNEXQ0qsMA\n6ipLg/aRyBr672EtmebPhPNkN1vkFSO9flv4c9p257GWwvMFuB32dN+/LwKBgEiV\nbpBD3BA0GAz5/Oucv4NHluSOntZsQozHRbRsTMn4aXNyADDgI7phXwrHKyBMxDTI\nr1gcBzyFr3WX88raIfJTQ6PlBbgru/WTyeaAfJFlh24EEsyFp7SO/ZoeDTzjDOcN\ncUV9MAOm3BuYSDH1AOpEMcl0gzDPBPJuVIHMVbdzAoGBAL3E+CBiD650bDMKfE1n\nZDYT1ofgpM7tULXLETPZLyhoxNtAwh7VTVLLtFUt3DV2H+IQu8kfV2JjLaZZyHX9\nkrhVYi6+jgt6d+zbJDFxlCUZeMZog1EdctPjoTMC9X5npAlS1kdZdwp51ITzIBhf\neT8SHtbh0WiFsJyQiv280ipn\n-----END PRIVATE KEY-----\n",
+  "client_email": "apk-uploader@apk-uploader-fastlane.iam.gserviceaccount.com",
+  "client_id": "105409569011588507210",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/apk-uploader%40apk-uploader-fastlane.iam.gserviceaccount.com"
+}

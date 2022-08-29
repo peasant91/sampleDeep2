@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "992506026123",
+    "project_id": "finitree",
+    "storage_bucket": "finitree.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992506026123:android:5c391b5f11518d75449c8e",
+        "android_client_info": {
+          "package_name": "net.timedoor.reactnativestarterkit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "115744996514398005810",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt4afESlgffh9_MT6EmYHEksNrd_JGsDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "115744996514398005810",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

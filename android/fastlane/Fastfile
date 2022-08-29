@@ -1,0 +1,80 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  
+  desc "upload to gdrive"
+  lane :upload_drive do |options|
+    file_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+
+    upload_to_google_drive(
+      drive_keyfile: "fastlane/google_account.json",
+      service_account: true,
+      folder_id: ENV['GOOGLE_DRIVE_FOLDER_ID'],
+      upload_files: [''+file_path+'']
+    )
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :build do
+    # change what file want to build ex: aab/apk
+    FILE_TYPE = "apk"
+
+    if FILE_TYPE == "apk"
+      gradle(task: "clean assembleRelease")
+      file_path_aab = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+
+      upload_to_google_drive(
+        drive_keyfile: "fastlane/google_account.json",
+        service_account: true,
+        folder_id: ENV['GOOGLE_DRIVE_FOLDER_ID'],
+        upload_files: [''+file_path_aab+'']
+      )
+    
+        file_upload_path=lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS][0]
+        sh "echo Link to apk :" + file_upload_path
+    else
+      gradle(task: "clean bundleRelease")
+      file_path_aab = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
+
+      upload_to_google_drive(
+        drive_keyfile: "fastlane/google_account.json",
+        service_account: true,
+        folder_id: ENV['GOOGLE_DRIVE_FOLDER_ID'],
+        upload_files: [''+file_path_aab+'']
+      )
+    
+      file_upload_path=lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS][0]
+      sh "echo Link to apk :" + file_upload_path
+    end
+
+    discord_notifier(
+      webhook_url: "https://discord.com/api/webhooks/996684792760369225/pCNz_I0HsZ4dpEU-FAqt2lwnkagaJ-3TT0Ap-Td2u5i1jEtfohShrha-A64OT4t7pHzA",
+      title: "rn-starter-kit Android builder",
+      description: "Success build rn-starter-kit builder",
+      success: true,
+      thumbnail_url:"https://cdn.discordapp.com/embed/avatars/0.png",
+      image_url:"https://cdn.discordapp.com/embed/avatars/0.png",
+      fields:[
+        {
+          name: "google drive link",
+          value: file_upload_path
+        }
+      ]
+    )
+  end
+end

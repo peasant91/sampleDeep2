@@ -1,0 +1,94 @@
+/**
+ * Created by Widiana Putra on 27/06/2022
+ * Copyright (c) 2022 - Made with love
+ */
+import React from "react";
+import Typography from "../../tmd/components/Typography/Typography";
+import { CatalogItem } from "../models/catalog/Catalog";
+import { FlatList, StatusBar, View } from "react-native";
+import useCatalogInfiniteQuery from "../services/catalog/useCatalogInfiniteQuery";
+import Page from "../../tmd/components/Page";
+import GridList from "../../tmd/components/FlatList/GridList";
+import { Surface } from "../../tmd";
+import Toolbar from "../../tmd/components/Toolbar/Toolbar";
+import { _spbMock } from "../../tmd/data/_mock";
+import SpbList from "./components/item/SpbList";
+import { useTranslation } from "react-i18next";
+import { transparent } from "../../tmd/styles/colors";
+import { navigate } from "../navigations/RootNavigation";
+
+export default function ListSPB() {
+    const {
+        catalogs,
+        isLoadingCatalog,
+        isFetchingNextPage,
+        fetchNext,
+        refresh,
+        isRefreshing,
+
+    } = useCatalogInfiniteQuery();
+    const { t } = useTranslation()
+
+    return (
+        <Page>
+            <Toolbar title={t("list_spb")} />
+
+            <View style={{
+                flex: 1,
+            }}>
+                {
+                    isLoadingCatalog &&
+                    <Typography>Loading...</Typography>
+                }
+                {
+                    <View style={{ flex: 1, padding: 16 }}>
+                        {/* <GridList
+               padding={16} */}
+                        <FlatList
+                            data={_spbMock}
+                            ItemSeparatorComponent={() => {
+                                return <View style={{height: 16}} />
+                            }}
+                            renderItem={(item) => {
+                                return (
+                                    <SpbList
+                                        item={item.item}
+                                        index={item.index}
+                                        onPress={() => {
+                                            console.log("ANJENG")
+                                            navigate("DetailSPB")
+                                        }}
+                                    />
+                                )
+                            }}
+                            onRefresh={refresh}
+                            refreshing={isRefreshing}
+                            // spacing={16}
+                            // cols={3}
+                            style={{
+                                flexGrow: 1,
+                            }}
+                            onEndReached={fetchNext}
+                            // data={catalogs}
+                            // keyExtractor={(item, number) => item?.id}
+                            // renderItem={({ item, index }) => renderItem(item, index)}
+                            ListEmptyComponent={() => {
+                                if (!isLoadingCatalog) {
+                                    return <Typography>empty</Typography>;
+                                } else {
+                                    return <></>;
+                                }
+                            }}
+                        />
+                        {
+                            isFetchingNextPage &&
+                            <Typography style={{
+                                padding: 16,
+                            }}>Fetching next page...</Typography>
+                        }
+                    </View>
+                }
+            </View>
+        </Page>
+    );
+}
