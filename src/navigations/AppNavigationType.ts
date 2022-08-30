@@ -15,6 +15,7 @@ type AppNavigationType = {
   HomePM: undefined,
   ListSPB: undefined,
   DetailSPB: undefined,
+  DetailPO: undefined,
   ProjectDetail: undefined,
   StepperScreen: undefined,
   ImageScreen: undefined,

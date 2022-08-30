@@ -46,6 +46,7 @@ import HomePM from "../screens/HomePM";
 import ListSPB from "../screens/ListSPB";
 import DetailSPB from "../screens/DetailSPB";
 import ProjectDetail from "../screens/ProjectDetail";
+import DetailPO from "../screens/DetailPO";
 
 const AppNavigation = () => {
   const Stack = createNativeStackNavigator<AppNavigationType>();
@@ -76,10 +77,12 @@ const AppNavigation = () => {
         {
           isAuthenticated && (
             <>
+              {/* <Stack.Screen name={"MainScreen"} component={MainScreen} /> */}
             <Stack.Screen name={"HomePM"} component={HomePM} />
             <Stack.Screen name={"ListSPB"} component={ListSPB} />
             <Stack.Screen name={"DetailSPB"} component={DetailSPB} />
             <Stack.Screen name={"ProjectDetail"} component={ProjectDetail} />
+            <Stack.Screen name={"DetailPO"} component={DetailPO} />
               <Stack.Screen name={"MainScreen"} component={MainScreen} />
               <Stack.Screen name={"ImagePickerScreen"} component={ImagePickerScreen} />
               <Stack.Screen name={"ButtonScreen"} component={ButtonScreen} />

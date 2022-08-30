@@ -21,3 +21,23 @@ export interface PoList {
     items: SpbItem[]
     total: number
 }
+
+export interface SupplierPO {
+  name: string
+  address: string
+}
+
+export interface PODetailModel {
+  no_spb: string
+  spb_created_at: string
+  no_po: string
+  po_created_at: string
+  po_status: string
+  supplier: SupplierPO
+  delivery_estimation: string
+  items: SpbItem[]
+  total: number
+  complaint?: string
+  notes?: string
+}
+

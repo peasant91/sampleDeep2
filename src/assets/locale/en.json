@@ -112,10 +112,12 @@
     "status_spb": "Status SPB",
     "update": "Update",
     "job_detail": "Detail SPB",
-    "id_spb": "ID SPB",
+    "id_spb": "No. SPB",
+    "id_po": "No. PO",
     "date_spb": "Tanggal SPB",
     "note_desc": "Deskripsi Catatan",
     "admin_note": "Catatan dari Admin",
+    "pm_note": "Catatan dari PM",
     "item_image": "Gambar Bahan",
     "item_list": "Daftar Bahan",
     "unit": "Unit",
@@ -124,6 +126,17 @@
     "see_less": "Lihat lebih sedikit",
     "total_bahan": "Total Bahan",
     "daftar_po": "Daftar PO ({{count}})",
-    "project_location": "Lokasi Proyek"
+    "project_location": "Lokasi Proyek",
+    "construction_type": "Tipe Konstruksi",
+    "duration": "Duration",
+    "list_spb_complete": "Pengadaan Barang Selesai ({{count}})",
+    "ajukan_spb": "Ajukan SPB",
+    "complain": "Komplain",
+    "confirm_po": "Konfirmasi",
+    "see_in_map": "Lihat di Peta",
+    "date_po": "Tanggal PO",
+    "order_recipient": "Penerima Order",
+    "estimated_delivery": "Estimasi Bahan Dikirim",
+    "status_po": "Status PO"
   }
 }

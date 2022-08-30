@@ -10,6 +10,7 @@ import { colors, red100, white } from "../../tmd/styles/colors";
 import { ProjectModel } from "../models/project/project";
 import { PoList } from "../models/spb/po";
 import { SPBDetailModel, SpbItem, SpbListItem } from "../models/spb/spb";
+import { navigate } from "../navigations/RootNavigation";
 import ItemList from "./components/item/itemList";
 import SpbList, { StatusButton, StatusSPB } from "./components/item/SpbList";
 
@@ -174,17 +175,20 @@ export default function DetailSPB() {
                 </View>
 
                 <FlatList
-                style={{backgroundColor: colors.neutral.neutral_20, padding: 16}}
-                scrollEnabled={false}
-                data={poData}
-                ItemSeparatorComponent={() => {
-                    return <View style={{height: 16}} />
-                }}
-                renderItem={(item) => <SpbList 
-                item={item.item}
-                index={item.index}
-                type={"PO"}
-                />}
+                    style={{ backgroundColor: colors.neutral.neutral_20, padding: 16 }}
+                    scrollEnabled={false}
+                    data={poData}
+                    ItemSeparatorComponent={() => {
+                        return <View style={{ height: 16 }} />
+                    }}
+                    renderItem={(item) => <SpbList
+                        item={item.item}
+                        index={item.index}
+                        type={"PO"}
+                        onPress={() => {
+                            navigate("DetailPO")
+                        }}
+                    />}
                 />
 
             </>

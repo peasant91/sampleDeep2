@@ -1,6 +1,6 @@
 import { number, string } from "yup";
 import { ProjectModel } from "../../src/models/project/project";
-import { PoList } from "../../src/models/spb/po";
+import { PODetailModel, PoList } from "../../src/models/spb/po";
 import { SPBDetailModel, SpbListItem } from "../../src/models/spb/spb";
 
 /**
@@ -73,6 +73,48 @@ const _spbMock: SpbListItem[] = [
     total: 133
   }
 ]
+
+const _poDetailMock: PODetailModel = {
+  no_spb: "SPB-84392432",
+  spb_created_at: "2022-08-20T15:31:58",
+  no_po: "PO-8423943243",
+  po_created_at: "2022-08-20T15:31:58",
+  po_status: "done",
+  supplier: {
+    name: 'Timedoor',
+    address: 'Indonesia alamatnya'
+  },
+  delivery_estimation: "2022-08-20T15:31:58",
+  items: [
+    {
+      id: 0,
+      name: "PIPA",
+      quantity: 21,
+      unit: "m"
+    },
+    {
+      id: 1,
+      name: "PLARON",
+      quantity: 22,
+      unit: "Truck"
+    },
+
+    {
+      id: 2,
+      name: "PLARON",
+      quantity: 22,
+      unit: "Truck"
+    },
+
+    {
+      id: 3,
+      name: "PLARON",
+      quantity: 22,
+      unit: "Truck"
+    }
+  ],
+  total: 123
+}
 
 const _spbDetailMock: SPBDetailModel = {
   no_spb: "SPB-283438382",
@@ -172,4 +214,4 @@ const _projectMock: ProjectModel = {
   pm: ["Timedoor", "Indonesia"]
 }
 
-export { _mockStatus, _spbMock, _spbDetailMock, _projectMock, _poListMock};
+export { _mockStatus, _spbMock, _spbDetailMock, _projectMock, _poListMock, _poDetailMock};

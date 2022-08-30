@@ -2,21 +2,26 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
-import { Divider, Icon, Image, Page, Stack, Toolbar } from '../../tmd'
+import { Button, Colors, Divider, Icon, Image, Page, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
-import { _projectMock } from '../../tmd/data/_mock'
+import { _projectMock, _spbMock } from '../../tmd/data/_mock'
 import { ProjectModel } from '../models/project/project'
-import { StatusButton } from './components/item/SpbList'
+import SpbList, { StatusButton } from './components/item/SpbList'
 import IcLocation from '../assets/icons/location_marker.svg'
 import TextButton from '../../tmd/components/Button/TextButton'
+import { colors } from '../../tmd/styles/colors'
+import { SpbListItem } from '../models/spb/spb'
+import { iteratee } from 'lodash'
+import { navigate } from '../navigations/RootNavigation'
 
 export default function ProjectDetail() {
     const { t } = useTranslation()
     const projectData: ProjectModel = _projectMock
+    const spbData: SpbListItem[] = _spbMock
 
     const header = () => {
         return (
-            <>
+            <View style={{ backgroundColor: Colors.white, marginBottom: 16 }}>
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.name}</Typography>
@@ -49,19 +54,79 @@ export default function ProjectDetail() {
                 <Divider />
 
                 <View style={_s.padding}>
-                    <Typography type='body3'>{projectData.location.address}</Typography>
+                    <Typography type='body3' style={{ color: colors.neutral.neutral_90 }}>{projectData.location.address}</Typography>
                 </View>
 
                 <Divider />
-            </>
+
+                <View style={_s.padding}>
+                    <Stack spacing={4}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Typography type='label2' style={{ flex: 1, color: colors.neutral.neutral_100 }}>{projectData.construction_type}</Typography>
+                            <Typography type='label2' style={{ flex: 1, color: colors.neutral.neutral_100 }}>{projectData.duration}</Typography>
+                        </View>
+
+                        <View style={{ flexDirection: 'row' }}>
+                            <Typography type='body3' style={{ flex: 1, color: colors.neutral.neutral_80 }}>{t("construction_type")}</Typography>
+                            <Typography type='body3' style={{ flex: 1, color: colors.neutral.neutral_80 }}>{t("duration")}</Typography>
+                        </View>
+                    </Stack>
+
+                    <FlatList style={{ marginTop: 16 }}
+                        scrollEnabled={false}
+                        data={projectData.pm}
+                        renderItem={(item) => {
+                            return (
+                                <Typography type='label2' style={{ flex: 1, color: colors.neutral.neutral_100 }}>{item.item}</Typography>
+                            )
+                        }}
+                    />
+                    <Typography type='body3' style={{ marginTop: 4, color: colors.neutral.neutral_80 }}>{t("PM")}</Typography>
+                </View>
+
+                <Divider />
+
+                {/* <Typography style={_s.padding} type="title3">{t("list_spb_complete")}</Typography> */}
+                <Typography style={_s.padding} type="title3">{t("list_spb_complete", { count: _spbMock.length })}</Typography>
+            </View>
         )
     }
     return (
         <Page>
             <Toolbar title={t("job_detail")} />
-            {
-                header()
-            }
+            <View style={{ flex: 1, flexDirection: 'column', backgroundColor: colors.neutral.neutral_20}}>
+                <FlatList
+                    style={{ flexGrow: 1 }}
+                    ListHeaderComponent={header}
+                    data={_spbMock}
+                    renderItem={(item) => {
+                        return (
+                            <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+                                <SpbList
+                                    item={item.item}
+                                    index={item.index}
+                                    onPress={() => {
+                                        navigate("DetailSPB")
+                                    }}
+                                />
+                            </View>
+                        )
+                    }}
+                />
+
+                <View style={[_s.padding, { backgroundColor: Colors.white }]}>
+                    <Button
+                        style={{ flexBasis: 64 }}
+                        fullWidth={true}
+                        variant="primary"
+                        icon={{ icon: "document-attach" }}
+                        shape={"rounded"}
+                        size={"lg"}
+                        onPress={() => {
+                        }}
+                    >{t("ajukan_spb")}</Button>
+                </View>
+            </View>
         </Page>
     )
 }
