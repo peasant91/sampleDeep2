@@ -21,6 +21,7 @@ type AppNavigationType = {
   FormSPB: undefined,
   AddBahan: {
     defaultBahan: BahanModel[],
+    save: (model: BahanModel[]) => void
   },
   ProjectDetail: undefined,
   StepperScreen: undefined,

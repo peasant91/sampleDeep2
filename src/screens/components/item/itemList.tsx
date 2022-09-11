@@ -1,7 +1,7 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { View } from "react-native"
-import { Stack } from "../../../../tmd"
+import { Button, IconButton, Stack } from "../../../../tmd"
 import Typography from "../../../../tmd/components/Typography/Typography"
 import { colors } from "../../../../tmd/styles/colors"
 import { SpbItem } from "../../../models/spb/spb"
@@ -10,9 +10,11 @@ interface Props {
     item: SpbItem
     index: number
     withNotes?: boolean
+    withEdit?: boolean
+    onDelete?: (index: number) => void
 }
 
-const ItemList = ({ item, index, withNotes }: Props) => {
+const ItemList = ({ item, index, withNotes, withEdit, onDelete }: Props) => {
     const { t } = useTranslation()
     return (
         <View style={{ paddingHorizontal: 16 }}>
@@ -28,6 +30,29 @@ const ItemList = ({ item, index, withNotes }: Props) => {
                         <Typography style={{ color: colors.neutral.neutral_80 }} type={"label2"}>{t("notes")}</Typography>
                         <Typography style={{ color: colors.neutral.neutral_80 }} type={"body3"}>{item.notes ?? "-"}</Typography>
                     </View>
+                }
+
+                {withEdit &&
+                    <View style={{ flexDirection: "row", justifyContent: 'space-between', marginBottom: 16 }}>
+                        <IconButton
+                            variant={'secondary'}
+                            icon='trash'
+                            color={colors.danger.main}
+                            onPress={() => {
+                                onDelete!(index)
+                            }}
+                        />
+
+                        <Button
+                            size="sm"
+                            shape="rounded"
+                            variant="secondary"
+                            icon={{ icon: "pencil" }}
+                            onPress={() => {
+                            }}
+                        >{t("edit")}</Button>
+                    </View>
+
                 }
             </Stack>
 

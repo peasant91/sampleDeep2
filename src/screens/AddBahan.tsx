@@ -4,7 +4,7 @@ import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-for
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
-import { Button, Divider, Page, RHFTextField, Stack, Toolbar } from '../../tmd'
+import { Button, Colors, Divider, Page, RHFTextField, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
 import { colors } from '../../tmd/styles/colors'
 import { BahanModel } from '../models/spb/bahan'
@@ -14,10 +14,11 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { values } from 'lodash'
 import ListItem from '../../tmd/components/List/ListItem'
+import { goBack } from '../navigations/RootNavigation'
 
 export default function AddBahan({ route }: NativeStackScreenProps<AppNavigationType, "AddBahan">) {
     const { t } = useTranslation()
-    const { defaultBahan } = route.params
+    const { defaultBahan, save } = route.params
     const [listBahan, setListBahan] = useState<BahanModel[]>([])
 
     const schema = yup.object({
@@ -65,13 +66,14 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     }
 
     const onSubmit = (data: any) => {
-        console.log("ANJENG ON SUBMIT")
-        console.log(JSON.stringify(data, null, 2));
+        const items: BahanModel[] = data['values']
+        save(items)
+        goBack()
     };
 
     const onError = (errors: any) => {
-        console.log("ANJENG ON ERROR", errors)
-        console.log(JSON.stringify(errors, null, 2));
+        // console.log("ANJENG ON ERROR", errors)
+        // console.log(JSON.stringify(errors, null, 2));
     };
 
     useEffect(() => {
@@ -88,44 +90,54 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     return (
         <Page>
             <Toolbar title={t("add_bahan")} />
-            <ScrollView>
-                <Stack>
-                    <FormProvider {...method}>
-                        {listBahan.map(function (item, index) {
-                            return (
-                                <>
-                                    <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
-                                        <Controller
-                                            control={method.control}
-                                            render={({ field }) => {
-                                                return <AddBahanCell
-                                                    yName={`${field.name}.nama`}
-                                                    yQty={`${field.name}.quantity`}
-                                                    yNote={`${field.name}.note`}
-                                                    yUnit={`${field.name}.unit`}
-                                                    onDelete={() => {
-                                                        removeBahan(index)
-                                                    }}
-                                                    item={item}
-                                                    index={index} />
-                                            }}
-                                            name={`values.${index}`} />
-                                    </View>
-                                    <Divider />
-                                </>
-                            )
-                        })}
+            <View style={{ flexGrow: 1, paddingBottom: 130 }}>
+                <ScrollView style={{ flexGrow: 1 }}>
+                    <Stack>
+                        <FormProvider {...method}>
+                            {listBahan.map(function (item, index) {
+                                return (
+                                    <>
+                                        <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+                                            <Controller
+                                                control={method.control}
+                                                render={({ field }) => {
+                                                    return <AddBahanCell
+                                                        yName={`${field.name}.nama`}
+                                                        yQty={`${field.name}.quantity`}
+                                                        yNote={`${field.name}.note`}
+                                                        yUnit={`${field.name}.unit`}
+                                                        onDelete={() => {
+                                                            removeBahan(index)
+                                                        }}
+                                                        item={item}
+                                                        index={index} />
+                                                }}
+                                                name={`values.${index}`} />
+                                        </View>
+                                        <Divider />
+                                    </>
+                                )
+                            })}
 
-                        <Button
-                            onPress={addMore}
-                        >AddMore</Button>
-                        <Button
-                            onPress={handleSubmit(onSubmit, onError)}
-                        >Pisang</Button>
-                    </FormProvider>
-                </Stack>
+                            <Button
+                            variant='secondary'
+                            size='md'
+                            icon={{icon: "add-circle"}}
+                                style={{padding: 16}}
+                                onPress={addMore}
+                            >{t("add_more")}</Button>
+                        </FormProvider>
+                    </Stack>
 
-            </ScrollView>
+                </ScrollView>
+
+            </View>
+            <View style={{ padding: 16, position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: Colors.white}}>
+                <Button
+                    fullWidth={true}
+                    onPress={handleSubmit(onSubmit, onError)}
+                >{t("save")}</Button>
+            </View>
         </Page>
     )
 }

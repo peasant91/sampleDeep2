@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View, ViewProps, ViewStyle } from 'react-native'
-import { Alert, Button, Divider, Icon, Image, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
+import { Alert, Button, Colors, Divider, Icon, Image, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
 import { colors } from '../../tmd/styles/colors'
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,6 +16,9 @@ import MultiImagePicker from '../../tmd/components/picker/MultiImagePicker'
 import { FlatList } from 'react-native-gesture-handler'
 import { BahanModel, ListBahan } from '../models/spb/bahan'
 import { navigate } from '../navigations/RootNavigation'
+import { SlideInLeft } from 'react-native-reanimated'
+import ItemList from './components/item/itemList'
+import { SpbItem } from '../models/spb/spb'
 
 export interface IBahan {
     setItems: (arg: ListBahan) => void
@@ -30,6 +33,7 @@ export default function FormSPB() {
         quantity: 15,
         unit: "GRAM"
     }])
+    const [convertedItems, setFlatListItem] = useState<SpbItem[]>()
     const projectData = _projectMock
 
     const schema = yup.object({
@@ -51,6 +55,12 @@ export default function FormSPB() {
         defaultValues,
         resolver: yupResolver(schema),
     });
+
+    const doDelete = (index: number) => {
+        var array = [...items]
+        array.splice(index, 1)
+        setItems(array)
+    }
 
     const header = () => {
         return (
@@ -81,7 +91,6 @@ export default function FormSPB() {
                         description={t("pick_image_desc")}
                         buttonProps={{
                             children: {
-
                                 icon: {
                                     icon: "camera",
                                 },
@@ -123,11 +132,10 @@ export default function FormSPB() {
                         fullWidth
                         onPress={() => {
                             navigate("AddBahan", {
-                                defaultBahan: [{
-                                    // nama: "ANJENG TANAH",
-                                    // quantity: 15,
-                                    // unit: "GRAM"
-                                }]
+                                defaultBahan: [...items],
+                                save: (_item: BahanModel[]) => {
+                                    setItems(_item)
+                                }
                             })
                         }}
                     >{t("tambah_bahan")}</Button>
@@ -140,13 +148,36 @@ export default function FormSPB() {
         <Page>
             <Toolbar title={t("item_submission")} />
             <FormProvider {...method}>
-                <FlatList
-                    ListHeaderComponent={header}
-                    data={items}
-                    renderItem={() => {
-                        return <View />
-                    }}
-                />
+                    <FlatList
+                        ListHeaderComponent={header}
+                        data={items}
+                        ItemSeparatorComponent={() => {
+                            return <View style={{ height: 16 }} />
+                        }}
+                        renderItem={({ item, index }) => {
+                            return <ItemList
+                                item={{
+                                    id: 0,
+                                    name: item.nama,
+                                    quantity: item.quantity,
+                                    notes: item.note,
+                                    unit: item.unit
+                                }} index={index}
+                                withEdit={true}
+                                onDelete={(index) => {
+                                    return doDelete(index)
+                                }}
+                            />
+                        }}
+                    />
+
+                <View style={{ flexBasis: 70, padding: 16 }}>
+                    <Button
+                        fullWidth={true}
+                        onPress={() => {
+                        }}
+                    >{t("ajukan")}</Button>
+                </View>
 
 
             </FormProvider>

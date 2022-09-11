@@ -50,7 +50,7 @@
       "bluetooth_description": "Please turn on bluetooth to use this feature."
     },
     "allow": "Allow",
-    "save": "Save",
+    "save": "Simpan",
     "reset": "Reset",
     "apply_filter": "Apply Filter",
     "choose_date": "Choose Date",
@@ -158,7 +158,9 @@
     "unit_bahan_placeholder": "Cth : Truk, Kg",
     "note_bahan": "Note Bahan",
     "note_bahan_placeholder": "Masukan catatan disini",
-    "jumlah": "Jumlah"
+    "jumlah": "Jumlah",
+    "add_more": "Tambah Bahan",
+    "ajukan": "Ajukan"
 
   }
 }
