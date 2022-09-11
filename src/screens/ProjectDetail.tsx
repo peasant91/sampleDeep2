@@ -13,6 +13,7 @@ import { colors } from '../../tmd/styles/colors'
 import { SpbListItem } from '../models/spb/spb'
 import { iteratee } from 'lodash'
 import { navigate } from '../navigations/RootNavigation'
+import { EmptySPBState } from './components/EmptyState'
 
 export default function ProjectDetail() {
     const { t } = useTranslation()
@@ -98,6 +99,7 @@ export default function ProjectDetail() {
                 <FlatList
                     style={{ flexGrow: 1 }}
                     ListHeaderComponent={header}
+                    ListEmptyComponent={EmptySPBState}
                     data={_spbMock}
                     renderItem={(item) => {
                         return (
@@ -123,6 +125,7 @@ export default function ProjectDetail() {
                         shape={"rounded"}
                         size={"lg"}
                         onPress={() => {
+                            navigate("FormSPB")
                         }}
                     >{t("ajukan_spb")}</Button>
                 </View>

@@ -47,6 +47,8 @@ import ListSPB from "../screens/ListSPB";
 import DetailSPB from "../screens/DetailSPB";
 import ProjectDetail from "../screens/ProjectDetail";
 import DetailPO from "../screens/DetailPO";
+import FormSPB from "../screens/FormSPB";
+import AddBahan from "../screens/AddBahan";
 
 const AppNavigation = () => {
   const Stack = createNativeStackNavigator<AppNavigationType>();
@@ -79,11 +81,13 @@ const AppNavigation = () => {
             <>
               {/* <Stack.Screen name={"MainScreen"} component={MainScreen} /> */}
             <Stack.Screen name={"HomePM"} component={HomePM} />
+            <Stack.Screen name={"FormSPB"} component={FormSPB} />
+            <Stack.Screen name={"AddBahan"} component={AddBahan} />
             <Stack.Screen name={"ListSPB"} component={ListSPB} />
             <Stack.Screen name={"DetailSPB"} component={DetailSPB} />
             <Stack.Screen name={"ProjectDetail"} component={ProjectDetail} />
             <Stack.Screen name={"DetailPO"} component={DetailPO} />
-              <Stack.Screen name={"MainScreen"} component={MainScreen} />
+              {/* <Stack.Screen name={"MainScreen"} component={MainScreen} /> */}
               <Stack.Screen name={"ImagePickerScreen"} component={ImagePickerScreen} />
               <Stack.Screen name={"ButtonScreen"} component={ButtonScreen} />
               <Stack.Screen name={"TypographyScreen"} component={TypographyScreen} />

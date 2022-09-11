@@ -137,6 +137,28 @@
     "date_po": "Tanggal PO",
     "order_recipient": "Penerima Order",
     "estimated_delivery": "Estimasi Bahan Dikirim",
-    "status_po": "Status PO"
+    "status_po": "Status PO",
+    "empty_spb_title": "Belum ada SPB",
+    "empty_spb_desc": "SPB yang anda ajukan pada proyek ini akan ditampilkan disini",
+    "empty_po_title": "Belum ada dokumen PO",
+    "empty_po_desc": "PO yang dibuat oleh supplier akan ditampilkan sesuai berdasarkan SPB yang Anda dibuat.",
+    "item_submission": "Pengajuan Bahan",
+    "spb_form_title": "Mohon isi formulir dengan Lengkap",
+    "info_shipment": "Barang yang Anda pilih akan dikirim ke alamat proyek ini.",
+    "item_photo": "Foto Bahan",
+    "send_date": "Tanggal Pengiriman",
+    "select_date": "Pilih Tanggal",
+    "no_spb": "No. SPB",
+    "pick_image_desc": "Pastikan foto keterangan bahan terlihat jelas dan tidak blur",
+    "daftar_bahan": "Daftar Bahan",
+    "tambah_bahan": "Tambah Bahan",
+    "nama_bahan": "Nama Bahan",
+    "nama_bahan_placeholder": "Cth : Pasir Hitam",
+    "unit_bahan": "Unit Bahan",
+    "unit_bahan_placeholder": "Cth : Truk, Kg",
+    "note_bahan": "Note Bahan",
+    "note_bahan_placeholder": "Masukan catatan disini",
+    "jumlah": "Jumlah"
+
   }
 }

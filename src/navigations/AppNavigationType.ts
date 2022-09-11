@@ -1,5 +1,7 @@
 import { SelectedMap } from "../../tmd/components/picker/MapPicker";
 import { GalleryItem } from "../../tmd/types";
+import { BahanModel, ListBahan } from "../models/spb/bahan";
+import { IBahan } from "../screens/FormSPB";
 
 type AppNavigationType = {
   //utils
@@ -16,6 +18,10 @@ type AppNavigationType = {
   ListSPB: undefined,
   DetailSPB: undefined,
   DetailPO: undefined,
+  FormSPB: undefined,
+  AddBahan: {
+    defaultBahan: BahanModel[],
+  },
   ProjectDetail: undefined,
   StepperScreen: undefined,
   ImageScreen: undefined,

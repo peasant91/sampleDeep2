@@ -16,6 +16,7 @@ import SpbList from "./components/item/SpbList";
 import ICDocument from "../assets/icons/ic_document.svg"
 import { _spbMock } from "../../tmd/data/_mock";
 import { navigate } from "../navigations/RootNavigation";
+import { EmptySPBState } from "./components/EmptyState";
 
 export default function HomePM() {
   const { t } = useTranslation();
@@ -156,7 +157,7 @@ export default function HomePM() {
 
   return (
     <Page>
-      <Stack style={{ flex: 1 }}>
+      <Stack style={{ flex: 1, paddingBottom: 80 }}>
         <StatusBar
           translucent={true}
           backgroundColor={transparent}
@@ -166,6 +167,7 @@ export default function HomePM() {
         <View style={{ flex: 1 }}>
           <FlatList
             ListHeaderComponent={header}
+            ListEmptyComponent={EmptySPBState}
             ItemSeparatorComponent={() => {
               return <View style={{ height: 16 }} />
             }}
@@ -190,7 +192,7 @@ export default function HomePM() {
           size="lg"
           icon={{ icon: "document-attach" }}
           onPress={() => {
-            navigate("DetailSPB")
+            navigate("FormSPB")
           }}
         >{t("ajukan_spb")}</Button>
       </Stack>

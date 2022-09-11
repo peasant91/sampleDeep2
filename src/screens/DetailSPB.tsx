@@ -11,6 +11,7 @@ import { ProjectModel } from "../models/project/project";
 import { PoList } from "../models/spb/po";
 import { SPBDetailModel, SpbItem, SpbListItem } from "../models/spb/spb";
 import { navigate } from "../navigations/RootNavigation";
+import { EmptyPOState } from "./components/EmptyState";
 import ItemList from "./components/item/itemList";
 import SpbList, { StatusButton, StatusSPB } from "./components/item/SpbList";
 
@@ -178,6 +179,7 @@ export default function DetailSPB() {
                     style={{ backgroundColor: colors.neutral.neutral_20, padding: 16 }}
                     scrollEnabled={false}
                     data={poData}
+                    ListEmptyComponent={EmptyPOState}
                     ItemSeparatorComponent={() => {
                         return <View style={{ height: 16 }} />
                     }}
