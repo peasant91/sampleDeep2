@@ -25,7 +25,11 @@ export default function FormSPB() {
     const { t } = useTranslation()
     const [imageLoaded, setImageLoaded] = useState(false)
     const [imageURI, setImageURI] = useState("")
-    const [items, setItems] = useState<BahanModel[]>([])
+    const [items, setItems] = useState<BahanModel[]>([{
+        nama: "ANJENG TANAH",
+        quantity: 15,
+        unit: "GRAM"
+    }])
     const projectData = _projectMock
 
     const schema = yup.object({
@@ -119,7 +123,11 @@ export default function FormSPB() {
                         fullWidth
                         onPress={() => {
                             navigate("AddBahan", {
-                                defaultBahan: []
+                                defaultBahan: [{
+                                    // nama: "ANJENG TANAH",
+                                    // quantity: 15,
+                                    // unit: "GRAM"
+                                }]
                             })
                         }}
                     >{t("tambah_bahan")}</Button>

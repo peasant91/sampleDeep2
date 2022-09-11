@@ -23,9 +23,15 @@ interface Props {
 export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, onDelete }: Props) {
     const { t } = useTranslation()
     const { control, setValue, getValues } = useFormContext()
-    const [qty, setQty] = useState(getValues(yQty))
+    const [qty, setQty] = useState(1)
 
     useEffect(() => setValue(yQty, qty), [qty])
+    useEffect(() => {
+        setTimeout(() => {
+            setQty(getValues(yQty))
+        }, 100)
+    }, [])
+
 
     return (
         <Stack spacing={0}>
@@ -35,13 +41,14 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                 icon='trash'
                 color={colors.danger.main}
                 style={{ position: 'absolute', right: 0, top: 0 }}
-                onPress={ () => onDelete()}
+                onPress={() => onDelete()}
             />
             }
 
             <RHFTextField
                 requiredLabel
                 name={yName}
+                defaultValue={getValues(yName)}
                 label={t("nama_bahan")}
                 placeholder={t('nama_bahan_placeholder')}
             />
@@ -51,6 +58,7 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                     style={{ flex: 1, marginRight: 8 }}
                     requiredLabel
                     name={yUnit}
+                    defaultValue={getValues(yUnit)}
                     label={t("unit_bahan")}
                     placeholder={t('unit_bahan_placeholder')}
                 />
@@ -93,8 +101,8 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                                             }
                                             return
                                         }}
-                                        value={String(qty)}
-                                        defaultValue={String(qty)}
+                                        value={String(getValues(yQty))}
+                                        defaultValue={String(getValues(yQty))}
                                         error={fieldState.error != undefined}
                                         underlineColor={colors.primary.main}
                                         mode={'flat'}
@@ -124,6 +132,7 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
 
             <RHFTextField
                 name={yNote}
+                defaultValue={getValues(yNote)}
                 label={t("note_bahan")}
                 placeholder={t("note_bahan_placeholder")}
             />

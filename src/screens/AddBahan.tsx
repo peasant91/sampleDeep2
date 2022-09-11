@@ -12,6 +12,8 @@ import AppNavigationType from '../navigations/AppNavigationType'
 import AddBahanCell from './AddBahanCell'
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { values } from 'lodash'
+import ListItem from '../../tmd/components/List/ListItem'
 
 export default function AddBahan({ route }: NativeStackScreenProps<AppNavigationType, "AddBahan">) {
     const { t } = useTranslation()
@@ -19,10 +21,10 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     const [listBahan, setListBahan] = useState<BahanModel[]>([])
 
     const schema = yup.object({
-        name: yup.string().required().label(t("nama_bahan")),
+        nama: yup.string().required().label(t("nama_bahan")),
         unit: yup.string().required().label(t("unit_bahan")),
         note: yup.string().optional().label(t("note_bahan")),
-        qty: yup.number().required().label(t("jumlah"))
+        quantity: yup.number().required().label(t("jumlah"))
     }).required();
 
     const arrayOfSchema = yup.object({
@@ -30,22 +32,12 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     })
 
     interface FormValues {
-        values: {
-            name: string
-            qty: number
-            unit: string
-        }[]
+        values: BahanModel[]
     }
 
     const method = useForm<FormValues>({
         defaultValues: {
-            values: [
-                {
-                    qty: 10,
-                    name: "",
-                    unit: ""
-                },
-            ]
+            values: listBahan
         },
         resolver: yupResolver(arrayOfSchema),
     });
@@ -66,6 +58,12 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
         }])
     }
 
+    const removeBahan = (index: number) => {
+        var array = [...listBahan]
+        array.splice(index, 1)
+        setListBahan(array)
+    }
+
     const onSubmit = (data: any) => {
         console.log("ANJENG ON SUBMIT")
         console.log(JSON.stringify(data, null, 2));
@@ -77,19 +75,15 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     };
 
     useEffect(() => {
-        if (defaultBahan.length == 0) {
-            setListBahan([{
-                nama: "",
-                unit: "",
-                quantity: 1
-            }])
-        } else {
-            setListBahan(defaultBahan)
-        }
+        defaultBahan.map(function (item, index) {
+            console.log(item)
+            setListBahan([...listBahan, item])
+        })
     }, [defaultBahan])
 
     useEffect(() => {
-    }, [])
+        method.setValue('values', listBahan)
+    }, [listBahan])
 
     return (
         <Page>
@@ -103,15 +97,14 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
                                     <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
                                         <Controller
                                             control={method.control}
-                                            render={(_render) => {
+                                            render={({ field }) => {
                                                 return <AddBahanCell
-                                                    yName={`values.${index}.name`}
-                                                    yQty={`values.${index}.qty`}
-                                                    yNote={`values.${index}.note`}
-                                                    yUnit={`values.${index}.unit`}
+                                                    yName={`${field.name}.nama`}
+                                                    yQty={`${field.name}.quantity`}
+                                                    yNote={`${field.name}.note`}
+                                                    yUnit={`${field.name}.unit`}
                                                     onDelete={() => {
-                                                        const item = listBahan
-                                                        setListBahan(listBahan.splice(index, 1))
+                                                        removeBahan(index)
                                                     }}
                                                     item={item}
                                                     index={index} />
