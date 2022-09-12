@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, StyleSheet, View, ViewProps, ViewStyle } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, ViewProps, ViewStyle } from 'react-native'
 import { Alert, Button, Colors, Divider, Icon, Image, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
 import { colors } from '../../tmd/styles/colors'
@@ -19,20 +19,31 @@ import { navigate } from '../navigations/RootNavigation'
 import { SlideInLeft } from 'react-native-reanimated'
 import ItemList from './components/item/itemList'
 import { SpbItem } from '../models/spb/spb'
+import BottomSheet from '@gorhom/bottom-sheet';
+import AddBahanCell from './AddBahanCell'
+import AddBahan from './AddBahan'
+import AddBahanBottomSheet from './AddBahanBottomSheet'
+import { print } from '@gorhom/bottom-sheet/lib/typescript/utilities/logger'
+
 
 export interface IBahan {
     setItems: (arg: ListBahan) => void
 }
 
 export default function FormSPB() {
+    type bottomSheetSelector = {
+        show: boolean,
+        index: number
+    }
+
     const { t } = useTranslation()
     const [imageLoaded, setImageLoaded] = useState(false)
     const [imageURI, setImageURI] = useState("")
-    const [items, setItems] = useState<BahanModel[]>([{
-        nama: "ANJENG TANAH",
-        quantity: 15,
-        unit: "GRAM"
-    }])
+    const [showBS, setShowBS] = useState<bottomSheetSelector>({
+        show: false,
+        index: 0
+    })
+    const [items, setItems] = useState<BahanModel[]>([])    
     const [convertedItems, setFlatListItem] = useState<SpbItem[]>()
     const projectData = _projectMock
 
@@ -61,6 +72,22 @@ export default function FormSPB() {
         array.splice(index, 1)
         setItems(array)
     }
+
+    // ref
+    const bottomSheetRef = useRef<BottomSheet>(null);
+
+    // variables
+    const snapPoints = useMemo(() => [368], []);
+
+    // callbacks
+    const handleSheetChanges = useCallback((index: number) => {
+        console.log('handleSheetChanges', index);
+    }, []);
+
+    useEffect(() => {
+        bottomSheetRef.current?.forceClose()
+    }, [])
+
 
     const header = () => {
         return (
@@ -148,28 +175,34 @@ export default function FormSPB() {
         <Page>
             <Toolbar title={t("item_submission")} />
             <FormProvider {...method}>
-                    <FlatList
-                        ListHeaderComponent={header}
-                        data={items}
-                        ItemSeparatorComponent={() => {
-                            return <View style={{ height: 16 }} />
-                        }}
-                        renderItem={({ item, index }) => {
-                            return <ItemList
-                                item={{
-                                    id: 0,
-                                    name: item.nama,
-                                    quantity: item.quantity,
-                                    notes: item.note,
-                                    unit: item.unit
-                                }} index={index}
-                                withEdit={true}
-                                onDelete={(index) => {
-                                    return doDelete(index)
-                                }}
-                            />
-                        }}
-                    />
+                <FlatList
+                    ListHeaderComponent={header}
+                    data={items}
+                    ItemSeparatorComponent={() => {
+                        return <View style={{ height: 16 }} />
+                    }}
+                    renderItem={({ item, index }) => {
+                        return <ItemList
+                            item={{
+                                id: 0,
+                                name: item.nama,
+                                quantity: item.quantity,
+                                notes: item.note,
+                                unit: item.unit
+                            }} index={index}
+                            withEdit={true}
+                            doEdit={() => {
+                                setShowBS({
+                                    index: index,
+                                    show: true
+                                })
+                            }}
+                            onDelete={(index) => {
+                                return doDelete(index)
+                            }}
+                        />
+                    }}
+                />
 
                 <View style={{ flexBasis: 70, padding: 16 }}>
                     <Button
@@ -181,6 +214,38 @@ export default function FormSPB() {
 
 
             </FormProvider>
+
+            {showBS.show &&
+                <BottomSheet
+                    ref={bottomSheetRef}
+                    index={0}
+                    snapPoints={snapPoints}
+                    onChange={handleSheetChanges}
+                    enablePanDownToClose={true}
+                    onClose={() => {
+                        setShowBS({
+                            index: 0,
+                            show: false
+                        })
+                    }}
+                >
+                    <View>
+                        <AddBahanBottomSheet
+                            item={items[showBS.index]}
+                            index={showBS.index}
+                            onSave={(data: BahanModel) => {
+                                var array = [...items]
+                                array[showBS.index] = data
+                                setItems(array)
+                                setShowBS({
+                                    index: 0,
+                                    show: false
+                                })
+                            }}
+                        />
+                    </View>
+                </BottomSheet>
+            }
         </Page >
     )
 }

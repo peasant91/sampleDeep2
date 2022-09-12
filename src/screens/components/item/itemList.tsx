@@ -12,9 +12,10 @@ interface Props {
     withNotes?: boolean
     withEdit?: boolean
     onDelete?: (index: number) => void
+    doEdit?: () => void
 }
 
-const ItemList = ({ item, index, withNotes, withEdit, onDelete }: Props) => {
+const ItemList = ({ item, index, withNotes, withEdit, onDelete, doEdit }: Props) => {
     const { t } = useTranslation()
     return (
         <View style={{ paddingHorizontal: 16 }}>
@@ -49,6 +50,7 @@ const ItemList = ({ item, index, withNotes, withEdit, onDelete }: Props) => {
                             variant="secondary"
                             icon={{ icon: "pencil" }}
                             onPress={() => {
+                                doEdit!()
                             }}
                         >{t("edit")}</Button>
                     </View>

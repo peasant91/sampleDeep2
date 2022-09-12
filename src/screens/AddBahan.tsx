@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect, useState } from 'react'
-import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import { Controller, FormProvider, useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
@@ -12,9 +12,10 @@ import AppNavigationType from '../navigations/AppNavigationType'
 import AddBahanCell from './AddBahanCell'
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { values } from 'lodash'
+import { fill, values } from 'lodash'
 import ListItem from '../../tmd/components/List/ListItem'
 import { goBack } from '../navigations/RootNavigation'
+import { print } from '@gorhom/bottom-sheet/lib/typescript/utilities/logger'
 
 export default function AddBahan({ route }: NativeStackScreenProps<AppNavigationType, "AddBahan">) {
     const { t } = useTranslation()
@@ -49,6 +50,13 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
         name: "values"
     })
 
+    // const watchAllFields = method.watch(); // when pass nothing as argument, you are watching everything
+    // useEffect(() => {
+    //     const subscription = method.watch((value, { name, type }) => console.log(JSON.stringify(value, null, 2)))
+    //     return () => subscription.unsubscribe();
+    // }, [method.watch])
+    
+
     const { handleSubmit } = method;
 
     const addMore = () => {
@@ -72,20 +80,31 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     };
 
     const onError = (errors: any) => {
-        // console.log("ANJENG ON ERROR", errors)
-        // console.log(JSON.stringify(errors, null, 2));
+        console.log("ANJENG ON ERROR", errors)
+        console.log(JSON.stringify(errors, null, 2));
     };
 
     useEffect(() => {
-        defaultBahan.map(function (item, index) {
-            console.log(item)
-            setListBahan([...listBahan, item])
-        })
+        if (defaultBahan.length == 0) {
+            setListBahan([...method.getValues('values'), {
+                nama: "",
+                unit: "",
+                quantity: 1
+            }])
+            method.reset()
+        } else {
+            var array: BahanModel[] = []
+            defaultBahan.map(function (item, index) {
+                array.push(item)
+            })
+            setListBahan(array)
+        }
     }, [defaultBahan])
 
     useEffect(() => {
-        method.setValue('values', listBahan)
+        method.setValue('values', [...listBahan])
     }, [listBahan])
+
 
     return (
         <Page>
@@ -120,10 +139,10 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
                             })}
 
                             <Button
-                            variant='secondary'
-                            size='md'
-                            icon={{icon: "add-circle"}}
-                                style={{padding: 16}}
+                                variant='secondary'
+                                size='md'
+                                icon={{ icon: "add-circle" }}
+                                style={{ padding: 16 }}
                                 onPress={addMore}
                             >{t("add_more")}</Button>
                         </FormProvider>
@@ -132,7 +151,7 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
                 </ScrollView>
 
             </View>
-            <View style={{ padding: 16, position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: Colors.white}}>
+            <View style={{ padding: 16, position: 'absolute', left: 0, right: 0, bottom: 0, backgroundColor: Colors.white }}>
                 <Button
                     fullWidth={true}
                     onPress={handleSubmit(onSubmit, onError)}

@@ -91,7 +91,6 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                                     return <TextField
                                         onBlur={onBlur}
                                         onChangeText={(text) => {
-                                            console.log(text)
                                             if (text !== '') {
                                                 setQty(parseInt(text))
                                                 onChange(text)
