@@ -24,6 +24,7 @@ import AddBahanCell from './AddBahanCell'
 import AddBahan from './AddBahan'
 import AddBahanBottomSheet from './AddBahanBottomSheet'
 import { print } from '@gorhom/bottom-sheet/lib/typescript/utilities/logger'
+import { useBottomSheet } from '../../tmd/providers/BottomSheetProvider'
 
 
 export interface IBahan {
@@ -43,9 +44,20 @@ export default function FormSPB() {
         show: false,
         index: 0
     })
+    const { showConfirmationBS, hideConfirmationBS }= useBottomSheet()
     const [items, setItems] = useState<BahanModel[]>([])    
     const [convertedItems, setFlatListItem] = useState<SpbItem[]>()
     const projectData = _projectMock
+
+  const handleShowConfirmation = () => {
+    showConfirmationBS({
+      title: t("confirmation_send_spb_title"),
+      description: t("confirmation_send_spb_desc"),
+      buttonPrimaryAction: () => {
+        hideConfirmationBS();
+      },
+    });
+  };
 
     const schema = yup.object({
         // phone_code: yup.string().required(),
@@ -190,6 +202,7 @@ export default function FormSPB() {
                                 notes: item.note,
                                 unit: item.unit
                             }} index={index}
+                            withNotes={true}
                             withEdit={true}
                             doEdit={() => {
                                 setShowBS({
@@ -207,8 +220,7 @@ export default function FormSPB() {
                 <View style={{ flexBasis: 70, padding: 16 }}>
                     <Button
                         fullWidth={true}
-                        onPress={() => {
-                        }}
+                        onPress={() => handleShowConfirmation()}
                     >{t("ajukan")}</Button>
                 </View>
 

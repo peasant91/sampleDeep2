@@ -23,6 +23,7 @@ type AppNavigationType = {
     defaultBahan: BahanModel[],
     save: (model: BahanModel[]) => void
   },
+  SuccessPage: undefined,
   ProjectDetail: undefined,
   StepperScreen: undefined,
   ImageScreen: undefined,
