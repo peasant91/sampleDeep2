@@ -17,3 +17,11 @@ export interface ProjectModel {
     location: ProjectLocationModel
     pm: string[]
 }
+
+export interface ProjectInnerModel {
+    id: number
+    name: string,
+    created_at: string
+    image: string
+    location: ProjectLocationModel
+}

@@ -1,3 +1,4 @@
+import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 import { User } from "../../models/auth/Auth";
 
 /**
@@ -7,26 +8,43 @@ import { User } from "../../models/auth/Auth";
 
 export type AuthState = {
   isAuthenticated: boolean;
+  isPM: boolean;
+  isHeadAdmin: boolean;
   user?: User;
 };
 
 const initialState: AuthState = {
   isAuthenticated: false,
+  isPM: false,
+  isHeadAdmin: false,
   user: undefined,
 };
 
 const authReducer = (state: AuthState = initialState, action: any) => {
   switch (action.type) {
-    case "LOGIN":
+    case "LOGINPM":
       return {
         ...state,
         isAuthenticated: true,
+        isPM: true,
+        isHeadAdmin: false,
+        user: action.payload.user,
+      };
+
+    case "LOGINADMIN":
+      return {
+        ...state,
+        isAuthenticated: true,
+        isHeadAdmin: true,
+        isPM: false,
         user: action.payload.user,
       };
     case "LOGOUT":
       return {
         ...state,
         isAuthenticated: false,
+        isHeadAdmin: false,
+        isPM: false,
         user: undefined,
       };
     case "INITIALIZE":

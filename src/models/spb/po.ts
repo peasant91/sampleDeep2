@@ -1,25 +1,27 @@
 import { BaseModel } from "../BaseModel";
+import { ProjectInnerModel } from "../project/project";
 import { SpbItem } from "./spb";
 
 export enum StatusPO {
-    waiting = "waiting_confirmation",
-    rejected = "reject",
-    approved = "approved",
-    complaint = "complaint",
-    received = "received"
+  waiting = "waiting_confirmation",
+  rejected = "reject",
+  approved = "approved",
+  complaint = "complaint",
+  received = "received",
+  done = "done"
 }
 
 export interface PoListResponse extends BaseModel {
-  data: PoList[];
+  data: POList[];
 }
 
-export interface PoList {
-    id: number
-    no_po: string
-    created_at: string
-    po_status: string
-    items: SpbItem[]
-    total: number
+export interface POList {
+  id: number
+  no_po: string
+  created_at: string
+  po_status: string
+  items: POItem[]
+  total: number
 }
 
 export interface SupplierPO {
@@ -27,7 +29,19 @@ export interface SupplierPO {
   address: string
 }
 
+// not used using 1 model with SPBItem
+export interface POItem {
+  id: number
+  name: string
+  quantity: number
+  unit: string
+  discount?: number
+  normal_price?: number
+  final_price?: number
+}
+
 export interface PODetailModel {
+  project: ProjectInnerModel
   no_spb: string
   spb_created_at: string
   no_po: string
@@ -35,9 +49,14 @@ export interface PODetailModel {
   po_status: string
   supplier: SupplierPO
   delivery_estimation: string
-  items: SpbItem[]
-  total: number
+  items: POItem[]
+  total_item: number
+  total_price: number
+  total_discount: number
+  grand_total: number
+  // total: number
   complaint?: string
   notes?: string
+  payment_term: string[]
 }
 

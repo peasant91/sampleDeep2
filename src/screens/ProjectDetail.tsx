@@ -108,7 +108,10 @@ export default function ProjectDetail() {
                                     item={item.item}
                                     index={item.index}
                                     onPress={() => {
-                                        navigate("DetailSPB")
+                                        navigate("DetailSPB", {
+                                            spbID: item.item.no_spb,
+                                            isPMPage: true
+                                        })
                                     }}
                                 />
                             </View>

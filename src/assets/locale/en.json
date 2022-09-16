@@ -166,6 +166,13 @@
     "confirmation_send_spb_title": "Yakin ingin mengirim data?",
     "to_detail_project": "Ke Detail Proyek",
     "success_send_title": "Permintaan berhasil dikirim",
-    "success_send_desc": "Tunggu konfirmasi dari admin untuk barang yang Anda ajukan. Barang akan langsung dikirim ke lokasi proyek Anda."
+    "success_send_desc": "Tunggu konfirmasi dari admin untuk barang yang Anda ajukan. Barang akan langsung dikirim ke lokasi proyek Anda.",
+    "project_ongoing": "Sedang Berjalan",
+    "project_done": "Selesai",
+    "total_unapproved": "{{count}} PO Belum di Approve",
+    "po_detail": "PO Detail",
+    "amount_discount": "{{count}}% off",
+    "tolak": "Tolak",
+    "setujui": "Setujui"
   }
 }

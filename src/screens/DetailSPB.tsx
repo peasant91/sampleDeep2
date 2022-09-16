@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, View } from "react-native";
@@ -8,20 +9,26 @@ import Typography from "../../tmd/components/Typography/Typography";
 import { _poListMock, _projectMock, _spbDetailMock, _spbMock } from "../../tmd/data/_mock";
 import { colors, red100, white } from "../../tmd/styles/colors";
 import { ProjectModel } from "../models/project/project";
-import { PoList } from "../models/spb/po";
+import { POList } from "../models/spb/po";
 import { SPBDetailModel, SpbItem, SpbListItem } from "../models/spb/spb";
+import AppNavigationType from "../navigations/AppNavigationType";
 import { navigate } from "../navigations/RootNavigation";
 import { EmptyPOState } from "./components/EmptyState";
 import ItemList from "./components/item/itemList";
+import POListItem from "./components/item/PoList";
 import SpbList, { StatusButton, StatusSPB } from "./components/item/SpbList";
 
-export default function DetailSPB() {
+export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigationType, "DetailSPB">) {
     const { t } = useTranslation()
     const minItemShown: number = 3
 
+    const noSPB = route.params.spbID
+    const isAdminPage = route.params.isAdminPage
+    const isPMPage = route.params.isPMPage
+
     const projectData: ProjectModel = _projectMock
     const data: SPBDetailModel = _spbDetailMock
-    const poData: SpbListItem[] = _spbMock
+    const poData: POList[] = _poListMock
     const [imageLoaded, setImageLoaded] = useState(false)
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
@@ -123,7 +130,7 @@ export default function DetailSPB() {
                     <View style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 16 }}>
                         <Image
                             style={{ width: '100%', height: '100%', borderRadius: 8 }}
-                            source={{ uri: data.image }}
+                            source={{ uri: data.project.image }}
                             onLoadStart={() => {
                                 setImageLoaded(true)
                             }}
@@ -183,14 +190,22 @@ export default function DetailSPB() {
                     ItemSeparatorComponent={() => {
                         return <View style={{ height: 16 }} />
                     }}
-                    renderItem={(item) => <SpbList
-                        item={item.item}
-                        index={item.index}
-                        type={"PO"}
-                        onPress={() => {
-                            navigate("DetailPO")
-                        }}
-                    />}
+                    renderItem={(item) => {
+                        return (
+                            <POListItem
+                                item={item.item}
+                                index={item.index}
+                                type={"PO"}
+                                onPress={() => {
+                                    navigate("DetailPO", {
+                                        isAdminPage: isAdminPage,
+                                        isPMPage: isPMPage,
+                                        poID: item.item.id
+                                    })
+                                }}
+                            />
+                        )
+                    }}
                 />
 
             </>
@@ -217,15 +232,41 @@ export default function DetailSPB() {
                             <ItemList
                                 item={item.item}
                                 index={item.index}
-                                withNotes={true}
+                                config={{
+                                    withNote: true,
+                                }}
                             />
                         )
                     }}
                 />
 
                 <View style={_s.padding}>
-                    <PrimaryButton
-                        status={"waiting_confirmation"} />
+                    {(isPMPage) && (
+                        <PrimaryButton
+                            status={"waiting_confirmation"} />
+                    )}
+
+                    {(isAdminPage) && (
+                        <Stack spacing={16} direction="row">
+                            <Button
+                                fullWidth
+                                variant="secondary"
+                                shape="rounded"
+                                size="lg"
+                                onPress={() => {
+                                }}
+                            >{t("tolak")}</Button>
+
+                            <Button
+                                fullWidth
+                                variant="primary"
+                                shape="rounded"
+                                size="lg"
+                                onPress={() => {
+                                }}
+                            >{t("setujui")}</Button>
+                        </Stack>
+                    )}
                 </View>
             </View>
         </Page>

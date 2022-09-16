@@ -42,8 +42,6 @@ export default function ListSPB() {
                 }
                 {
                     <View style={{ flex: 1, padding: 16 }}>
-                        {/* <GridList
-               padding={16} */}
                         <FlatList
                             data={_spbMock}
                             ItemSeparatorComponent={() => {
@@ -56,7 +54,10 @@ export default function ListSPB() {
                                         index={item.index}
                                         onPress={() => {
                                             console.log("ANJENG")
-                                            navigate("DetailSPB")
+                                            navigate("DetailSPB", {
+                                                spbID: item.item.no_spb,
+                                                isPMPage: true
+                                            })
                                         }}
                                     />
                                 )

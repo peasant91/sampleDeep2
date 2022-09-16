@@ -1,11 +1,12 @@
 import React from "react"
 import { FlatList, Image, StyleProp, View, ViewStyle } from "react-native"
-import { Button, Divider, Stack, Tag } from "../../../../tmd"
+import { Button, Divider, Icon, Stack, Tag } from "../../../../tmd"
 import Typography from "../../../../tmd/components/Typography/Typography"
 import { colors } from "../../../../tmd/styles/colors"
 import { SpbItem, SpbListItem } from "../../../models/spb/spb"
 import IcPipe from '../../../assets/icons/pipe.svg'
 import IcPO from '../../../assets/icons/ic_po.svg'
+import IcProject from '../../../assets/illusts/icon_project.svg'
 import { useTranslation } from "react-i18next"
 import { t } from "i18next"
 
@@ -72,9 +73,10 @@ interface Props {
     index: number,
     type?: Usage,
     onPress?: () => void
+    withProjectName?: boolean
 }
 
-const SpbList = ({ item, index, type, onPress }: Props) => {
+const SpbList = ({ item, index, type, onPress, withProjectName }: Props) => {
     const getIcon = () => {
         if (type == "PO") {
             return (
@@ -89,11 +91,25 @@ const SpbList = ({ item, index, type, onPress }: Props) => {
 
     return (
         <Stack style={{ borderWidth: 1, borderRadius: 16, borderColor: colors.neutral.neutral_40, backgroundColor: colors.neutral.neutral_10 }}>
+            {
+                withProjectName && (
+                    <>
+                        <View style={{ flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 12 }}>
+                            <IcProject height={40} width={40} />
+                            <View style={{ flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1, marginLeft: 8 }}>
+                                <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{item.name}</Typography>
+                                <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{item.created_at}</Typography>
+                            </View>
+                        </View>
+                        <Divider />
+                    </>
+                )
+            }
 
             <View style={{ paddingVertical: 12, paddingHorizontal: 12, flexDirection: "row", justifyContent: 'space-between' }}>
                 <Stack spacing={8} direction="row">
-                    <View style={{alignSelf: 'center'}}>
-                        { getIcon() }
+                    <View style={{ alignSelf: 'center' }}>
+                        {getIcon()}
                     </View>
                     {/* {type == "PO" &&
                         <IcPipe style={{ alignSelf: 'center' }} />
@@ -110,6 +126,23 @@ const SpbList = ({ item, index, type, onPress }: Props) => {
 
             <Divider />
 
+            {(item.total_unapproved ?? 0) > 0 && (
+                <Stack spacing={8} direction={'row'} style={{
+                    paddingHorizontal: 8,
+                    paddingVertical: 10,
+                    backgroundColor: colors.warning.surface,
+                    marginHorizontal: 12,
+                    marginTop: 12,
+                    marginBottom: 8,
+                    borderWidth: 2,
+                    borderColor: colors.warning.main,
+                    borderRadius: 8
+                }}>
+                    <Icon icon="warning" style={{ width: 20, aspectRatio: 1 }} />
+                    <Typography type="body3" style={{ flexGrow: 1, textAlignVertical: 'center' }}>{t("total_unapproved", {count: item.total_unapproved!})}</Typography>
+                </Stack>
+
+            )}
             <FlatList
                 scrollEnabled={false}
                 style={{ paddingHorizontal: 12, paddingVertical: 12 }}

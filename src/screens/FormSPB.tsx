@@ -202,8 +202,10 @@ export default function FormSPB() {
                                 notes: item.note,
                                 unit: item.unit
                             }} index={index}
-                            withNotes={true}
-                            withEdit={true}
+                            config={{
+                                withNote: true,
+                                withEdit: true
+                            }}
                             doEdit={() => {
                                 setShowBS({
                                     index: index,

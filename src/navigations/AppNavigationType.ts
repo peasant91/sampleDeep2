@@ -16,14 +16,23 @@ type AppNavigationType = {
   //end utils
   HomePM: undefined,
   ListSPB: undefined,
-  DetailSPB: undefined,
-  DetailPO: undefined,
+  DetailSPB: {
+    spbID: string,
+    isAdminPage: boolean,
+    isPMPage: boolean
+  }
+  DetailPO: {
+    poID: string,
+    isAdminPage: boolean,
+    isPMPage: boolean
+  },
   FormSPB: undefined,
   AddBahan: {
     defaultBahan: BahanModel[],
     save: (model: BahanModel[]) => void
   },
   SuccessPage: undefined,
+  HomeAdmin: undefined,
   ProjectDetail: undefined,
   StepperScreen: undefined,
   ImageScreen: undefined,

@@ -11,7 +11,6 @@ import { navigate, navigationRef } from '../navigations/RootNavigation'
 export default function SuccessPage() {
     const { t } = useTranslation()
     const width = Dimensions.get('window').width
-    const dispatch = useDispatch()
 
     return (
         <Page>

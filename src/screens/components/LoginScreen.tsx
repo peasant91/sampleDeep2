@@ -18,6 +18,7 @@ import { flatMap, head } from "lodash";
 import Color from "color";
 import { transparent } from "../../../tmd/styles/colors";
 import { useDispatch } from "react-redux";
+import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 
 
 export default function LoginScreen() {
@@ -45,14 +46,25 @@ export default function LoginScreen() {
   });
 
 
+
   const onSubmit = async (data: any) => {
+    console.log("ANJENG", data?.username)
     console.log(JSON.stringify(data, null, 2));
+    if (data.username == "pm") {
       dispatch({
-        type: "LOGIN",
+        type: "LOGINPM",
         payload: {
           // user: res.data.user_data,
         },
       });
+    } else {
+      dispatch({
+        type: "LOGINADMIN",
+        payload: {
+          // user: res.data.user_data,
+        },
+      });
+    }
     // await login(data?.phone, data?.phone_code, data?.password);
   };
 
@@ -90,9 +102,9 @@ export default function LoginScreen() {
             flex: 1,
           }}>
 
-            <Stack spacing={8} style={{flex: 1}}>
-            <Typography type={"title1"}>{t("welcome_title")}</Typography>
-            <Typography type={"body1"}>{t("welcome_desc")}</Typography>
+            <Stack spacing={8} style={{ flex: 1 }}>
+              <Typography type={"title1"}>{t("welcome_title")}</Typography>
+              <Typography type={"body1"}>{t("welcome_desc")}</Typography>
             </Stack>
             <View>
               <RHFTextField

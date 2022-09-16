@@ -1,21 +1,27 @@
 import { BaseModel } from "../BaseModel";
+import { ProjectInnerModel } from "../project/project";
+import { POItem } from "./po";
 
 export interface SpbListResponse extends BaseModel {
   data: SpbListItem[];
 }
 
 export interface SpbLocation {
-    address: string
-    lat: number
-    lng: number
+  address: string
+  lat: number
+  lng: number
 }
 
 export interface SpbItem {
-    id: number
-    name: string
-    quantity: number
-    unit: string
-    notes?: string
+  id: number
+  name: string
+  quantity: number
+  unit: string
+  notes?: string
+  discount?: number
+  normal_price?: number
+  final_price?: number
+  total_unnapproved?: number
 }
 
 export interface SpbListItem {
@@ -25,17 +31,18 @@ export interface SpbListItem {
   no_spb: string
   created_at: string
   spb_status: string // waiting_confirmation, approved, rejected
-  items: SpbItem[]
+  items: POItem[]
   total: number
+  total_unapproved?: number
 }
 
 export interface SPBDetailModel {
+  project: ProjectInnerModel
   no_spb: string
   created_at: string
   spb_status: string
   items: SpbItem[]
   total: number
   notes?: string
-  image: string
-
+  photo?: string
 }

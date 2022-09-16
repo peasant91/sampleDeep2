@@ -1,7 +1,7 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { View } from "react-native"
-import { Button, IconButton, Stack } from "../../../../tmd"
+import { Button, IconButton, Stack, Tag } from "../../../../tmd"
 import Typography from "../../../../tmd/components/Typography/Typography"
 import { colors } from "../../../../tmd/styles/colors"
 import { SpbItem } from "../../../models/spb/spb"
@@ -9,13 +9,16 @@ import { SpbItem } from "../../../models/spb/spb"
 interface Props {
     item: SpbItem
     index: number
-    withNotes?: boolean
-    withEdit?: boolean
+    config: {
+        withNote?: boolean
+        withPrice?: boolean
+        withEdit?: boolean
+    }
     onDelete?: (index: number) => void
     doEdit?: () => void
 }
 
-const ItemList = ({ item, index, withNotes, withEdit, onDelete, doEdit }: Props) => {
+const ItemList = ({ item, index, config, onDelete, doEdit }: Props) => {
     const { t } = useTranslation()
     return (
         <View style={{ paddingHorizontal: 16 }}>
@@ -26,14 +29,30 @@ const ItemList = ({ item, index, withNotes, withEdit, onDelete, doEdit }: Props)
                 </View>
                 <Typography style={{ color: colors.neutral.neutral_80, marginTop: -12 }} type={"body3"}>{t("unit")} : {item.unit}</Typography>
 
-                {withNotes &&
+                {config.withPrice && (
+                    <Stack spacing={8} direction={'row'} style={{ marginBottom: 12 }}>
+                        <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{`${item.quantity} x ${item.final_price}`}</Typography>
+                        {item.normal_price != item.final_price && (
+                            <Stack spacing={8} direction={'row'}>
+                                <Typography type="body2" style={{ color: colors.neutral.neutral_70, textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.normal_price}</Typography>
+                                <Tag
+                                    text={t("amount_discount", { count: item.discount ?? 0 })}
+                                    size="sm"
+                                    shape="rounded"
+                                    variant="primary" />
+                            </Stack>
+                        )}
+                    </Stack>
+                )}
+
+                {config.withNote &&
                     <View style={{ marginBottom: 12 }}>
                         <Typography style={{ color: colors.neutral.neutral_80 }} type={"label2"}>{t("notes")}</Typography>
                         <Typography style={{ color: colors.neutral.neutral_80 }} type={"body3"}>{item.notes ?? "-"}</Typography>
                     </View>
                 }
 
-                {withEdit &&
+                {config.withEdit &&
                     <View style={{ flexDirection: "row", justifyContent: 'space-between', marginBottom: 16 }}>
                         <IconButton
                             variant={'secondary'}
@@ -54,7 +73,6 @@ const ItemList = ({ item, index, withNotes, withEdit, onDelete, doEdit }: Props)
                             }}
                         >{t("edit")}</Button>
                     </View>
-
                 }
             </Stack>
 

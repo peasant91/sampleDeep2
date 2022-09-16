@@ -17,12 +17,16 @@ export type AuthContextType = {
   isLoadingLogin: boolean;
   isLoadingLogout: boolean;
   isAuthenticated: boolean;
+  isPM: boolean;
+  isHeadAdmin: boolean;
   user?: User
 }
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: any) => {
   const isAuthenticated = useSelector(state => state.authReducer.isAuthenticated);
+  const isPM = useSelector(state => state.authReducer.isPM);
+  const isHeadAdmin = useSelector(state => state.authReducer.isHeadAdmin);
   const user = useSelector(state => state.authReducer.user);
 
   const dispatch = useDispatch();
@@ -74,6 +78,8 @@ const AuthProvider = ({ children }: any) => {
         isLoadingLogin,
         isLoadingLogout,
         isAuthenticated,
+        isPM,
+        isHeadAdmin,
         user,
       }}>
       {children}
