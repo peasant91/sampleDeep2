@@ -17,6 +17,8 @@ interface Props {
   buttonSecondaryAction?: () => void;
   onClose: () => void;
   dismissable?: boolean;
+  withNotes?: boolean
+  noteIsRequired?: boolean
 }
 
 export default function ConfirmationBottomSheet({ open, buttonPrimaryTitle, buttonSecondaryTitle, ...rest }: Props) {

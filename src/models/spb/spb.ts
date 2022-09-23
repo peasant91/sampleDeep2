@@ -36,6 +36,11 @@ export interface SpbListItem {
   total_unapproved?: number
 }
 
+export interface SPBDetailResponse extends BaseModel {
+  data: SPBDetailModel
+}
+
+
 export interface SPBDetailModel {
   project: ProjectInnerModel
   no_spb: string

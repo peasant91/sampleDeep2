@@ -32,8 +32,7 @@ export interface User {
 
 export interface LoginItem {
   access_token: string;
-  refresh_token: string;
-  user_data: User;
+  role: string
 }
 
 export interface LoginResponse {

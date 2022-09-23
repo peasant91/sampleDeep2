@@ -8,8 +8,11 @@ import { Portal } from "react-native-portalize";
 import { SafeAreaView, View } from "react-native";
 import Typography from "../Typography/Typography";
 import { useTheme } from "../../core/theming";
-import { Button, Stack } from "../../index";
+import { Button, RHFTextField, Stack } from "../../index";
 import { useTranslation } from "react-i18next";
+import { FormProvider, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export interface BSProps {
   open: boolean;
@@ -19,10 +22,12 @@ export interface BSProps {
   buttonPrimaryTitle?: string;
   buttonSecondary?: boolean;
   buttonSecondaryTitle?: string;
-  buttonPrimaryAction?: () => void;
+  buttonPrimaryAction?: (text?: string) => void;
   buttonSecondaryAction?: () => void;
   onClose: () => void;
   dismissible?: boolean;
+  withNotes?: boolean
+  noteIsRequired?: boolean
 }
 
 export default function AlertBottomSheet({ dismissible = true, ...props }: BSProps) {
@@ -35,6 +40,35 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
       modalizeRef.current?.close();
     }
   }, [props.open]);
+
+  const schema = yup.object({
+    note: (props.noteIsRequired) ? yup.string().required().label(t("note")) : yup.string().optional(),
+  }).required()
+
+  const method = useForm({
+    defaultValues: {
+      note: ""
+    }, resolver: yupResolver(schema)
+  })
+
+  const { handleSubmit, watch } = method;
+
+  // useEffect(() => {
+  //     const subscription = method.watch((value, { name, type }) => console.log(JSON.stringify(value, null, 2)))
+  //     return () => subscription.unsubscribe();
+  // }, [watch])
+
+  const onSubmit = (data: any) => {
+    console.log(JSON.stringify(data, null, 2));
+    if (props.buttonPrimaryAction) {
+      props.buttonPrimaryAction(data.note)
+    }
+  };
+
+  const onError = (errors: any) => {
+    console.log(JSON.stringify(errors, null, 2));
+  };
+
 
   const handleClose = () => {
     modalizeRef?.current?.close();
@@ -60,71 +94,89 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
       >
         <SafeAreaView style={{ flex: 1 }}>
 
-          <View style={{
-            flexDirection: "column",
-            paddingVertical: 16,
-          }}>
-            <Stack style={{
-              justifyContent: "center",
-              alignItems: "center",
+          <FormProvider {...method}>
+            <View style={{
+              flexDirection: "column",
+              paddingVertical: 16,
             }}>
-              {
-                props.imageNode &&
-                <View style={{ paddingBottom: 16 }}>
-                  {
-                    props.imageNode
-                  }
-                </View>
-              }
-              {
-                props.title &&
-                <Typography type={"title2"} style={{ textAlign: "center" }}>{props.title}</Typography>
-              }
-              {
-                props.description &&
-                <Typography type={"body2"} style={{
-                  color: theme.colors.neutral.neutral_80, textAlign: "center",
-                  marginTop: 8,
-
-                }}>{props.description}</Typography>
-              }
-            </Stack>
-            <Stack
-              spacing={16}
-              direction={"row"}
-              style={{
-                marginTop: 18,
+              <Stack style={{
+                justifyContent: "center",
+                alignItems: "center",
               }}>
+                {
+                  props.imageNode &&
+                  <View style={{ paddingBottom: 16 }}>
+                    {
+                      props.imageNode
+                    }
+                  </View>
+                }
+                {
+                  props.title &&
+                  <Typography type={"title2"} style={{ textAlign: "center" }}>{props.title}</Typography>
+                }
+                {
+                  props.description &&
+                  <Typography type={"body2"} style={{
+                    color: theme.colors.neutral.neutral_80, textAlign: "center",
+                    marginTop: 8,
+
+                  }}>{props.description}</Typography>
+                }
+
+              </Stack>
               {
-                props.buttonSecondary &&
-                <View style={{ flex: 1 }}>
-                  <Button
-                    fullWidth
-                    variant={"secondary"}
-                    onPress={() => {
-                      if (props.buttonSecondaryAction) {
-                        props.buttonSecondaryAction();
-                      } else {
-                        handleClose();
-                      }
-                    }}
-                  >{props.buttonSecondaryTitle ?? t("cancel")}</Button>
-                </View>
+                props.withNotes &&
+                <RHFTextField
+                  mode="contained"
+                  counter={true}
+                  maxLength={140}
+                  numberOfLines={3}
+                  requiredLabel={props.noteIsRequired}
+                  label={t("note")}
+                  placeholder={t("note_placeholder")}
+                  name={"note"}
+                />
               }
-              <Button
-                fullWidth
-                onPress={() => {
-                  if (props.buttonPrimaryAction) {
-                    props.buttonPrimaryAction();
-                  } else {
-                    handleClose();
-                  }
-                }}
-              >{props.buttonPrimaryTitle ?? t("back")}</Button>
+              <Stack
+                spacing={16}
+                direction={"row"}
+                style={{
+                  marginTop: 18,
+                }}>
+                {
+                  props.buttonSecondary &&
+                  <View style={{ flex: 1 }}>
+                    <Button
+                      fullWidth
+                      variant={"secondary"}
+                      onPress={() => {
+                        if (props.buttonSecondaryAction) {
+                          props.buttonSecondaryAction();
+                        } else {
+                          handleClose();
+                        }
+                      }}
+                    >{props.buttonSecondaryTitle ?? t("cancel")}</Button>
+                  </View>
+                }
+                <Button
+                  fullWidth
+                  onPress={() => {
+                    if (props.withNotes) {
+                      handleSubmit(onSubmit, onError)()
+                    } else if (props.buttonPrimaryAction) {
+                      props.buttonPrimaryAction();
+                    } else {
+                      handleClose();
+                    }
+                  }}
+                >{props.buttonPrimaryTitle ?? t("back")}</Button>
 
-            </Stack>
+              </Stack>
 
-          </View>
+            </View>
+          </FormProvider>
         </SafeAreaView>
 
       </Modalize>

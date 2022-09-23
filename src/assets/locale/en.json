@@ -62,8 +62,8 @@
     },
     "start_date": "Start Date",
     "end_date": "End Date",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
+    "confirm": "Konfirmasi",
+    "cancel": "Batal",
     "pick_from_camera": "Pick from camera",
     "pick_from_gallery": "Pick from gallery",
     "pick_image": "Pick Image",
@@ -173,6 +173,13 @@
     "po_detail": "PO Detail",
     "amount_discount": "{{count}}% off",
     "tolak": "Tolak",
-    "setujui": "Setujui"
+    "setujui": "Setujui",
+    "address": "Alamat",
+    "note": "Catatan",
+    "note_placeholder": "Tulis Deskripsi Disini",
+    "po_confirmation_title": "Konfirmasi PO?",
+    "po_confirmation_desc": "Pastikan bahan telah tiba dilapangan sebelum melakukan konfirmasi PO, sertakan catatan bila diperlukan.",
+    "po_complain_title": "Komplain PO?",
+    "po_complain_desc": "Komplain akan dikirim ke Admin dan PO akan diperbaiki jika tidak sesuai dengan SPB atau hal lain."
   }
 }

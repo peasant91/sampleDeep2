@@ -23,6 +23,7 @@ type AppNavigationType = {
   }
   DetailPO: {
     poID: string,
+    spbID: string,
     isAdminPage: boolean,
     isPMPage: boolean
   },

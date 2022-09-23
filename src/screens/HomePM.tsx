@@ -12,17 +12,52 @@ import Title from "../../tmd/components/Typography/Title";
 import Typography from "../../tmd/components/Typography/Typography";
 import { black, colors, red100, transparent, white } from "../../tmd/styles/colors";
 import { SpbListItem } from "../models/spb/spb";
-import SpbList from "./components/item/SpbList";
+import SpbList, { StatusSPB } from "./components/item/SpbList";
 import ICDocument from "../assets/icons/ic_document.svg"
 import { _spbMock } from "../../tmd/data/_mock";
 import { navigate } from "../navigations/RootNavigation";
 import { EmptySPBState } from "./components/EmptyState";
+import usePMProjectQuery from "../services/project/usePMProjectQuery";
+import useProjectInfiniteQuery from "../services/project/useProjectQuery";
+
+enum StatusProject {
+  inProgress = "in_progress",
+  finish = "finish"
+}
+
+type _StatusProject = {
+  status: string
+}
+
+export function StatusButton({ status }: _StatusProject) {
+  const { t } = useTranslation()
+
+  return (
+    <View>
+      {status == StatusProject.inProgress &&
+        <Tag variant="primary" text={t("in_progress")} />
+      }
+      {status == StatusProject.finish &&
+        <Tag variant="success" text={t("success")} />
+      }
+    </View>
+  )
+
+}
+
 
 export default function HomePM() {
   const { t } = useTranslation();
   const dispatch = useDispatch()
-  const [refresh, doRefresh] = useState();
-
+  const { project, isLoadingProject, refetch, isRefetching } = usePMProjectQuery();
+  const {
+    spbLists,
+    isLoadingCatalog,
+    isFetchingNextPage,
+    fetchNext,
+    refresh,
+    isRefreshing,
+  } = useProjectInfiniteQuery({ search: "", status: StatusSPB.approved });
 
   const useHandleScroll = () => {
     const [showButton, setShowButton] = useState(true);
@@ -90,57 +125,56 @@ export default function HomePM() {
         <View style={{ flex: 1, paddingTop: 16, paddingHorizontal: 16, paddingVertical: 16 }}>
           <Typography type={"title3"}>Proyek Aktif</Typography>
           <View style={{ marginTop: 12, borderWidth: 1, borderRadius: 16, borderColor: colors.neutral.neutral_40 }}>
-            <Stack>
+            {project &&
 
-              <View style={{ paddingVertical: 16, paddingHorizontal: 12, flexDirection: "row", justifyContent: 'space-between' }}>
-                <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
-                  <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>Proyek Name</Typography>
-                  <Typography type={"body4"}>Dibuat 4 jam yang lalu</Typography>
-                </Stack>
-                <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
-              </View>
+              <Stack>
+                <View style={{ paddingVertical: 16, paddingHorizontal: 12, flexDirection: "row", justifyContent: 'space-between' }}>
+                  <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
+                    <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{project.name}</Typography>
+                    <Typography type={"body4"}>Dibuat 4 jam yang lalu</Typography>
+                  </Stack>
+                  <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
+                </View>
 
-              <View style={{ paddingVertical: 8, paddingHorizontal: 12, flexDirection: 'row' }}>
-                <Stack spacing={4} style={{ flex: 2 }}>
-                  <Typography type="label2">Konstruksi Bangunan</Typography>
-                  <Typography type="body3">Tipe Konstruksi</Typography>
-                </Stack>
+                <View style={{ paddingVertical: 8, paddingHorizontal: 12, flexDirection: 'row' }}>
+                  <Stack spacing={4} style={{ flex: 2 }}>
+                    <Typography type="label2">{project.construction_type}</Typography>
+                    <Typography type="body3">Tipe Konstruksi</Typography>
+                  </Stack>
 
-                <Stack spacing={4} style={{ flex: 2 }}>
-                  <Typography type="label2">1-3 Bulan</Typography>
-                  <Typography type="body3">Durasi</Typography>
-                </Stack>
-              </View>
+                  <Stack spacing={4} style={{ flex: 2 }}>
+                    <Typography type="label2">{project.duration}</Typography>
+                    <Typography type="body3">Durasi</Typography>
+                  </Stack>
+                </View>
 
-              <View style={{ paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row' }}>
-                <Typography type="body3">DESCRIPTION DESCRIPTION DESCRIPTION DESCRIPTION DESCRIPTION </Typography>
-              </View>
+                <View style={{ paddingVertical: 10, paddingHorizontal: 12, flexDirection: 'row' }}>
+                  <Typography type="body3">{project.description}</Typography>
+                </View>
 
-              <Divider variant={"dotted"} />
+                <Divider variant={"dotted"} />
 
-              <View style={{ paddingVertical: 16, paddingHorizontal: 12, flexDirection: 'row', justifyContent: "space-between" }}>
-                <Tag text="In Progress"
-                  shape="rounded"
-                  size="md"
-                  variant="primary"
-                  style={{ alignSelf: 'center' }}
-                />
+                <View style={{ paddingVertical: 16, paddingHorizontal: 12, flexDirection: 'row', justifyContent: "space-between", alignItems: 'center' }}>
+                  <StatusButton
+                    status={project.status}
+                  />
 
-                <Button
-                  shape="rounded"
-                  size="sm"
-                  variant="secondary"
-                  onPress={() => {
-                    navigate("ProjectDetail")
-                  }}
-                >{t("see_detail")}</Button>
-              </View>
+                  <Button
+                    shape="rounded"
+                    size="sm"
+                    variant="secondary"
+                    onPress={() => {
+                      navigate("ProjectDetail")
+                    }}
+                  >{t("see_detail")}</Button>
+                </View>
 
-            </Stack>
+              </Stack>
+            }
           </View>
 
           <View style={{ paddingTop: 24, paddingHorizontal: 12, flexDirection: 'row', justifyContent: "space-between" }}>
-            <Typography type={"title3"}>Proyek Aktif</Typography>
+            <Typography type={"title3"}>Riwayat SPB</Typography>
             <TextButton
               underline
               style={{ alignSelf: 'center' }}
@@ -157,7 +191,7 @@ export default function HomePM() {
 
   return (
     <Page>
-      <Stack style={{ flex: 1, paddingBottom: 80 }}>
+      <Stack style={{ flex: 1 }}>
         <StatusBar
           translucent={true}
           backgroundColor={transparent}
@@ -165,24 +199,32 @@ export default function HomePM() {
         />
 
         <View style={{ flex: 1 }}>
-          <FlatList
-            ListHeaderComponent={header}
-            ListEmptyComponent={EmptySPBState}
-            ItemSeparatorComponent={() => {
-              return <View style={{ height: 16 }} />
-            }}
-            data={_spbMock}
-            renderItem={(item) => {
-              return (
-                <View style={{ paddingHorizontal: 16 }}>
-                  <SpbList
-                    onPress={() => navigate("DetailSPB")}
-                    item={item.item}
-                    index={item.index} />
-                </View>
-              )
-            }}
-          />
+          {spbLists &&
+            <FlatList
+              ListHeaderComponent={header}
+              ListFooterComponent={() => <View style={{height: 16}} />}
+              ListEmptyComponent={EmptySPBState}
+              ItemSeparatorComponent={() => {
+                return <View style={{ height: 16 }} />
+              }}
+              data={spbLists}
+              renderItem={(item) => {
+                return (
+                  <View style={{ paddingHorizontal: 16 }}>
+                    <SpbList
+                      isAdmin={false}
+                      isPM={true}
+                      onPress={() => navigate("DetailSPB", {
+                        spbID: item.item.no_spb,
+                        isPMPage: true
+                      })}
+                      item={item.item}
+                      index={item.index} />
+                  </View>
+                )
+              }}
+            />
+          }
         </View>
 
         <Button

@@ -1,5 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
+import moment from "moment";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
@@ -13,6 +15,9 @@ import { POList } from "../models/spb/po";
 import { SPBDetailModel, SpbItem, SpbListItem } from "../models/spb/spb";
 import AppNavigationType from "../navigations/AppNavigationType";
 import { navigate } from "../navigations/RootNavigation";
+import usePOListQuery from "../services/project/usePOListQuery";
+import useSPBDetailQuery from "../services/project/useSPBDetailQuery";
+import StorageKey from "../utils/StorageKey";
 import { EmptyPOState } from "./components/EmptyState";
 import ItemList from "./components/item/itemList";
 import POListItem from "./components/item/PoList";
@@ -26,12 +31,13 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const isAdminPage = route.params.isAdminPage
     const isPMPage = route.params.isPMPage
 
-    const projectData: ProjectModel = _projectMock
-    const data: SPBDetailModel = _spbDetailMock
-    const poData: POList[] = _poListMock
+    var projectData = useRef<ProjectModel>()
+    // const poData: POList[] = _poListMock
     const [imageLoaded, setImageLoaded] = useState(false)
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
+    const { data, isLoading } = useSPBDetailQuery(noSPB)
+    const { poData, isPOListLoading } = usePOListQuery(noSPB)
 
     useEffect(() => {
         if (!showAll) {
@@ -40,6 +46,14 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
             setButtonTitle(t("see_less"))
         }
     }, [showAll])
+
+    useEffect(() => {
+        loadDefault()
+    }, [])
+
+    const loadDefault = async () => {
+        projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
+    }
 
     type PrimaryType = {
         status: string
@@ -79,13 +93,14 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const header = () => {
         return (
             <>
+
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
-                        <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.name}</Typography>
-                        <Typography type={"body4"}>{projectData.created_at}</Typography>
+                        <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name}</Typography>
+                        <Typography type={"body4"}>{moment(projectData.current?.created_at).format("Do MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
-                            <Typography type={"body4"}>{projectData.location.address}</Typography>
+                            <Typography type={"body4"}>{projectData.current?.location.address}</Typography>
                         </View>
                     </Stack>
                     <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
@@ -105,7 +120,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                 <View style={_s.padding}>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
-                        <Typography style={{ flex: 1 }} type={"label2"}>{data.created_at}</Typography>
+                        <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.created_at).format("DD MMMM YYYY")}</Typography>
                     </View>
                     <View style={{ flex: 1, flexDirection: 'row' }}>
                         <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
@@ -158,15 +173,17 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const footer = () => {
         return (
             <>
-                <View>
-                    <TextButton
-                        style={{ alignSelf: "center", marginTop: 16, marginBottom: 12 }}
-                        underline
-                        size="md"
-                        onPress={() => {
-                            setShowAll(!showAll)
-                        }}
-                    >{buttonTitle}</TextButton>
+                <View style={{marginTop: 16, marginBottom: 12}}>
+                    {data.items.length > minItemShown &&
+                        <TextButton
+                            style={{ alignSelf: "center" }}
+                            underline
+                            size="md"
+                            onPress={() => {
+                                setShowAll(!showAll)
+                            }}
+                        >{buttonTitle}</TextButton>
+                    }
                 </View>
 
                 <Divider />
@@ -200,7 +217,8 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                     navigate("DetailPO", {
                                         isAdminPage: isAdminPage,
                                         isPMPage: isPMPage,
-                                        poID: item.item.id
+                                        spbID: data.no_spb,
+                                        poID: item.item.no_po
                                     })
                                 }}
                             />
@@ -216,34 +234,36 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
         <Page>
             <Toolbar title={t("job_detail")} />
             <View style={{ flex: 1, flexDirection: 'column' }}>
-                <FlatList
-                    style={{ flexGrow: 1 }}
-                    ListHeaderComponent={header}
-                    ListFooterComponent={footer}
-                    extraData={showAll}
-                    data={(showAll) ? data.items : data.items.slice(0, minItemShown)}
-                    ItemSeparatorComponent={() => {
-                        return (
-                            <View style={{ height: 12 }} />
-                        )
-                    }}
-                    renderItem={(item) => {
-                        return (
-                            <ItemList
-                                item={item.item}
-                                index={item.index}
-                                config={{
-                                    withNote: true,
-                                }}
-                            />
-                        )
-                    }}
-                />
+                {data &&
+                    <FlatList
+                        style={{ flexGrow: 1 }}
+                        ListHeaderComponent={header}
+                        ListFooterComponent={footer}
+                        extraData={showAll}
+                        data={(showAll) ? data.items : data.items.slice(0, minItemShown)}
+                        ItemSeparatorComponent={() => {
+                            return (
+                                <View style={{ height: 12 }} />
+                            )
+                        }}
+                        renderItem={(item) => {
+                            return (
+                                <ItemList
+                                    item={item.item}
+                                    index={item.index}
+                                    config={{
+                                        withNote: true,
+                                    }}
+                                />
+                            )
+                        }}
+                    />
+                }
 
                 <View style={_s.padding}>
                     {(isPMPage) && (
                         <PrimaryButton
-                            status={"waiting_confirmation"} />
+                            status={data.spb_status} />
                     )}
 
                     {(isAdminPage) && (

@@ -50,17 +50,17 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
         name: "values"
     })
 
-    // const watchAllFields = method.watch(); // when pass nothing as argument, you are watching everything
-    // useEffect(() => {
-    //     const subscription = method.watch((value, { name, type }) => console.log(JSON.stringify(value, null, 2)))
-    //     return () => subscription.unsubscribe();
-    // }, [method.watch])
+    const watchAllFields = method.watch(); // when pass nothing as argument, you are watching everything
+    useEffect(() => {
+        const subscription = method.watch((value, { name, type }) => console.log(JSON.stringify(value, null, 2)))
+        return () => subscription.unsubscribe();
+    }, [method.watch])
     
 
     const { handleSubmit } = method;
 
     const addMore = () => {
-        setListBahan([...listBahan, {
+        setListBahan([...method.getValues().values, {
             nama: "",
             unit: "",
             quantity: 1

@@ -12,7 +12,7 @@ import StorageKey from "../utils/StorageKey";
 import { getAPI } from "../services/baseService";
 
 export type AuthContextType = {
-  login: (credential: string, phone_code: string, password: string) => void;
+  login: (credential: string, password: string) => void;
   logout: () => void;
   isLoadingLogin: boolean;
   isLoadingLogout: boolean;
@@ -35,19 +35,29 @@ const AuthProvider = ({ children }: any) => {
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   const [isLoadingLogout, setIsLoadingLogout] = useState(false);
 
-  const login = async (credential: string, phone_code: string, password: string) => {
+  const login = async (credential: string, password: string) => {
     try {
       setIsLoadingLogin(true);
-      const res = await postAPI<LoginResponse>("login", {
-        credential, phone_code, password,
+      console.log("ANJENG TANAH", credential, password)
+      const res = await postAPI<LoginResponse>("user/login", {
+        credential, password,
       });
       await AsyncStorage.setItem(StorageKey.ACCESS_TOKEN, res.data.access_token);
-      dispatch({
-        type: "LOGIN",
-        payload: {
-          user: res.data.user_data,
-        },
-      });
+      if (res.data.role == "head_admin") {
+        dispatch({
+          type: "LOGINADMIN",
+          payload: {
+            user: res.data,
+          },
+        });
+      } else {
+        dispatch({
+          type: "LOGINPM",
+          payload: {
+            user: res.data,
+          },
+        });
+      }
       setIsLoadingLogin(false);
     } catch (e) {
       setIsLoadingLogin(false);

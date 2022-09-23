@@ -29,7 +29,6 @@ export interface SupplierPO {
   address: string
 }
 
-// not used using 1 model with SPBItem
 export interface POItem {
   id: number
   name: string
@@ -38,6 +37,10 @@ export interface POItem {
   discount?: number
   normal_price?: number
   final_price?: number
+}
+
+export interface PODetailResponse {
+  data: PODetailModel
 }
 
 export interface PODetailModel {

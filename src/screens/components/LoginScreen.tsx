@@ -50,22 +50,22 @@ export default function LoginScreen() {
   const onSubmit = async (data: any) => {
     console.log("ANJENG", data?.username)
     console.log(JSON.stringify(data, null, 2));
-    if (data.username == "pm") {
-      dispatch({
-        type: "LOGINPM",
-        payload: {
+    // if (data.username == "pm") {
+    //   dispatch({
+    //     type: "LOGINPM",
+    //     payload: {
           // user: res.data.user_data,
-        },
-      });
-    } else {
-      dispatch({
-        type: "LOGINADMIN",
-        payload: {
+    //     },
+    //   });
+    // } else {
+    //   dispatch({
+    //     type: "LOGINADMIN",
+    //     payload: {
           // user: res.data.user_data,
-        },
-      });
-    }
-    // await login(data?.phone, data?.phone_code, data?.password);
+    //     },
+    //   });
+    // }
+    await login(data?.username, data?.password);
   };
 
   // const watchSignature = useWatch({

@@ -6,9 +6,13 @@ export interface ProjectLocationModel {
     lng: number
 }
 
+export interface BaseProjectModel {
+    data: ProjectModel
+}
+
 export interface ProjectModel {
     name: string
-    created_at: String
+    created_at: string
     construction_type: string
     duration: string
     description: string

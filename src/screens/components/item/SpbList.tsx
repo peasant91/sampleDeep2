@@ -25,6 +25,11 @@ type StatusType = {
     style?: StyleProp<ViewStyle>;
 }
 
+type PageType = {
+    isPM: boolean
+    isAdmin: boolean
+}
+
 const Item = ({ item, index }: { item: SpbItem, index: number }) => {
     const _item: SpbItem = item;
     return (
@@ -44,7 +49,7 @@ export function StatusButton({ status, style }: StatusType) {
                 <Tag variant="warning" text={t("waiting_confirmation")} />
             }
             {status == StatusSPB.complaint &&
-                <Tag variant="warning" text={t("complaint")} />
+                <Tag variant="warning" text={t("complain")} />
             }
             {status == StatusSPB.inProgress &&
                 <Tag variant="primary" text={t("in_progress")} />
@@ -76,7 +81,7 @@ interface Props {
     withProjectName?: boolean
 }
 
-const SpbList = ({ item, index, type, onPress, withProjectName }: Props) => {
+const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }: Props & PageType) => {
     const getIcon = () => {
         if (type == "PO") {
             return (
@@ -107,14 +112,10 @@ const SpbList = ({ item, index, type, onPress, withProjectName }: Props) => {
             }
 
             <View style={{ paddingVertical: 12, paddingHorizontal: 12, flexDirection: "row", justifyContent: 'space-between' }}>
-                <Stack spacing={8} direction="row">
+                <Stack spacing={8} style={{flexShrink: 1}} direction="row">
                     <View style={{ alignSelf: 'center' }}>
                         {getIcon()}
                     </View>
-                    {/* {type == "PO" &&
-                        <IcPipe style={{ alignSelf: 'center' }} />
-                    }
-                    <IcPipe style={{ alignSelf: 'center' }} /> */}
                     <Stack spacing={4} style={{ justifyContent: 'space-between' }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{item.no_spb}</Typography>
                         <Typography type={"body4"}>{item.created_at}</Typography>
@@ -126,7 +127,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName }: Props) => {
 
             <Divider />
 
-            {(item.total_unapproved ?? 0) > 0 && (
+            {((item.total_unapproved ?? 0) > 0 && isAdmin) && (
                 <Stack spacing={8} direction={'row'} style={{
                     paddingHorizontal: 8,
                     paddingVertical: 10,

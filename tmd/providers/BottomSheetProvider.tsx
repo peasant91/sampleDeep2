@@ -23,10 +23,12 @@ type ConfirmationBSContext = {
   description?: string;
   buttonPrimaryTitle?: string;
   buttonSecondaryTitle?: string;
-  buttonPrimaryAction?: () => void;
+  buttonPrimaryAction?: (text?: string) => void;
   buttonSecondaryAction?: () => void;
   buttonSecondary?: boolean;
   dismissible?: boolean;
+  withNotes?: boolean
+  noteIsRequired?: boolean
 }
 type BSContextType = {
   showConfirmationBS: (props: ConfirmationBSContext) => void;

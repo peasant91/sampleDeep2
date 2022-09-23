@@ -5,6 +5,7 @@
 const StorageKey = {
   LOCALE: "locale",
   ACCESS_TOKEN: "access_token",
+  PROJECT_DATA: "project_data"
 };
 
 export default StorageKey;

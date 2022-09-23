@@ -16,17 +16,18 @@ import SpbList from "./components/item/SpbList";
 import { useTranslation } from "react-i18next";
 import { transparent } from "../../tmd/styles/colors";
 import { navigate } from "../navigations/RootNavigation";
+import useProjectInfiniteQuery from "../services/project/useProjectQuery";
 
 export default function ListSPB() {
     const {
-        catalogs,
+        spbLists,
         isLoadingCatalog,
         isFetchingNextPage,
         fetchNext,
         refresh,
         isRefreshing,
 
-    } = useCatalogInfiniteQuery();
+    } = useProjectInfiniteQuery({search: "", status: "approved"});
     const { t } = useTranslation()
 
     return (
@@ -43,17 +44,18 @@ export default function ListSPB() {
                 {
                     <View style={{ flex: 1, padding: 16 }}>
                         <FlatList
-                            data={_spbMock}
+                            data={spbLists}
                             ItemSeparatorComponent={() => {
-                                return <View style={{height: 16}} />
+                                return <View style={{ height: 16 }} />
                             }}
                             renderItem={(item) => {
                                 return (
                                     <SpbList
+                                        isAdmin={false}
+                                        isPM={true}
                                         item={item.item}
                                         index={item.index}
                                         onPress={() => {
-                                            console.log("ANJENG")
                                             navigate("DetailSPB", {
                                                 spbID: item.item.no_spb,
                                                 isPMPage: true
@@ -64,15 +66,10 @@ export default function ListSPB() {
                             }}
                             onRefresh={refresh}
                             refreshing={isRefreshing}
-                            // spacing={16}
-                            // cols={3}
                             style={{
                                 flexGrow: 1,
                             }}
                             onEndReached={fetchNext}
-                            // data={catalogs}
-                            // keyExtractor={(item, number) => item?.id}
-                            // renderItem={({ item, index }) => renderItem(item, index)}
                             ListEmptyComponent={() => {
                                 if (!isLoadingCatalog) {
                                     return <Typography>empty</Typography>;
