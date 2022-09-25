@@ -6,7 +6,7 @@ import useProjectService from "./useProjectService";
 
 export default function usePMProjectQuery() {
   const { getProject } = useProjectService();
-  const { data, isLoading, ...rest } = useQuery("pm-project", getProject);
+  const { data, isLoading, refetch, ...rest } = useQuery("pm-project", getProject);
 
   useEffect(() => {
     saveToLocal()
@@ -19,6 +19,7 @@ export default function usePMProjectQuery() {
   return {
     project: data?.data,
     isLoadingProject: isLoading,
+    refetch: refetch,
     ...rest,
   };
 }

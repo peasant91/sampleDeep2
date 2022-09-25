@@ -27,7 +27,7 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
     
 
     const schema = yup.object({
-        nama: yup.string().required().label(t("nama_bahan")),
+        name: yup.string().required().label(t("nama_bahan")),
         unit: yup.string().required().label(t("unit_bahan")),
         note: yup.string().optional().label(t("note_bahan")),
         quantity: yup.number().required().label(t("jumlah"))
@@ -56,7 +56,7 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                 <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
                     <RHFTextField
                         requiredLabel
-                        name={'nama'}
+                        name={'name'}
                         defaultValue={item.name}
                         label={t("nama_bahan")}
                         placeholder={t('nama_bahan_placeholder')}
@@ -116,6 +116,8 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                                                 error={fieldState.error != undefined}
                                                 underlineColor={colors.primary.main}
                                                 mode={'flat'}
+                                                style={{textAlign: 'center'}}
+                                                textAlign="center"
                                                 errorText={
                                                     fieldState.error?.message?.charAt(0).toUpperCase() +
                                                     (fieldState.error?.message?.slice(1) ?? "")

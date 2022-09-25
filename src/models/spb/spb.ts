@@ -50,11 +50,11 @@ export interface SPBDetailModel {
   total: number
   notes?: string
   photo?: string
+  image?: string
 }
 
 
 export interface BaseSPBNumberModel {
-  // data: SPBNumberModel
   no_spb: string
 }
 

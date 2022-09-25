@@ -6,7 +6,7 @@ import { BaseProjectModel, ProjectModel } from "../../models/project/project";
 import { PODetailModel, PODetailResponse, PoListResponse } from "../../models/spb/po";
 
 export default function useProjectService() {
-    const { getAPI, postAPI, patchAPI} = useBaseService();
+    const { getAPI, postAPI, patchAPI } = useBaseService();
     const { showErrorBS } = useBottomSheet();
     const [isLoadingProject, setIsLoading] = useState(false);
 

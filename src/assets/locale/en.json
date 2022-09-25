@@ -130,6 +130,7 @@
     "construction_type": "Tipe Konstruksi",
     "duration": "Duration",
     "list_spb_complete": "Pengadaan Barang Selesai ({{count}})",
+    "list_spb": "Daftar SPB",
     "ajukan_spb": "Ajukan SPB",
     "complain": "Komplain",
     "confirm_po": "Konfirmasi",

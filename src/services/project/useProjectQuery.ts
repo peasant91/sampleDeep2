@@ -8,11 +8,11 @@ import { SpbListResponse } from "../../models/spb/spb";
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 
 type QueryKey = {
-    search: string
-    status: string
+  search: string
+  status: string
 }
 
-export default function useProjectInfiniteQuery({search, status}: QueryKey) {
+export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
   const { getSPB } = useProjectService();
   const { showErrorBS } = useBottomSheet();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -22,7 +22,7 @@ export default function useProjectInfiniteQuery({search, status}: QueryKey) {
     isLoading,
     fetchNextPage,
     hasNextPage,
-    error, 
+    error,
     isError,
     ...rest
   } = useInfiniteQuery<SpbListResponse>(["spb-lists"], (par) => {
@@ -30,7 +30,12 @@ export default function useProjectInfiniteQuery({search, status}: QueryKey) {
       "spb_status": status
     });
   }, {
-    getNextPageParam: (lastPage) => lastPage.meta.current_page + 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.meta.current_page == lastPage.meta.last_page) {
+        return null
+      }
+      return lastPage.meta.current_page + 1
+    }
   });
 
   const mappedData = data?.pages.map(it => it.data).flat();

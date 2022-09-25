@@ -104,12 +104,13 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                                         defaultValue={String(getValues(yQty))}
                                         error={fieldState.error != undefined}
                                         underlineColor={colors.primary.main}
+                                        textAlign={'center'}
+                                        style={{textAlign: 'center'}}
                                         mode={'flat'}
                                         errorText={
                                             fieldState.error?.message?.charAt(0).toUpperCase() +
                                             (fieldState.error?.message?.slice(1) ?? "")
                                         }
-                                        // defaultValue={String(qty)}
                                         keyboardType='number-pad'
                                         numberOfLines={1}
                                     />

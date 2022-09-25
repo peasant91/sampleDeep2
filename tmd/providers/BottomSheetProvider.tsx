@@ -95,11 +95,12 @@ const BottomSheetProvider = ({ children }: any) => {
 
 
   const showErrorBS = (error: any, props?: ConfirmationBSContext) => {
+    console.log("ANJENG", error)
     let data: ConfirmationBSContext;
     if (error?.error?.errors) {
       data = {
-        title: props?.title ?? error?.error?.errors[0]?.title,
-        description: props?.description ?? error?.error?.errors[0]?.message,
+        title: props?.title ?? error?.error?.errors[0]?.title ?? error.error.title,
+        description: props?.description ?? error?.error?.errors[0]?.message ?? error.error.message,
         ...props,
       };
     } else if (error?.message == "Network Error") {
@@ -110,6 +111,7 @@ const BottomSheetProvider = ({ children }: any) => {
         ...props,
       };
     } else {
+      console.log("MASUK SINI JINK")
       data = {
         imageNode: <IllustServerError />,
         title: t("errors.server_error_title"),

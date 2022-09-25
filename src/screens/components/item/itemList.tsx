@@ -48,7 +48,7 @@ const ItemList = ({ item, index, config, onDelete, doEdit }: Props) => {
                 {config.withNote &&
                     <View style={{ marginBottom: 12 }}>
                         <Typography style={{ color: colors.neutral.neutral_80 }} type={"label2"}>{t("notes")}</Typography>
-                        <Typography style={{ color: colors.neutral.neutral_80 }} type={"body3"}>{item.notes ?? "-"}</Typography>
+                        <Typography style={{ color: colors.neutral.neutral_80 }} type={"body3"}>{(item.notes?.length ?? 0 > 0) ? item.notes : "-"}</Typography>
                     </View>
                 }
 

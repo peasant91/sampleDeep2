@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
@@ -36,8 +37,8 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const [imageLoaded, setImageLoaded] = useState(false)
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
-    const { data, isLoading } = useSPBDetailQuery(noSPB)
-    const { poData, isPOListLoading } = usePOListQuery(noSPB)
+    const { data, isLoading, refetchSPB } = useSPBDetailQuery(noSPB)
+    const { poData, isPOListLoading, isRefetching } = usePOListQuery(noSPB)
 
     useEffect(() => {
         if (!showAll) {
@@ -54,6 +55,12 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const loadDefault = async () => {
         projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
     }
+
+    useFocusEffect(
+        useCallback(() => {
+            refetchSPB()
+        }, [])
+    )
 
     type PrimaryType = {
         status: string
@@ -148,7 +155,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                     <View style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 16 }}>
                         <Image
                             style={{ width: '100%', height: '100%', borderRadius: 8 }}
-                            source={{ uri: data.project.image }}
+                            source={{ uri: data.image }}
                             onLoadStart={() => {
                                 setImageLoaded(true)
                             }}
@@ -176,7 +183,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const footer = () => {
         return (
             <>
-                <View style={{marginTop: 16, marginBottom: 12}}>
+                <View style={{ marginTop: 16, marginBottom: 12 }}>
                     {data.items.length > minItemShown &&
                         <TextButton
                             style={{ alignSelf: "center" }}

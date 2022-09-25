@@ -32,7 +32,7 @@ export default function ListSPB() {
 
     return (
         <Page>
-            <Toolbar title={t("list_spb")} />
+            <Toolbar title={t("list_spb")} center />
 
             <View style={{
                 flex: 1,
@@ -69,6 +69,7 @@ export default function ListSPB() {
                             style={{
                                 flexGrow: 1,
                             }}
+                            onEndReachedThreshold={0.5}
                             onEndReached={fetchNext}
                             ListEmptyComponent={() => {
                                 if (!isLoadingCatalog) {

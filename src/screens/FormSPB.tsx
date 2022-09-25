@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
-import { Alert, Button, Divider, Icon, Image, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
+import { Image, StyleSheet, View } from 'react-native'
+import { Alert, Button, Divider, Icon, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
 import { colors } from '../../tmd/styles/colors'
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,7 +11,7 @@ import { _projectMock, _spbMock } from '../../tmd/data/_mock'
 import ImagePicker from '../../tmd/components/picker/ImagePicker'
 import { FlatList } from 'react-native-gesture-handler'
 import { BahanModel, ListBahan } from '../models/spb/bahan'
-import { navigate } from '../navigations/RootNavigation'
+import { goBack, navigate } from '../navigations/RootNavigation'
 import ItemList from './components/item/itemList'
 import { SPBDetailModel, SpbItem } from '../models/spb/spb'
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -22,6 +22,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import AppNavigationType from '../navigations/AppNavigationType'
 import useProjectService from '../services/project/useProjectService'
 import moment from 'moment'
+import RNFS from 'react-native-fs'
+import { defaults } from 'lodash'
 
 
 export interface IBahan {
@@ -39,7 +41,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         show: false,
         index: 0
     })
-    const { showConfirmationBS, hideConfirmationBS, showAlertBS } = useBottomSheet()
+    const { showConfirmationBS, hideConfirmationBS, showAlertBS, hideAlertBS } = useBottomSheet()
     const [items, setItems] = useState<BahanModel[]>(() => {
         var array: BahanModel[] = []
         route.params.defaultSPB?.items.map(item => {
@@ -67,17 +69,45 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
     }
 
     const submitForm = async () => {
+        var query: any = {}
+
         const date = moment(new Date()).format("hh:mm:ss")
         const _date = moment(method.getValues().submission_date, "DD MMMM YYYY").format("YYYY-MM-DD") + " " + date
+        query["delivery_date"] = _date
+        query["items"] = items
+
+        try {
+            query["photo"] = await RNFS.readFile(imageURL.current, 'base64').then(value => value)
+        } catch (e) {
+            console.log(e)
+        }
         if (defaultSPB == null) {
-            await postSPB(method.getValues().no_spb ?? "", {
-                delivery_date: _date,
-                items
+            await postSPB(method.getValues().no_spb ?? "", query)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title:"Success Ajukan SPB Baru",
+                        buttonPrimaryTitle:"OK",
+                        buttonPrimaryAction:() => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
             })
         } else {
-            await patchSPB(method.getValues().no_spb ?? "", {
-                delivery_date: _date,
-                items
+            await patchSPB(method.getValues().no_spb ?? "", query)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title:`Success Merubah SPB ${defaultSPB.no_spb}`,
+                        buttonPrimaryTitle:"OK",
+                        buttonPrimaryAction:() => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
             })
         }
     }
@@ -119,6 +149,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
     // ref
     const bottomSheetRef = useRef<BottomSheet>(null);
+    const imageURL = useRef<string>(defaultSPB?.image ?? "")
 
     // variables
     const snapPoints = useMemo(() => [368], []);
@@ -176,6 +207,13 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                     <Typography type='title3' style={{ color: colors.neutral.neutral_100 }}>{t("item_photo")}</Typography>
 
                     <ImagePicker
+                        onDelete={() => {
+                            imageURL.current = ""
+                        }}
+                        onChangeImageUrl={(url) => {
+                            imageURL.current = url
+                        }}
+                        initialImageUrl={imageURL.current}
                         description={t("pick_image_desc")}
                         buttonProps={{
                             children: {

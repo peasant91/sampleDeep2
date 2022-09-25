@@ -19,6 +19,7 @@ import { navigate } from "../navigations/RootNavigation";
 import { EmptySPBState } from "./components/EmptyState";
 import usePMProjectQuery from "../services/project/usePMProjectQuery";
 import useProjectInfiniteQuery from "../services/project/useProjectQuery";
+import { useFocusEffect } from "@react-navigation/native";
 
 enum StatusProject {
   inProgress = "in_progress",
@@ -49,14 +50,10 @@ export function StatusButton({ status }: _StatusProject) {
 export default function HomePM() {
   const { t } = useTranslation();
   const dispatch = useDispatch()
-  const { project, isLoadingProject, refetch, isRefetching } = usePMProjectQuery();
+  const { project, refetch } = usePMProjectQuery();
   const {
     spbLists,
-    isLoadingCatalog,
-    isFetchingNextPage,
-    fetchNext,
     refresh,
-    isRefreshing,
   } = useProjectInfiniteQuery({ search: "", status: StatusSPB.waiting });
 
   const useHandleScroll = () => {
@@ -89,6 +86,13 @@ export default function HomePM() {
 
     return { handleScroll, showButton };
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch() // fetch Project Detail
+      refresh() // fetch Riwayat SPB
+    }, [])
+  )
 
   const header = () => {
     return (
@@ -202,7 +206,7 @@ export default function HomePM() {
           {spbLists &&
             <FlatList
               ListHeaderComponent={header}
-              ListFooterComponent={() => <View style={{height: 16}} />}
+              ListFooterComponent={() => <View style={{ height: 16 }} />}
               ListEmptyComponent={EmptySPBState}
               ItemSeparatorComponent={() => {
                 return <View style={{ height: 16 }} />
