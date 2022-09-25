@@ -8,7 +8,6 @@ export default function usePODetailQuery(spbID: string, poID: string) {
     return getPODetail(spbID, poID)
   });
 
-
   return {
     data: data?.data ?? _poDetailMock,
     isLoading: isLoading,

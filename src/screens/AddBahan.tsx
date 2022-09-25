@@ -23,9 +23,10 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     const [listBahan, setListBahan] = useState<BahanModel[]>([])
 
     const schema = yup.object({
-        nama: yup.string().required().label(t("nama_bahan")),
+        id: yup.number().optional(),
+        name: yup.string().required().label(t("nama_bahan")),
         unit: yup.string().required().label(t("unit_bahan")),
-        note: yup.string().optional().label(t("note_bahan")),
+        notes: yup.string().optional().label(t("note_bahan")),
         quantity: yup.number().required().label(t("jumlah"))
     }).required();
 
@@ -50,25 +51,27 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
         name: "values"
     })
 
-    const watchAllFields = method.watch(); // when pass nothing as argument, you are watching everything
-    useEffect(() => {
-        const subscription = method.watch((value, { name, type }) => console.log(JSON.stringify(value, null, 2)))
-        return () => subscription.unsubscribe();
-    }, [method.watch])
-    
+    // const watchAllFields = method.watch(); // when pass nothing as argument, you are watching everything
+    // useEffect(() => {
+    //     const subscription = method.watch((value, { name, type }) => console.log(JSON.stringify(value, null, 2)))
+    //     return () => subscription.unsubscribe();
+    // }, [method.watch])
+
 
     const { handleSubmit } = method;
 
     const addMore = () => {
         setListBahan([...method.getValues().values, {
-            nama: "",
+            id: 0,
+            name: "",
             unit: "",
-            quantity: 1
+            quantity: 1,
+            notes: ""
         }])
     }
 
     const removeBahan = (index: number) => {
-        var array = [...listBahan]
+        var array = [...method.getValues().values]
         array.splice(index, 1)
         setListBahan(array)
     }
@@ -87,9 +90,11 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     useEffect(() => {
         if (defaultBahan.length == 0) {
             setListBahan([...method.getValues('values'), {
-                nama: "",
+                id: 0,
+                name: "",
                 unit: "",
-                quantity: 1
+                quantity: 1,
+                notes: ""
             }])
             method.reset()
         } else {
@@ -121,9 +126,9 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
                                                 control={method.control}
                                                 render={({ field }) => {
                                                     return <AddBahanCell
-                                                        yName={`${field.name}.nama`}
+                                                        yName={`${field.name}.name`}
                                                         yQty={`${field.name}.quantity`}
-                                                        yNote={`${field.name}.note`}
+                                                        yNote={`${field.name}.notes`}
                                                         yUnit={`${field.name}.unit`}
                                                         onDelete={() => {
                                                             removeBahan(index)

@@ -83,6 +83,9 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                         shape={"rounded"}
                         size={"lg"}
                         onPress={() => {
+                            navigate("FormSPB", {
+                                defaultSPB: data
+                            })
                         }}
                     >{t("update")}</Button>
                 }

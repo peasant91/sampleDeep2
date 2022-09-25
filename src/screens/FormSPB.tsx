@@ -1,77 +1,109 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, StyleSheet, Text, View, ViewProps, ViewStyle } from 'react-native'
-import { Alert, Button, Colors, Divider, Icon, Image, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
+import { StyleSheet, View } from 'react-native'
+import { Alert, Button, Divider, Icon, Image, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
 import { colors } from '../../tmd/styles/colors'
 import { yupResolver } from "@hookform/resolvers/yup";
-import IcImage from "../assets/icons/ic_image.svg";
-import IcLocation from '../assets/icons/location_marker.svg'
 import * as yup from "yup";
-import TextButton from '../../tmd/components/Button/TextButton'
 import { _projectMock, _spbMock } from '../../tmd/data/_mock'
 import ImagePicker from '../../tmd/components/picker/ImagePicker'
-import MultiImagePicker from '../../tmd/components/picker/MultiImagePicker'
 import { FlatList } from 'react-native-gesture-handler'
 import { BahanModel, ListBahan } from '../models/spb/bahan'
 import { navigate } from '../navigations/RootNavigation'
-import { SlideInLeft } from 'react-native-reanimated'
 import ItemList from './components/item/itemList'
-import { SpbItem } from '../models/spb/spb'
+import { SPBDetailModel, SpbItem } from '../models/spb/spb'
 import BottomSheet from '@gorhom/bottom-sheet';
-import AddBahanCell from './AddBahanCell'
-import AddBahan from './AddBahan'
 import AddBahanBottomSheet from './AddBahanBottomSheet'
-import { print } from '@gorhom/bottom-sheet/lib/typescript/utilities/logger'
 import { useBottomSheet } from '../../tmd/providers/BottomSheetProvider'
+import useGetSPBNumberQuery from '../services/project/useGetSPBQuery'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import AppNavigationType from '../navigations/AppNavigationType'
+import useProjectService from '../services/project/useProjectService'
+import moment from 'moment'
 
 
 export interface IBahan {
     setItems: (arg: ListBahan) => void
 }
 
-export default function FormSPB() {
+export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationType, "FormSPB">) {
     type bottomSheetSelector = {
         show: boolean,
         index: number
     }
 
     const { t } = useTranslation()
-    const [imageLoaded, setImageLoaded] = useState(false)
-    const [imageURI, setImageURI] = useState("")
     const [showBS, setShowBS] = useState<bottomSheetSelector>({
         show: false,
         index: 0
     })
-    const { showConfirmationBS, hideConfirmationBS }= useBottomSheet()
-    const [items, setItems] = useState<BahanModel[]>([])    
-    const [convertedItems, setFlatListItem] = useState<SpbItem[]>()
+    const { showConfirmationBS, hideConfirmationBS, showAlertBS } = useBottomSheet()
+    const [items, setItems] = useState<BahanModel[]>(() => {
+        var array: BahanModel[] = []
+        route.params.defaultSPB?.items.map(item => {
+            var _bahan: BahanModel = {
+                id: item.id,
+                name: item.name,
+                unit: item.unit,
+                notes: item.notes,
+                quantity: item.quantity
+            }
+            array.push(_bahan)
+        })
+        return array
+    })
     const projectData = _projectMock
+    const defaultSPB = route.params.defaultSPB ?? null
+    const { isLoadingProject, postSPB, patchSPB } = useProjectService()
 
-  const handleShowConfirmation = () => {
-    showConfirmationBS({
-      title: t("confirmation_send_spb_title"),
-      description: t("confirmation_send_spb_desc"),
-      buttonPrimaryAction: () => {
-        hideConfirmationBS();
-      },
-    });
-  };
+    if (defaultSPB == null) {
+        const { noSPB } = useGetSPBNumberQuery()
+
+        useEffect(() => {
+            method.reset({ "no_spb": noSPB })
+        }, [noSPB])
+    }
+
+    const submitForm = async () => {
+        const date = moment(new Date()).format("hh:mm:ss")
+        const _date = moment(method.getValues().submission_date, "DD MMMM YYYY").format("YYYY-MM-DD") + " " + date
+        if (defaultSPB == null) {
+            await postSPB(method.getValues().no_spb ?? "", {
+                delivery_date: _date,
+                items
+            })
+        } else {
+            await patchSPB(method.getValues().no_spb ?? "", {
+                delivery_date: _date,
+                items
+            })
+        }
+    }
+
+    const handleShowConfirmation = () => {
+        if (isLoadingProject) { return }
+        showConfirmationBS({
+            title: t("confirmation_send_spb_title"),
+            description: t("confirmation_send_spb_desc"),
+            buttonPrimaryAction: () => {
+                hideConfirmationBS();
+                // setisLoading(true)
+                submitForm()
+            },
+        });
+    };
 
     const schema = yup.object({
-        // phone_code: yup.string().required(),
-        username: yup.string().required(),
-        // phone: yup.string().required().min(6).max(13),
-        password: yup.string().required().min(8),
-        // signature: yup.string().required(),
+        no_spb: yup.string().required().label(t("no_spb")),
+        submission_date: yup.string().required().label(t("send_date")),
+        image: yup.string().optional(),
     }).required();
 
     const defaultValues = {
-        // phone_code: "62",
-        // phone: "82146456432",
-        // password: "password",
-        // signature: "",
+        no_spb: defaultSPB?.no_spb,
+        submission_date: moment(defaultSPB?.created_at).format("D MMMM YYYY") ?? "",
     };
 
     const method = useForm({
@@ -100,6 +132,20 @@ export default function FormSPB() {
         bottomSheetRef.current?.forceClose()
     }, [])
 
+    const onSubmit = (data: any) => {
+        console.log(data)
+        if (items.length == 0) {
+            showAlertBS({
+                title: "Daftar Bahan harus lebih dari 1"
+            })
+            return
+        }
+        handleShowConfirmation()
+    };
+
+    const onError = (errors: any) => {
+        console.log(JSON.stringify(errors, null, 2));
+    };
 
     const header = () => {
         return (
@@ -113,6 +159,8 @@ export default function FormSPB() {
                         disabled={true}
                         name='no_spb'
                         label={t("no_spb")}
+                        // value={SPBNo}
+                        // defaultValue={SPBNo}
                         placeholder={t("no_spb")}
                     />
 
@@ -122,6 +170,7 @@ export default function FormSPB() {
                         name='submission_date'
                         label={t("send_date")}
                         placeholder={t("select_date")}
+                        date={defaultSPB?.created_at}
                     />
 
                     <Typography type='title3' style={{ color: colors.neutral.neutral_100 }}>{t("item_photo")}</Typography>
@@ -197,9 +246,9 @@ export default function FormSPB() {
                         return <ItemList
                             item={{
                                 id: 0,
-                                name: item.nama,
+                                name: item.name,
                                 quantity: item.quantity,
-                                notes: item.note,
+                                notes: item.notes,
                                 unit: item.unit
                             }} index={index}
                             config={{
@@ -221,8 +270,9 @@ export default function FormSPB() {
 
                 <View style={{ flexBasis: 70, padding: 16 }}>
                     <Button
+                        loading={isLoadingProject}
                         fullWidth={true}
-                        onPress={() => handleShowConfirmation()}
+                        onPress={method.handleSubmit(onSubmit, onError)}
                     >{t("ajukan")}</Button>
                 </View>
 

@@ -51,3 +51,13 @@ export interface SPBDetailModel {
   notes?: string
   photo?: string
 }
+
+
+export interface BaseSPBNumberModel {
+  // data: SPBNumberModel
+  no_spb: string
+}
+
+export interface SPBNumberModel {
+  no_spb: string
+}

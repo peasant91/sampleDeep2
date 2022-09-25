@@ -3,8 +3,9 @@ export interface ListBahan {
 }
 
 export interface BahanModel {
-    nama: string
+    id?: number
+    name: string
     unit: string
     quantity: number
-    note? : string
+    notes? : string
 }

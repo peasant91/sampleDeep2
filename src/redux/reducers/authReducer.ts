@@ -1,4 +1,5 @@
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
+import { completeHandlerIOS } from "react-native-fs";
 import { User } from "../../models/auth/Auth";
 
 /**
@@ -21,6 +22,7 @@ const initialState: AuthState = {
 };
 
 const authReducer = (state: AuthState = initialState, action: any) => {
+console.log("ANJENG", state, action)
   switch (action.type) {
     case "LOGINPM":
       return {

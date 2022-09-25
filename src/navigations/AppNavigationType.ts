@@ -1,6 +1,7 @@
 import { SelectedMap } from "../../tmd/components/picker/MapPicker";
 import { GalleryItem } from "../../tmd/types";
 import { BahanModel, ListBahan } from "../models/spb/bahan";
+import { SPBDetailModel } from "../models/spb/spb";
 import { IBahan } from "../screens/FormSPB";
 
 type AppNavigationType = {
@@ -27,7 +28,9 @@ type AppNavigationType = {
     isAdminPage: boolean,
     isPMPage: boolean
   },
-  FormSPB: undefined,
+  FormSPB: {
+    defaultSPB?: SPBDetailModel,
+  },
   AddBahan: {
     defaultBahan: BahanModel[],
     save: (model: BahanModel[]) => void

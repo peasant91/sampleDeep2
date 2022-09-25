@@ -12,7 +12,7 @@ import GridList from "../../tmd/components/FlatList/GridList";
 import { Surface } from "../../tmd";
 import Toolbar from "../../tmd/components/Toolbar/Toolbar";
 import { _spbMock } from "../../tmd/data/_mock";
-import SpbList from "./components/item/SpbList";
+import SpbList, { StatusSPB } from "./components/item/SpbList";
 import { useTranslation } from "react-i18next";
 import { transparent } from "../../tmd/styles/colors";
 import { navigate } from "../navigations/RootNavigation";
@@ -27,7 +27,7 @@ export default function ListSPB() {
         refresh,
         isRefreshing,
 
-    } = useProjectInfiniteQuery({search: "", status: "approved"});
+    } = useProjectInfiniteQuery({search: "", status: StatusSPB.waiting});
     const { t } = useTranslation()
 
     return (

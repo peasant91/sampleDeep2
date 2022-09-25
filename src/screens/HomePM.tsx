@@ -57,7 +57,7 @@ export default function HomePM() {
     fetchNext,
     refresh,
     isRefreshing,
-  } = useProjectInfiniteQuery({ search: "", status: StatusSPB.approved });
+  } = useProjectInfiniteQuery({ search: "", status: StatusSPB.waiting });
 
   const useHandleScroll = () => {
     const [showButton, setShowButton] = useState(true);
@@ -234,7 +234,9 @@ export default function HomePM() {
           size="lg"
           icon={{ icon: "document-attach" }}
           onPress={() => {
-            navigate("FormSPB")
+            navigate("FormSPB", {
+              defaultSPB: null
+            })
           }}
         >{t("ajukan_spb")}</Button>
       </Stack>

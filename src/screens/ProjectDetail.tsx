@@ -6,7 +6,7 @@ import { Button, Colors, Divider, Icon, Image, Page, Stack, Toolbar } from '../.
 import Typography from '../../tmd/components/Typography/Typography'
 import { _projectMock, _spbMock } from '../../tmd/data/_mock'
 import { ProjectModel } from '../models/project/project'
-import SpbList, { StatusButton } from './components/item/SpbList'
+import SpbList, { StatusButton, StatusSPB } from './components/item/SpbList'
 import IcLocation from '../assets/icons/location_marker.svg'
 import TextButton from '../../tmd/components/Button/TextButton'
 import { colors } from '../../tmd/styles/colors'
@@ -17,11 +17,20 @@ import { EmptySPBState } from './components/EmptyState'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import StorageKey from '../utils/StorageKey'
 import moment from 'moment'
+import useProjectInfiniteQuery from '../services/project/useProjectQuery'
 
 export default function ProjectDetail() {
     const { t } = useTranslation()
     const spbData: SpbListItem[] = _spbMock
     const [projectData, setProjectData] = useState<ProjectModel>()
+    const {
+        spbLists,
+        isLoadingCatalog,
+        isFetchingNextPage,
+        fetchNext,
+        refresh,
+        isRefreshing,
+    } = useProjectInfiniteQuery({ search: "", status: StatusSPB.approved });
 
     useEffect(() => {
         loadDefault()
@@ -100,7 +109,9 @@ export default function ProjectDetail() {
                 <Divider />
 
                 {/* <Typography style={_s.padding} type="title3">{t("list_spb_complete")}</Typography> */}
-                <Typography style={_s.padding} type="title3">{t("list_spb_complete", { count: _spbMock.length })}</Typography>
+                {spbLists.length > 0 &&
+                    <Typography style={_s.padding} type="title3">{t("list_spb_complete", { count: spbLists.length })}</Typography>
+                }
             </View>
         )
     }
@@ -112,7 +123,7 @@ export default function ProjectDetail() {
                     style={{ flexGrow: 1 }}
                     ListHeaderComponent={header}
                     ListEmptyComponent={EmptySPBState}
-                    data={_spbMock}
+                    data={spbLists}
                     renderItem={(item) => {
                         return (
                             <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>

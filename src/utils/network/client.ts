@@ -29,7 +29,7 @@ const getAccessToken = async () => {
 const client = axios.create({
   baseURL: Config.BASE_URL,
   headers: {
-    Accept: "application/json",
+    "Accept": "application/json",
     "Content-Type": "application/json",
     "X-App-Locale": "en",
   },

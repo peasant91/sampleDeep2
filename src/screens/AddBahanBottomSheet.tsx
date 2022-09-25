@@ -57,7 +57,7 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                     <RHFTextField
                         requiredLabel
                         name={'nama'}
-                        defaultValue={item.nama}
+                        defaultValue={item.name}
                         label={t("nama_bahan")}
                         placeholder={t('nama_bahan_placeholder')}
                     />
@@ -142,7 +142,7 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
 
                     <RHFTextField
                         name={'note'}
-                        defaultValue={item.note}
+                        defaultValue={item.notes}
                         label={t("note_bahan")}
                         placeholder={t("note_bahan_placeholder")}
                     />
