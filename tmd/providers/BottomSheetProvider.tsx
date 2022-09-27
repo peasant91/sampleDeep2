@@ -95,7 +95,6 @@ const BottomSheetProvider = ({ children }: any) => {
 
 
   const showErrorBS = (error: any, props?: ConfirmationBSContext) => {
-    console.log("ANJENG", error)
     let data: ConfirmationBSContext;
     if (error?.error?.errors) {
       data = {

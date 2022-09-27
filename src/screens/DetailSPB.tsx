@@ -10,13 +10,15 @@ import { Button, Divider, Icon, Page, Stack, Toolbar } from "../../tmd";
 import TextButton from "../../tmd/components/Button/TextButton";
 import Typography from "../../tmd/components/Typography/Typography";
 import { _poListMock, _projectMock, _spbDetailMock, _spbMock } from "../../tmd/data/_mock";
+import { useBottomSheet } from "../../tmd/providers/BottomSheetProvider";
 import { colors, red100, white } from "../../tmd/styles/colors";
 import { ProjectModel } from "../models/project/project";
 import { POList } from "../models/spb/po";
 import { SPBDetailModel, SpbItem, SpbListItem } from "../models/spb/spb";
 import AppNavigationType from "../navigations/AppNavigationType";
-import { navigate } from "../navigations/RootNavigation";
+import { goBack, navigate } from "../navigations/RootNavigation";
 import usePOListQuery from "../services/project/usePOListQuery";
+import useProjectService from "../services/project/useProjectService";
 import useSPBDetailQuery from "../services/project/useSPBDetailQuery";
 import StorageKey from "../utils/StorageKey";
 import { EmptyPOState } from "./components/EmptyState";
@@ -38,7 +40,9 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
     const { data, isLoading, refetchSPB } = useSPBDetailQuery(noSPB)
-    const { poData, isPOListLoading, isRefetching } = usePOListQuery(noSPB)
+    const { poData, isPOListLoading, isRefetching, refetchPOList } = usePOListQuery(noSPB)
+    const { isLoadingProject, patchSPBStatus } = useProjectService()
+    const { showConfirmationBS, hideConfirmationBS, showAlertBS, hideAlertBS } = useBottomSheet()
 
     useEffect(() => {
         if (!showAll) {
@@ -53,14 +57,52 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     }, [])
 
     const loadDefault = async () => {
-        projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
+        try {
+            projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
+        } catch {
+        }
     }
 
     useFocusEffect(
         useCallback(() => {
             refetchSPB()
+            refetchPOList()
         }, [])
     )
+
+    const approveSPB = async () => {
+        await patchSPBStatus(data.no_spb, StatusSPB.approved)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Success`,
+                        description: `SPB ${data.no_spb} telah disetujui`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
+    }
+
+    const rejectSPB = async () => {
+        await patchSPBStatus(data.no_spb, StatusSPB.rejected)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Success`,
+                        description: `SPB ${data.no_spb} telah ditolak`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
+    }
 
     type PrimaryType = {
         status: string
@@ -106,11 +148,11 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
-                        <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name}</Typography>
-                        <Typography type={"body4"}>{moment(projectData.current?.created_at).format("Do MMMM YYYY")}</Typography>
+                        <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name ?? data.project.name}</Typography>
+                        <Typography type={"body4"}>{moment(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
-                            <Typography type={"body4"}>{projectData.current?.location.address}</Typography>
+                            <Typography type={"body4"}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
                         </View>
                     </Stack>
                     <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
@@ -205,9 +247,11 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
                 <Divider />
 
-                <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                    <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("daftar_po", { count: poData.length })}</Typography>
-                </View>
+                {poData.length > 0 &&
+                    <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                        <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("daftar_po", { count: poData.length })}</Typography>
+                    </View>
+                }
 
                 <FlatList
                     style={{ backgroundColor: colors.neutral.neutral_20, padding: 16 }}
@@ -276,23 +320,27 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                             status={data.spb_status} />
                     )}
 
-                    {(isAdminPage) && (
+                    {(isAdminPage && data.spb_status == StatusSPB.waiting) && (
                         <Stack spacing={16} direction="row">
                             <Button
+                                loading={isLoadingProject}
                                 fullWidth
                                 variant="secondary"
                                 shape="rounded"
                                 size="lg"
                                 onPress={() => {
+                                    rejectSPB()
                                 }}
                             >{t("tolak")}</Button>
 
                             <Button
+                                loading={isLoadingProject}
                                 fullWidth
                                 variant="primary"
                                 shape="rounded"
                                 size="lg"
                                 onPress={() => {
+                                    approveSPB()
                                 }}
                             >{t("setujui")}</Button>
                         </Stack>

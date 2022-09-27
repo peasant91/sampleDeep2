@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import moment from 'moment'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlatList, Image, StyleSheet, View } from 'react-native'
 import { Button, Colors, Divider, Icon, Page, Stack, Toolbar } from '../../tmd'
@@ -15,7 +16,9 @@ import { ProjectModel } from '../models/project/project'
 import { PODetailModel, StatusPO } from '../models/spb/po'
 import { SPBDetailModel, SpbListItem } from '../models/spb/spb'
 import AppNavigationType from '../navigations/AppNavigationType'
+import { goBack } from '../navigations/RootNavigation'
 import usePODetailQuery from '../services/project/usePODetailQuery'
+import useProjectService from '../services/project/useProjectService'
 import StorageKey from '../utils/StorageKey'
 import ItemList from './components/item/itemList'
 import { StatusButton, StatusSPB } from './components/item/SpbList'
@@ -27,7 +30,9 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     const spbID = route.params.spbID
     const {
         showConfirmationBS,
-        hideConfirmationBS
+        hideConfirmationBS,
+        showAlertBS,
+        hideAlertBS,
     } = useBottomSheet();
 
     const { t } = useTranslation()
@@ -37,7 +42,8 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     const [imageLoaded, setImageLoaded] = useState(false)
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
-    const { data, isLoading } = usePODetailQuery(spbID, poID)
+    const { data, isLoading, refetchPO } = usePODetailQuery(spbID, poID)
+    const { isLoadingProject, patchPOStatus } = useProjectService()
 
     useEffect(() => {
         if (!showAll) {
@@ -52,7 +58,85 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     }, [])
 
     const loadDefault = async () => {
-        projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
+        try {
+            projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
+        } catch {
+        }
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            refetchPO()
+        }, [])
+    )
+
+    const setujuiPO = async () => {
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.approved)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Success`,
+                        description: `PO ${data.no_po} dari ${data.no_spb} telah disetujui`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
+
+    }
+
+    const totalPO = async () => {
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.rejected)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Success`,
+                        description: `PO ${data.no_po} dari ${data.no_spb} telah ditolak`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
+    }
+
+    const complaintPO = async (text: string) => {
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.complaint, text)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Berhasil Komplain`,
+                        description: `PO ${data.no_po} dari ${data.no_spb} telah dikomplain`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
+    }
+
+    const receivedPO = async (text: string) => {
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.received, text)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Success`,
+                        description: `Barang barang PO ${data.no_po} dari ${data.no_spb} telah diterima`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
     }
 
     const header = () => {
@@ -60,11 +144,11 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             <>
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
-                        <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name}</Typography>
-                        <Typography type={"body4"}>{moment(projectData.current?.created_at).format("Do MMMM YYYY")}</Typography>
+                        <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name ?? data.project.name}</Typography>
+                        <Typography type={"body4"}>{moment(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
-                            <Typography type={"body4"}>{projectData.current?.location.address}</Typography>
+                            <Typography type={"body4"}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
                         </View>
                     </Stack>
                     <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
@@ -188,8 +272,15 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("po_subtotal", { count: data.total_item })}</Typography>
                                 <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{data.total_price}</Typography>
                             </View>
+                            {(data.total_discount > 0) &&
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography>
+                                    <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>-{data.total_discount}</Typography>
+                                </View>
+                            }
+
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography>
+                                <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_ppn", { count: data.total_discount })}</Typography>
                                 <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>-{data.total_discount}</Typography>
                             </View>
 
@@ -214,7 +305,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                 <View style={{ height: 16, backgroundColor: colors.neutral.neutral_20 }} />
 
-                {(data.po_status == StatusPO.done || data.po_status == StatusPO.complaint) &&
+                {(data.po_status == StatusPO.received || data.po_status == StatusPO.complaint) &&
                     <>
                         <View style={_s.padding}>
                             <Typography type="title3">{t("pm_note")}</Typography>
@@ -233,77 +324,92 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     }
 
     const ButtonPage = () => {
+        // kondisi barang belom di approve oleh admin, button hanya muncul di admin saja
         if (data.po_status == StatusPO.waiting) {
-            if (isPMPage) {
-                return (
-                    <View style={_s.padding}>
-                        <Stack direction='row' spacing={16}>
-                            <Button
-                                fullWidth={true}
-                                shape='rounded'
-                                size='lg'
-                                variant='secondary'
-                                onPress={() => {
-                                    showConfirmationBS({
-                                        title: t("po_complain_title"),
-                                        description: t("po_complain_desc"),
-                                        withNotes: true,
-                                        noteIsRequired: true,
-                                        buttonPrimaryTitle: t("complain"),
-                                        buttonSecondaryTitle: t("cancel"),
-                                        buttonPrimaryAction: ((text) => {
-                                            console.log(text)
-                                            hideConfirmationBS()
-                                        })
+            return (
+                <View style={_s.padding}>
+                    <Stack direction='row' spacing={16}>
+                        <Button
+                            loading={isLoadingProject}
+                            fullWidth={true}
+                            shape='rounded'
+                            size='lg'
+                            variant='secondary'
+                            onPress={() => {
+                                totalPO()
+                            }}
+                        >{t("tolak")}</Button>
+
+                        <Button
+                            loading={isLoadingProject}
+                            fullWidth={true}
+                            shape='rounded'
+                            size='lg'
+                            variant='primary'
+                            onPress={() => {
+                                showConfirmationBS({
+                                    title: t("po_setujui_title"),
+                                    description: t("po_setujui_desc"),
+                                    buttonPrimaryTitle: t("confirm"),
+                                    buttonSecondaryTitle: t("cancel"),
+                                    buttonPrimaryAction: ((text) => {
+                                        hideConfirmationBS()
+                                        setujuiPO()
                                     })
-                                }}
-                            >{t("complain")}</Button>
-
-                            <Button
-                                fullWidth={true}
-                                shape='rounded'
-                                size='lg'
-                                variant='primary'
-                                onPress={() => {
-                                    showConfirmationBS({
-                                        title: t("po_confirmation_title"),
-                                        description: t("po_confirmation_desc"),
-                                        withNotes: true,
-                                        noteIsRequired: false,
-                                        buttonPrimaryTitle: t("confirm"),
-                                        buttonSecondaryTitle: t("cancel"),
-                                        buttonPrimaryAction: ((text) => {
-                                            console.log(text)
-                                            hideConfirmationBS()
-                                        })
+                                })
+                            }}
+                        >{t("setujui")}</Button>
+                    </Stack>
+                </View>
+            )
+        } else if (data.po_status == StatusPO.approved) {
+            return (
+                <View style={_s.padding}>
+                    <Stack direction='row' spacing={16}>
+                        <Button
+                            fullWidth={true}
+                            shape='rounded'
+                            size='lg'
+                            variant='secondary'
+                            onPress={() => {
+                                showConfirmationBS({
+                                    title: t("po_complain_title"),
+                                    description: t("po_complain_desc"),
+                                    withNotes: true,
+                                    noteIsRequired: true,
+                                    buttonPrimaryTitle: t("complain"),
+                                    buttonSecondaryTitle: t("cancel"),
+                                    buttonPrimaryAction: ((text) => {
+                                        complaintPO(text ?? "")
+                                        hideConfirmationBS()
                                     })
-                                }}
-                            >{t("confirm_po")}</Button>
-                        </Stack>
-                    </View>
-                )
-            } else {
-                return (
-                    <View style={_s.padding}>
-                        <Stack direction='row' spacing={16}>
-                            <Button
-                                fullWidth={true}
-                                shape='rounded'
-                                size='lg'
-                                variant='secondary'
-                            >{t("tolak")}</Button>
+                                })
+                            }}
+                        >{t("complain")}</Button>
 
-                            <Button
-                                fullWidth={true}
-                                shape='rounded'
-                                size='lg'
-                                variant='primary'
-                            >{t("setujui")}</Button>
-                        </Stack>
-                    </View>
-                )
-
-            }
+                        <Button
+                            fullWidth={true}
+                            shape='rounded'
+                            size='lg'
+                            variant='primary'
+                            onPress={() => {
+                                showConfirmationBS({
+                                    title: t("po_confirmation_title"),
+                                    description: t("po_confirmation_desc"),
+                                    withNotes: true,
+                                    noteIsRequired: false,
+                                    buttonPrimaryTitle: t("confirm"),
+                                    buttonSecondaryTitle: t("cancel"),
+                                    buttonPrimaryAction: ((text) => {
+                                        receivedPO(text ?? "")
+                                        hideConfirmationBS()
+                                    })
+                                })
+                            }}
+                        >{t("confirm_po")}</Button>
+                    </Stack>
+                </View>
+            )
         }
 
         return <View />

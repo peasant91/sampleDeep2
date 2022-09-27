@@ -14,7 +14,7 @@ export enum StatusSPB {
     inProgress = "in_progress",
     waiting = "waiting_confirmation",
     approved = "approved",
-    rejected = "rejected",
+    rejected = "reject",
     ongoing = "ongoing",
     done = "done",
     complaint = "complaint"

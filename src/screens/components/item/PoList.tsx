@@ -9,18 +9,8 @@ import IcPO from '../../../assets/icons/ic_po.svg'
 import IcProject from '../../../assets/illusts/icon_project.svg'
 import { useTranslation } from "react-i18next"
 import { t } from "i18next"
-import { POItem, POList } from "../../../models/spb/po"
+import { POItem, POList, StatusPO } from "../../../models/spb/po"
 import moment from "moment"
-
-export enum StatusPO {
-    inProgress = "in_progress",
-    waiting = "waiting_confirmation",
-    approved = "approved",
-    rejected = "rejected",
-    ongoing = "ongoing",
-    done = "done",
-    complaint = "complaint"
-}
 
 type StatusType = {
     status: string;
@@ -48,20 +38,14 @@ export function StatusButton({ status, style }: StatusType) {
             {status == StatusPO.complaint &&
                 <Tag variant="warning" text={t("complaint")} />
             }
-            {status == StatusPO.inProgress &&
-                <Tag variant="primary" text={t("in_progress")} />
-            }
             {status == StatusPO.approved &&
                 <Tag variant="success" text={t("approved")} />
             }
             {status == StatusPO.rejected &&
                 <Tag variant="danger" text={t("rejected")} />
             }
-            {status == StatusPO.ongoing &&
-                <Tag variant="primary" text={t("ongoing")} />
-            }
-            {status == StatusPO.done &&
-                <Tag variant="success" text={t("success")} />
+            {status == StatusPO.received &&
+                <Tag variant="success" text={t("received")} />
             }
         </View>
     )

@@ -6,7 +6,7 @@ import { Button, Page, Stack, TextField, Toolbar, useTheme } from '../../../tmd'
 import { _spbMock } from '../../../tmd/data/_mock';
 import { colors, white } from '../../../tmd/styles/colors';
 import { MaterialTabBar, Tabs, useCurrentTabScrollY, useHeaderMeasurements } from 'react-native-collapsible-tab-view'
-import SpbList from '../components/item/SpbList';
+import SpbList, { StatusSPB } from '../components/item/SpbList';
 import { normalizeSize } from '../../../tmd/utils/normalizeSize';
 import Animated, { interpolate, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue } from 'react-native-reanimated';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -14,6 +14,7 @@ import { navigate } from '../../navigations/RootNavigation';
 import useProjectInfiniteQuery from '../../services/project/useProjectQuery';
 import { print } from '@gorhom/bottom-sheet/lib/typescript/utilities/logger';
 import { ScrollView } from 'react-native-gesture-handler';
+import { method } from 'lodash';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -40,14 +41,12 @@ export default function HomeAdmin() {
     const dispatch = useDispatch()
     const { t } = useTranslation()
     const [search, setSearch] = useState<string>()
-    const [items, setItems] = useState(_spbMock)
-    const [items2, setItems2] = useState(_spbMock)
     const [index, setIndex] = useState(0)
     const [refreshing, setRefreshing] = useRefresh()
     const windowHeight = useWindowDimensions().height
 
-    const onGoingHandler = useProjectInfiniteQuery({ search: search ?? "" })
-    const completedHandler = useProjectInfiniteQuery({ search: search ?? "" })
+    const onGoingHandler = useProjectInfiniteQuery({ search: search ?? "", status: StatusSPB.waiting })
+    const completedHandler = useProjectInfiniteQuery({ search: search ?? "", status: StatusSPB.approved })
 
     const theme = useTheme()
 
@@ -60,14 +59,14 @@ export default function HomeAdmin() {
     ]);
 
     const handleIndexChanged = (index: number) => {
+        console.log("ANJENG TANAH")
         setIndex(index)
+        if (index == 0) {
+            onGoingHandler.refetch()
+        } else {
+            completedHandler.refetch()
+        }
     }
-
-    useEffect(() => {
-        setItems(onGoingHandler.catalogs)
-        setItems(completedHandler.catalogs)
-    }, [onGoingHandler.catalogs, completedHandler.catalogs])
-
 
     const Header = () => {
         const { top, height } = useHeaderMeasurements()
@@ -165,9 +164,9 @@ export default function HomeAdmin() {
                     >
                         <Tabs.Tab name={routes[0].title}>
                             <Tabs.FlatList
-                                nestedScrollEnabled
+                                nestedScrollEnabled={true}
                                 style={{ padding: 16 }}
-                                data={items}
+                                data={onGoingHandler.spbLists}
                                 ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
                                 refreshing={(Platform.OS === "ios") ? refreshing : undefined}
                                 onRefresh={(Platform.OS === "ios") ? onGoingHandler.refresh : undefined}
@@ -191,9 +190,9 @@ export default function HomeAdmin() {
                         </Tabs.Tab>
                         <Tabs.Tab name={routes[1].title}>
                             <Tabs.FlatList
-                                nestedScrollEnabled
+                                nestedScrollEnabled={true}
                                 style={{ padding: 16 }}
-                                data={items2}
+                                data={completedHandler.spbLists}
                                 ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
                                 refreshing={(Platform.OS === "ios") ? refreshing : undefined}
                                 onRefresh={(Platform.OS === "ios") ? completedHandler.refresh : undefined}

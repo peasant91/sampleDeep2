@@ -4,7 +4,7 @@ import { useBottomSheet } from "../../../tmd/providers/BottomSheetProvider";
 import { useInfiniteQuery, useQueryClient } from "react-query";
 import { CatalogListResponse } from "../../models/catalog/Catalog";
 import { useEffect, useState } from "react";
-import { SpbListResponse } from "../../models/spb/spb";
+import { SpbListItem, SpbListResponse } from "../../models/spb/spb";
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 
 type QueryKey = {
@@ -16,7 +16,6 @@ export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
   const { getSPB } = useProjectService();
   const { showErrorBS } = useBottomSheet();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const client = useQueryClient();
   const {
     data,
     isLoading,
@@ -24,18 +23,20 @@ export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
     hasNextPage,
     error,
     isError,
+    isPreviousData,
     ...rest
   } = useInfiniteQuery<SpbListResponse>(["spb-lists"], (par) => {
     return getSPB(par.pageParam, {
       "spb_status": status
     });
   }, {
+    keepPreviousData: true,
     getNextPageParam: (lastPage) => {
       if (lastPage.meta.current_page == lastPage.meta.last_page) {
         return null
       }
       return lastPage.meta.current_page + 1
-    }
+    },
   });
 
   const mappedData = data?.pages.map(it => it.data).flat();
@@ -45,11 +46,6 @@ export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
       showErrorBS(error);
     }
   }, [isError]);
-
-  // useEffect(() => {
-  //   client.removeQueries("catalogs");
-  // }, []);
-
 
   const fetchNext = () => {
     if (hasNextPage) {

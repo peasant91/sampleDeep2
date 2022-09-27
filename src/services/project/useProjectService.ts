@@ -3,7 +3,9 @@ import { useBottomSheet } from "../../../tmd/providers/BottomSheetProvider";
 import { useState } from "react";
 import { BaseSPBNumberModel, SPBDetailModel, SPBDetailResponse, SpbListResponse } from "../../models/spb/spb";
 import { BaseProjectModel, ProjectModel } from "../../models/project/project";
-import { PODetailModel, PODetailResponse, PoListResponse } from "../../models/spb/po";
+import { PODetailModel, PODetailResponse, PoListResponse, StatusPO } from "../../models/spb/po";
+import { NOT_SUPPORTED } from "react-native-maps/lib/decorateMapComponent";
+import { StatusSPB } from "../../screens/components/item/SpbList";
 
 export default function useProjectService() {
     const { getAPI, postAPI, patchAPI } = useBaseService();
@@ -35,6 +37,20 @@ export default function useProjectService() {
         }
     }
 
+    const patchSPBStatus = async (noSPB: string, status: StatusSPB) => {
+        try {
+            setIsLoading(true);
+            const res = await patchAPI(`project/spb/${noSPB}/status`, {
+                "spb_status": status
+            })
+            setIsLoading(false);
+            return res;
+        } catch (e) {
+            setIsLoading(false);
+            console.log(e)
+            showErrorBS(e);
+        }
+    }
 
     const getSPB = (page: number = 1, query: any) => {
         return getAPI<SpbListResponse>(`project/list-spb`, {
@@ -69,6 +85,24 @@ export default function useProjectService() {
         }
     }
 
+    const patchPOStatus = async (spbID: string, poID: string, status: StatusPO, notes?: string) => {
+        try {
+            setIsLoading(true);
+            var query: any = {}
+            query["status"] = status
+            if (notes) {
+                query["notes"] = notes
+            }
+            const res = await patchAPI(`project/spb/${spbID}/po/${poID}`, query)
+            setIsLoading(false);
+            return res;
+        } catch (e) {
+            setIsLoading(false);
+            console.log(e)
+            showErrorBS(e);
+        }
+    }
+
     const getProject = () => {
         return getAPI<BaseProjectModel>(`project`)
     }
@@ -80,13 +114,17 @@ export default function useProjectService() {
     return {
         getSPB,
         getSPBDetail,
+
         getPOList,
         getPODetail,
+        patchPOStatus,
+
         getProject,
         getSPBNumber,
 
         postSPB,
         patchSPB,
+        patchSPBStatus,
         isLoadingProject
     }
 }

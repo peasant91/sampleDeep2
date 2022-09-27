@@ -4,13 +4,14 @@ import useProjectService from "./useProjectService";
 
 export default function usePODetailQuery(spbID: string, poID: string) {
   const { getPODetail } = useProjectService();
-  const { data, isLoading, ...rest } = useQuery("po-detail", () => {
+  const { data, isLoading, refetch, ...rest } = useQuery("po-detail", () => {
     return getPODetail(spbID, poID)
   });
 
   return {
     data: data?.data ?? _poDetailMock,
     isLoading: isLoading,
+    refetchPO: refetch,
     ...rest,
   };
 }

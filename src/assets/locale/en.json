@@ -172,7 +172,8 @@
     "project_done": "Selesai",
     "total_unapproved": "{{count}} PO Belum di Approve",
     "po_detail": "PO Detail",
-    "amount_discount": "{{count}}% off",
+    "amount_discount": "Discount {{count}}%",
+    "amount_ppn": "PPN {{count}}%",
     "tolak": "Tolak",
     "setujui": "Setujui",
     "address": "Alamat",
@@ -181,6 +182,14 @@
     "po_confirmation_title": "Konfirmasi PO?",
     "po_confirmation_desc": "Pastikan bahan telah tiba dilapangan sebelum melakukan konfirmasi PO, sertakan catatan bila diperlukan.",
     "po_complain_title": "Komplain PO?",
-    "po_complain_desc": "Komplain akan dikirim ke Admin dan PO akan diperbaiki jika tidak sesuai dengan SPB atau hal lain."
+    "po_complain_desc": "Komplain akan dikirim ke Admin dan PO akan diperbaiki jika tidak sesuai dengan SPB atau hal lain.",
+    "payment_rule": "Aturan Pembayaran",
+    "payment_summary": "Ringkasan Pembayaran",
+    "po_subtotal": "Subtotal {{count}} bahan",
+    "po_setujui_title": "Setujui PO?",
+    "po_setujui_desc": "Pastikan sudah melakukan pengecekan terkait harga dan jumlah bahan yang diajukan oleh PM.",
+    "grand_total": "Total Dibayar",
+    "success": "Success",
+    "received": "Received"
   }
 }

@@ -22,7 +22,6 @@ const initialState: AuthState = {
 };
 
 const authReducer = (state: AuthState = initialState, action: any) => {
-console.log("ANJENG", state, action)
   switch (action.type) {
     case "LOGINPM":
       return {
