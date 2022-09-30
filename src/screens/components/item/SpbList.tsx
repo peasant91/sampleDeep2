@@ -9,6 +9,7 @@ import IcPO from '../../../assets/icons/ic_po.svg'
 import IcProject from '../../../assets/illusts/icon_project.svg'
 import { useTranslation } from "react-i18next"
 import { t } from "i18next"
+import moment from "moment"
 
 export enum StatusSPB {
     inProgress = "in_progress",
@@ -103,7 +104,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                             <IcProject height={40} width={40} />
                             <View style={{ flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1, marginLeft: 8 }}>
                                 <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{item.name}</Typography>
-                                <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{item.created_at}</Typography>
+                                <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{moment(item.created_at).format("DD MMM YYYY")}</Typography>
                             </View>
                         </View>
                         <Divider />
@@ -118,7 +119,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                     </View>
                     <Stack spacing={4} style={{ justifyContent: 'space-between' }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{item.no_spb}</Typography>
-                        <Typography type={"body4"}>{item.created_at}</Typography>
+                        <Typography type={"body4"}>{moment(item.created_at).format("DD MMM YYYY")}</Typography>
                     </Stack>
                 </Stack>
 

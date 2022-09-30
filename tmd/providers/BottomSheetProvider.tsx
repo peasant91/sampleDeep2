@@ -13,6 +13,7 @@ import { Linking } from "react-native";
 import { useLocale } from "../../src/providers/LocaleProvider";
 import { LinearProgressBar } from "../index";
 import ProgressBottomSheet from "../components/BottomSheet/ProgressBottomSheet";
+import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 
 export type PermissionType =
   "camera" | "storage" | "location" | "bluetooth" | "another";
@@ -110,7 +111,6 @@ const BottomSheetProvider = ({ children }: any) => {
         ...props,
       };
     } else {
-      console.log("MASUK SINI JINK")
       data = {
         imageNode: <IllustServerError />,
         title: t("errors.server_error_title"),

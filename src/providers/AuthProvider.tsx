@@ -38,7 +38,6 @@ const AuthProvider = ({ children }: any) => {
   const login = async (credential: string, password: string) => {
     try {
       setIsLoadingLogin(true);
-      console.log("ANJENG TANAH", credential, password)
       const res = await postAPI<LoginResponse>("user/login", {
         credential, password,
       });
@@ -60,8 +59,10 @@ const AuthProvider = ({ children }: any) => {
       }
       setIsLoadingLogin(false);
     } catch (e) {
-      setIsLoadingLogin(false);
+      setIsLoadingLogin(false)
+      throw(e)
       showErrorBS(e);
+      setIsLoadingLogin(false);
     }
   };
 

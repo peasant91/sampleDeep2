@@ -2,7 +2,7 @@
  * Created by Widiana Putra on 30/06/2022
  * Copyright (c) 2022 - Made with love
  */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Image, ScrollView, StatusBar, View } from "react-native";
 import * as yup from "yup";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
@@ -19,6 +19,7 @@ import Color from "color";
 import { transparent } from "../../../tmd/styles/colors";
 import { useDispatch } from "react-redux";
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
+import { useBottomSheet } from "../../../tmd/providers/BottomSheetProvider";
 
 
 export default function LoginScreen() {
@@ -26,18 +27,12 @@ export default function LoginScreen() {
   const { login, isLoadingLogin } = useAuth();
   const dispatch = useDispatch();
   const schema = yup.object({
-    // phone_code: yup.string().required(),
     username: yup.string().required(),
-    // phone: yup.string().required().min(6).max(13),
     password: yup.string().required().min(8),
-    // signature: yup.string().required(),
   }).required();
+  const { showErrorBS } = useBottomSheet()
 
   const defaultValues = {
-    // phone_code: "62",
-    // phone: "82146456432",
-    // password: "password",
-    // signature: "",
   };
 
   const method = useForm({
@@ -45,33 +40,14 @@ export default function LoginScreen() {
     resolver: yupResolver(schema),
   });
 
-
-
   const onSubmit = async (data: any) => {
-    console.log("ANJENG", data?.username)
     console.log(JSON.stringify(data, null, 2));
-    // if (data.username == "pm") {
-    //   dispatch({
-    //     type: "LOGINPM",
-    //     payload: {
-          // user: res.data.user_data,
-    //     },
-    //   });
-    // } else {
-    //   dispatch({
-    //     type: "LOGINADMIN",
-    //     payload: {
-          // user: res.data.user_data,
-    //     },
-    //   });
-    // }
-    await login(data?.username, data?.password);
+    try {
+      await login(data?.username, data?.password);
+    } catch (e) {
+      showErrorBS(e)
+    }
   };
-
-  // const watchSignature = useWatch({
-  //   control: method.control,
-  //   name: "signature",
-  // });
 
   const [scrollable, setScrollable] = useState(true);
   return (
@@ -86,8 +62,6 @@ export default function LoginScreen() {
           flex: 1,
         }}>
         <View style={{
-          // marginTop: -(StatusBar.currentHeight || 0),
-          // zIndex: 1000,
           top: 0,
           left: 0,
           right: 0
@@ -128,21 +102,6 @@ export default function LoginScreen() {
               />
             </View>
 
-
-            {/* <View>
-              <RHFSignatureCanvas
-                onProgress={(isOnProgress) => {
-                  setScrollable(!isOnProgress);
-                }}
-                name={"signature"}
-                label={"Signature"}
-                canvasStyle={{
-                  height: 200,
-                }}
-              />
-            </View> */}
-
-
             <Button
               loading={isLoadingLogin}
               onPress={method.handleSubmit(onSubmit, (e) => {
@@ -154,17 +113,6 @@ export default function LoginScreen() {
               fullWidth
             >Login</Button>
 
-            {/* {
-              (watchSignature != "") &&
-              <>
-                <Image
-                  source={{ uri: watchSignature }}
-                  style={{
-                    width: 100, height: 100,
-                  }} />
-                <Typography>{watchSignature}</Typography>
-              </>
-            } */}
           </Stack>
         </FormProvider>
       </ScrollView>
