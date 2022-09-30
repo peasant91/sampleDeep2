@@ -4,7 +4,7 @@ import useProjectService from "./useProjectService";
 
 export default function usePOListQuery(spbID: string) {
   const { getPOList } = useProjectService();
-  const { data, isLoading, refetch, ...rest } = useQuery("po-list", () => {
+  const { data, isLoading, refetch,  isRefetching,...rest } = useQuery("po-list", () => {
     return getPOList(spbID)
   });
 

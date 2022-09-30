@@ -63,16 +63,25 @@ export default function useProjectService() {
 
     const getSPBDetail = async (id: string) => {
         try {
-            return await getAPI<SPBDetailResponse>(`project/spb/${id}`)
+            setIsLoading(true);
+            const res = await getAPI<SPBDetailResponse>(`project/spb/${id}`)
+            setIsLoading(false);
+            return res;
         } catch (e) {
+            setIsLoading(false);
+            console.log(e)
             showErrorBS(e);
         }
     }
 
     const getPOList = async (spbID: string) => {
         try {
-            return await getAPI<PoListResponse>(`project/spb/${spbID}/po`)
+            setIsLoading(true);
+            const res = await getAPI<PoListResponse>(`project/spb/${spbID}/po`)
+            setIsLoading(false);
+            return res;
         } catch (e) {
+            setIsLoading(false);
             showErrorBS(e);
         }
     }
@@ -103,12 +112,28 @@ export default function useProjectService() {
         }
     }
 
-    const getProject = () => {
-        return getAPI<BaseProjectModel>(`project`)
+    const getProject = async () => {
+        try {
+            setIsLoading(true);
+            const res = await getAPI<BaseProjectModel>(`project`)
+            setIsLoading(false);
+            return res;
+        } catch (e) {
+            setIsLoading(false);
+            showErrorBS(e);
+        }
     }
 
-    const getSPBNumber = () => {
-        return getAPI<BaseSPBNumberModel>(`project/spb`)
+    const getSPBNumber = async () => {
+        try {
+            setIsLoading(true);
+            const res = await getAPI<BaseSPBNumberModel>(`project/spb`)
+            setIsLoading(false);
+            return res;
+        } catch (e) {
+            setIsLoading(false);
+            showErrorBS(e);
+        }
     }
 
     return {

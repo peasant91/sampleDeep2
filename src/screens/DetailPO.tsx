@@ -5,7 +5,7 @@ import moment from 'moment'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlatList, Image, StyleSheet, View } from 'react-native'
-import { Button, Colors, Divider, Icon, Page, Stack, Toolbar } from '../../tmd'
+import { Button, Colors, Divider, Icon, Page, Skeleton, Stack, Toolbar } from '../../tmd'
 import AlertBottomSheet from '../../tmd/components/BottomSheet/AlertBottomSheet'
 import TextButton from '../../tmd/components/Button/TextButton'
 import Typography from '../../tmd/components/Typography/Typography'
@@ -42,7 +42,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     const [imageLoaded, setImageLoaded] = useState(false)
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
-    const { data, isLoading, refetchPO } = usePODetailQuery(spbID, poID)
+    const { data, isLoading, refetchPO, isRefetchingPO } = usePODetailQuery(spbID, poID)
     const { isLoadingProject, patchPOStatus } = useProjectService()
 
     useEffect(() => {
@@ -56,6 +56,46 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     useEffect(() => {
         loadDefault()
     }, [])
+
+    const DetailPOShimmer = () => {
+        return (
+            <View style={{ flex: 1 }}>
+                <Stack spacing={16}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16 }}>
+                        <Stack spacing={8} style={{ flex: 1, justifyContent: 'center', marginRight: 16 }}>
+                            <Skeleton />
+                            <Skeleton />
+                            <Skeleton />
+                        </Stack>
+                        <Skeleton style={{ width: '20%', height: 60 }} />
+                    </View>
+                    <Divider />
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+
+                    <Divider />
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+                </Stack>
+            </View>
+        )
+    }
 
     const loadDefault = async () => {
         try {
@@ -239,16 +279,6 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                         >{buttonTitle}</TextButton>
                     }
                 </View>
-                {/* <View>
-                    <TextButton
-                        style={{ alignSelf: "center", marginTop: 16, marginBottom: 12 }}
-                        underline
-                        size="md"
-                        onPress={() => {
-                            setShowAll(!showAll)
-                        }}
-                    >{buttonTitle}</TextButton> */}
-                {/* </View> */}
 
                 <Divider />
 
@@ -419,31 +449,39 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
         <Page>
             <Toolbar title={t("po_detail")} />
             <View style={{ flex: 1, flexDirection: 'column' }}>
-                <FlatList
-                    style={{ backgroundColor: Colors.white }}
-                    ListHeaderComponent={header}
-                    ListFooterComponent={footer}
-                    extraData={showAll}
-                    data={(showAll) ? data.items : data.items.slice(0, minItemShown)}
-                    ItemSeparatorComponent={() => {
-                        return (
-                            <View style={{ height: 12 }} />
-                        )
-                    }}
-                    renderItem={(item) => {
-                        return (
-                            <ItemList
-                                item={item.item}
-                                index={item.index}
-                                config={{
-                                    withPrice: (isAdminPage) ? true : false
-                                }}
-                            />
-                        )
-                    }}
-                />
 
-                <ButtonPage />
+                {(isLoading || isRefetchingPO) ? (
+                    <DetailPOShimmer />
+                ) : (
+                    <>
+                        <FlatList
+                            style={{ backgroundColor: Colors.white }}
+                            ListHeaderComponent={header}
+                            ListFooterComponent={footer}
+                            extraData={showAll}
+                            data={(showAll) ? data.items : data.items.slice(0, minItemShown)}
+                            ItemSeparatorComponent={() => {
+                                return (
+                                    <View style={{ height: 12 }} />
+                                )
+                            }}
+                            renderItem={(item) => {
+                                return (
+                                    <ItemList
+                                        item={item.item}
+                                        index={item.index}
+                                        config={{
+                                            withPrice: (isAdminPage) ? true : false
+                                        }}
+                                    />
+                                )
+                            }}
+                        />
+
+                        <ButtonPage />
+                    </>
+                )}
+
 
             </View>
         </Page>

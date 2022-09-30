@@ -6,8 +6,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, StyleSheet, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import { Button, Divider, Icon, Page, Stack, Toolbar } from "../../tmd";
+import { Button, Divider, Icon, IconButton, Page, Skeleton, Stack, Toolbar } from "../../tmd";
 import TextButton from "../../tmd/components/Button/TextButton";
+import ImageViewerModal from "../../tmd/components/Modal/ImageViewerModal";
 import Typography from "../../tmd/components/Typography/Typography";
 import { _poListMock, _projectMock, _spbDetailMock, _spbMock } from "../../tmd/data/_mock";
 import { useBottomSheet } from "../../tmd/providers/BottomSheetProvider";
@@ -25,6 +26,7 @@ import { EmptyPOState } from "./components/EmptyState";
 import ItemList from "./components/item/itemList";
 import POListItem from "./components/item/PoList";
 import SpbList, { StatusButton, StatusSPB } from "./components/item/SpbList";
+import { POListShimmer } from "./components/shimmer/shimmer";
 
 export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigationType, "DetailSPB">) {
     const { t } = useTranslation()
@@ -35,12 +37,12 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     const isPMPage = route.params.isPMPage
 
     var projectData = useRef<ProjectModel>()
-    // const poData: POList[] = _poListMock
+    const [isShowViewer, setIsShowViewer] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false)
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
-    const { data, isLoading, refetchSPB } = useSPBDetailQuery(noSPB)
-    const { poData, isPOListLoading, isRefetching, refetchPOList } = usePOListQuery(noSPB)
+    const { data, isLoading, refetchSPB, isRefetchingSPB } = useSPBDetailQuery(noSPB)
+    const { poData, isPOListLoading, refetchPOList } = usePOListQuery(noSPB)
     const { isLoadingProject, patchSPBStatus } = useProjectService()
     const { showConfirmationBS, hideConfirmationBS, showAlertBS, hideAlertBS } = useBottomSheet()
 
@@ -55,6 +57,10 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     useEffect(() => {
         loadDefault()
     }, [])
+
+    const handleOpenViewer = () => {
+        setIsShowViewer(true);
+    };
 
     const loadDefault = async () => {
         try {
@@ -142,10 +148,44 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
         )
     }
 
+    const DetailSPBShimmer = () => {
+        return (
+            <View style={{ flex: 1 }}>
+                <Stack spacing={16}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16 }}>
+                        <Stack spacing={8} style={{ flex: 1, justifyContent: 'center', marginRight: 16 }}>
+                            <Skeleton />
+                            <Skeleton />
+                            <Skeleton />
+                        </Stack>
+                        <Skeleton style={{ width: '20%', height: 60 }} />
+                    </View>
+                    <Divider />
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+
+                    <Divider />
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+
+                    <View style={{ padding: 16 }}>
+                        <Skeleton height={200} />
+                    </View>
+
+                </Stack>
+            </View>
+        )
+    }
+
     const header = () => {
         return (
             <>
-
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name ?? data.project.name}</Typography>
@@ -204,6 +244,12 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                         />
                         <View style={{ position: 'absolute', alignSelf: 'center', height: '100%', justifyContent: 'center' }}>
                             <Icon icon="search-circle" color={colors.neutral.neutral_10} size={40} />
+                            <IconButton
+                                shape={"rounded"}
+                                onPress={handleOpenViewer}
+                                size={40}
+                                variant={"tertiary"}
+                                icon={"search"} />
                         </View>
 
                         {!imageLoaded &&
@@ -240,55 +286,68 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
                 <Divider />
 
-                <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                    <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("total_bahan")}</Typography>
-                    <Typography type="body1" style={{ color: colors.neutral.neutral_90 }}>{data.total} {t("bahan")}</Typography>
-                </View>
+                {(isPOListLoading) ? (
+                    <>
+                        <View style={{ height: 16 }} />
+                        <POListShimmer />
+                        <View style={{ height: 16 }} />
+                        <POListShimmer />
+                    </>
+                ) : (
+                    <>
+                        <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                            <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("total_bahan")}</Typography>
+                            <Typography type="body1" style={{ color: colors.neutral.neutral_90 }}>{poData.length} {t("bahan")}</Typography>
+                        </View>
 
-                <Divider />
+                        <Divider />
 
-                {poData.length > 0 &&
-                    <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                        <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("daftar_po", { count: poData.length })}</Typography>
-                    </View>
-                }
+                        {poData.length > 0 &&
+                            <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                                <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("daftar_po", { count: poData.length })}</Typography>
+                            </View>
+                        }
 
-                <FlatList
-                    style={{ backgroundColor: colors.neutral.neutral_20, padding: 16 }}
-                    scrollEnabled={false}
-                    data={poData}
-                    ListEmptyComponent={EmptyPOState}
-                    ItemSeparatorComponent={() => {
-                        return <View style={{ height: 16 }} />
-                    }}
-                    renderItem={(item) => {
-                        return (
-                            <POListItem
-                                item={item.item}
-                                index={item.index}
-                                type={"PO"}
-                                onPress={() => {
-                                    navigate("DetailPO", {
-                                        isAdminPage: isAdminPage,
-                                        isPMPage: isPMPage,
-                                        spbID: data.no_spb,
-                                        poID: item.item.no_po
-                                    })
-                                }}
-                            />
-                        )
-                    }}
-                />
+                        <FlatList
+                            style={{ backgroundColor: colors.neutral.neutral_20, padding: 16 }}
+                            scrollEnabled={false}
+                            data={poData}
+                            ListEmptyComponent={EmptyPOState}
+                            ItemSeparatorComponent={() => {
+                                return <View style={{ height: 16 }} />
+                            }}
+                            renderItem={(item) => {
+                                return (
+                                    <POListItem
+                                        item={item.item}
+                                        index={item.index}
+                                        type={"PO"}
+                                        onPress={() => {
+                                            navigate("DetailPO", {
+                                                isAdminPage: isAdminPage,
+                                                isPMPage: isPMPage,
+                                                spbID: data.no_spb,
+                                                poID: item.item.no_po
+                                            })
+                                        }}
+                                    />
+                                )
+                            }}
+                        />
+                    </>
+                )}
 
             </>
         )
     }
 
+    // return <DetailSPBShimmer />
+
     return (
         <Page>
             <Toolbar title={t("job_detail")} />
             <View style={{ flex: 1, flexDirection: 'column' }}>
-                {data &&
+                {(data || !isLoading || !isRefetchingSPB) ? (
                     <FlatList
                         style={{ flexGrow: 1 }}
                         ListHeaderComponent={header}
@@ -312,40 +371,52 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                             )
                         }}
                     />
+                ) : (
+                    <DetailSPBShimmer />
+                )
                 }
 
-                <View style={_s.padding}>
-                    {(isPMPage) && (
-                        <PrimaryButton
-                            status={data.spb_status} />
-                    )}
+                {(!isLoading) && (
+                    <View style={_s.padding}>
+                        {(isPMPage) && (
+                            <PrimaryButton
+                                status={data.spb_status} />
+                        )}
 
-                    {(isAdminPage && data.spb_status == StatusSPB.waiting) && (
-                        <Stack spacing={16} direction="row">
-                            <Button
-                                loading={isLoadingProject}
-                                fullWidth
-                                variant="secondary"
-                                shape="rounded"
-                                size="lg"
-                                onPress={() => {
-                                    rejectSPB()
-                                }}
-                            >{t("tolak")}</Button>
+                        {(isAdminPage && data.spb_status == StatusSPB.waiting) && (
+                            <Stack spacing={16} direction="row">
+                                <Button
+                                    loading={isLoadingProject}
+                                    fullWidth
+                                    variant="secondary"
+                                    shape="rounded"
+                                    size="lg"
+                                    onPress={() => {
+                                        rejectSPB()
+                                    }}
+                                >{t("tolak")}</Button>
 
-                            <Button
-                                loading={isLoadingProject}
-                                fullWidth
-                                variant="primary"
-                                shape="rounded"
-                                size="lg"
-                                onPress={() => {
-                                    approveSPB()
-                                }}
-                            >{t("setujui")}</Button>
-                        </Stack>
-                    )}
-                </View>
+                                <Button
+                                    loading={isLoadingProject}
+                                    fullWidth
+                                    variant="primary"
+                                    shape="rounded"
+                                    size="lg"
+                                    onPress={() => {
+                                        approveSPB()
+                                    }}
+                                >{t("setujui")}</Button>
+                            </Stack>
+                        )}
+                    </View>
+                )
+                }
+
+      <ImageViewerModal
+        images={[{image: data.image ?? ""}]}
+        onClose={() => {
+        setIsShowViewer(false)
+      }} open={isShowViewer}/>
             </View>
         </Page>
     )

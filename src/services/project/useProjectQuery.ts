@@ -24,13 +24,15 @@ export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
     error,
     isError,
     isPreviousData,
+    isRefetching,
+    isFetchingNextPage,
     ...rest
   } = useInfiniteQuery<SpbListResponse>(["spb-lists"], (par) => {
     return getSPB(par.pageParam, {
       "spb_status": status
     });
   }, {
-    keepPreviousData: true,
+    keepPreviousData: false,
     getNextPageParam: (lastPage) => {
       if (lastPage.meta.current_page == lastPage.meta.last_page) {
         return null
@@ -69,6 +71,8 @@ export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
     fetchNext,
     refresh,
     isRefreshing,
+    isRefetching,
+    isFetchingNextPage,
     ...rest,
   };
 }

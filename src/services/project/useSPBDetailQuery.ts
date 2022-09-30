@@ -5,7 +5,7 @@ import useProjectService from "./useProjectService";
 
 export default function useSPBDetailQuery(id: string) {
   const { getSPBDetail } = useProjectService();
-  const { data, isLoading, refetch, isSuccess, ...rest } = useQuery("spb-detail", () => {
+  const { data, isLoading, refetch, isSuccess, isRefetching, ...rest } = useQuery("spb-detail", () => {
     return getSPBDetail(id)
   }, {refetchOnWindowFocus: true, refetchOnMount: true});
 
@@ -13,6 +13,7 @@ export default function useSPBDetailQuery(id: string) {
     data: data?.data ?? _spbDetailMock,
     isLoading: isLoading,
     refetchSPB: refetch,
+    isRefetchingSPB: isRefetching,
     postSuccess: isSuccess,
     ...rest,
   };
