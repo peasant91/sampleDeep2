@@ -56,38 +56,7 @@ export default function HomePM() {
     spbLists,
     refresh,
     isLoadingCatalog
-  } = useProjectInfiniteQuery({ search: "", status: StatusSPB.waiting });
-
-  const useHandleScroll = () => {
-    const [showButton, setShowButton] = useState(true);
-
-    const scrollOffset = useRef(0);
-
-    const handleScroll = useCallback(
-      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const CustomLayoutLinear = {
-          duration: 100,
-          create: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity },
-          update: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity },
-          delete: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity },
-        };
-        // Check if the user is scrolling up or down by confronting the new scroll position with your own one
-        const currentOffset = event.nativeEvent.contentOffset.y;
-        const direction = currentOffset > 0 && currentOffset > scrollOffset.current ? 'down' : 'up';
-        // If the user is scrolling down (and the action-button is still visible) hide it
-        const isActionButtonVisible = direction === 'up';
-        if (isActionButtonVisible !== showButton) {
-          LayoutAnimation.configureNext(CustomLayoutLinear);
-          setShowButton(isActionButtonVisible);
-        }
-        // Update your scroll position
-        scrollOffset.current = currentOffset;
-      },
-      [showButton]
-    );
-
-    return { handleScroll, showButton };
-  };
+  } = useProjectInfiniteQuery({ status: StatusSPB.waiting });
 
   useFocusEffect(
     useCallback(() => {
@@ -260,7 +229,11 @@ export default function HomePM() {
                     }}
                   >{t("see_all")}</TextButton>
                 </View>
-                <Stack spacing={16} direction={'column'} style={{flexGrow: 1}}>
+                <Stack spacing={16} direction={'column'} style={{flexGrow: 1, padding: 16}}>
+                  <SPBListShimmer />
+                  <View style={{height: 16}}/>
+                  <SPBListShimmer />
+                  <View style={{height: 16}}/>
                   <SPBListShimmer />
                 </Stack>
               </ScrollView>

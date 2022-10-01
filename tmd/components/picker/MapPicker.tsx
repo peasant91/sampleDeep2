@@ -10,6 +10,7 @@ import { LOCATION_PERMISSIONS } from "../../data/_permissionTypes";
 import { navigate } from "../../../src/navigations/RootNavigation";
 
 export interface SelectedMap {
+  viewOnly?: boolean
   fullAddress?: string;
   location?: {
     latitude: number;

@@ -3,19 +3,21 @@ import useProjectService from "./useProjectService";
 import { useBottomSheet } from "../../../tmd/providers/BottomSheetProvider";
 import { useInfiniteQuery, useQueryClient } from "react-query";
 import { CatalogListResponse } from "../../models/catalog/Catalog";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SpbListItem, SpbListResponse } from "../../models/spb/spb";
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
+import { _spbMock } from "../../../tmd/data/_mock";
 
 type QueryKey = {
-  search: string
+  // search: string
   status: string
 }
 
-export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
+export default function useProjectInfiniteQuery({ status }: QueryKey) {
   const { getSPB } = useProjectService();
   const { showErrorBS } = useBottomSheet();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const searchKey = useRef<string>("")
   const {
     data,
     isLoading,
@@ -29,6 +31,7 @@ export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
     ...rest
   } = useInfiniteQuery<SpbListResponse>(["spb-lists"], (par) => {
     return getSPB(par.pageParam, {
+      "query": searchKey.current,
       "spb_status": status
     });
   }, {
@@ -65,7 +68,12 @@ export default function useProjectInfiniteQuery({ search, status }: QueryKey) {
     }
   };
 
+  function setQuery(text: string) {
+    searchKey.current = text
+  }
+
   return {
+    setQuery: setQuery,
     spbLists: mappedData,
     isLoadingCatalog: isLoading,
     fetchNext,

@@ -190,6 +190,7 @@
     "po_setujui_desc": "Pastikan sudah melakukan pengecekan terkait harga dan jumlah bahan yang diajukan oleh PM.",
     "grand_total": "Total Dibayar",
     "success": "Success",
-    "received": "Received"
+    "received": "Received",
+    "project_detail": "Detail Proyek"
   }
 }

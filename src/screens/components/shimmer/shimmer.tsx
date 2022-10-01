@@ -8,7 +8,7 @@ import { View } from 'react-native'
 export function SPBListShimmer() {
   return (
     <View style={{ height: 150}}>
-      <Stack spacing={8} style={{ borderRadius: 16, borderColor: colors.neutral.neutral_40, borderWidth: 1, marginHorizontal: 16, paddingVertical: 16, flex: 1 }}>
+      <Stack spacing={8} style={{ borderRadius: 16, borderColor: colors.neutral.neutral_40, borderWidth: 1, paddingVertical: 16, flex: 1 }}>
         <Stack spacing={16} direction='row' style={{ paddingHorizontal: 12 }}>
           <IcPipe />
           <Stack spacing={4} style={{ marginLeft: 8, flex: 1, justifyContent: 'center' }}>

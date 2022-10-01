@@ -29,7 +29,7 @@ export default function ListSPB() {
         isRefreshing,
         isRefetching,
 
-    } = useProjectInfiniteQuery({ search: "", status: StatusSPB.waiting });
+    } = useProjectInfiniteQuery({ status: StatusSPB.waiting });
     const { t } = useTranslation()
 
     return (
@@ -41,7 +41,7 @@ export default function ListSPB() {
             }}>
                 {
                     ((isRefreshing || isRefetching || isLoadingCatalog) && !isFetchingNextPage) ? (
-                        <Stack spacing={16}>
+                        <Stack spacing={16} style={{padding: 16}}>
                             <Typography>Loading...</Typography>
                             <SPBListShimmer />
                             <View />

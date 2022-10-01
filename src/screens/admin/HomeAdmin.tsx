@@ -1,20 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, Platform, RefreshControl, useWindowDimensions, View } from 'react-native'
 import { useDispatch } from 'react-redux';
-import { Button, Page, Stack, TextField, Toolbar, useTheme } from '../../../tmd';
+import { Button, Page, Stack, TextField, useTheme } from '../../../tmd';
 import { _spbMock } from '../../../tmd/data/_mock';
 import { colors, white } from '../../../tmd/styles/colors';
-import { MaterialTabBar, Tabs, useCurrentTabScrollY, useHeaderMeasurements } from 'react-native-collapsible-tab-view'
+import { CollapsibleRef, MaterialTabBar, Tabs, useCurrentTabScrollY } from 'react-native-collapsible-tab-view'
 import SpbList, { StatusSPB } from '../components/item/SpbList';
 import { normalizeSize } from '../../../tmd/utils/normalizeSize';
-import Animated, { interpolate, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { navigate } from '../../navigations/RootNavigation';
 import useProjectInfiniteQuery from '../../services/project/useProjectQuery';
-import { print } from '@gorhom/bottom-sheet/lib/typescript/utilities/logger';
 import { ScrollView } from 'react-native-gesture-handler';
-import { method } from 'lodash';
+import { SPBListShimmer } from '../components/shimmer/shimmer';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -40,13 +39,16 @@ export const useRefresh = () => {
 export default function HomeAdmin() {
     const dispatch = useDispatch()
     const { t } = useTranslation()
-    const [search, setSearch] = useState<string>()
     const [index, setIndex] = useState(0)
     const [refreshing, setRefreshing] = useRefresh()
     const windowHeight = useWindowDimensions().height
 
-    const onGoingHandler = useProjectInfiniteQuery({ search: search ?? "", status: StatusSPB.waiting })
-    const completedHandler = useProjectInfiniteQuery({ search: search ?? "", status: StatusSPB.approved })
+    const searchKey = useRef<string>("")
+    const scrollRef = useRef<ScrollView>(null)
+    const tabRef = useRef<CollapsibleRef>(null)
+
+    const onGoingHandler = useProjectInfiniteQuery({ status: StatusSPB.waiting })
+    const completedHandler = useProjectInfiniteQuery({ status: StatusSPB.approved })
 
     const theme = useTheme()
 
@@ -59,7 +61,6 @@ export default function HomeAdmin() {
     ]);
 
     const handleIndexChanged = (index: number) => {
-        console.log("ANJENG TANAH")
         setIndex(index)
         if (index == 0) {
             onGoingHandler.refetch()
@@ -69,35 +70,12 @@ export default function HomeAdmin() {
     }
 
     const Header = () => {
-        const { top, height } = useHeaderMeasurements()
         const scrollY = useCurrentTabScrollY()
-        var _opacity = useSharedValue(0)
 
-        const scrollYText = useDerivedValue(
-            () => {
-                // console.log("ANJENG TANAH BRANTEM SENE", scrollY.value.toFixed(2))
-                return `${scrollY.value.toFixed(2)}`
-            }
-        )
-
-        const opacity = useDerivedValue(() => {
-            var value: number = interpolate(parseFloat(scrollY.value.toFixed(2)), [0, MIN_HEADER_HEIGHT], [0, 1])
-            // console.log("OPACITY", value)
-            return value
+        const opacityStyle = useAnimatedStyle(() => {
+            const style = interpolate(parseFloat(scrollY.value.toFixed(2)), [0, MIN_HEADER_HEIGHT], [0, 1])
+            return { opacity: style }
         })
-
-        const animatedProps = useAnimatedProps(() => {
-            // console.log(scrollYText.value);
-            return {
-                opacity: interpolate(
-                    top.value,
-                    [0, MIN_HEADER_HEIGHT],
-                    [0, 1]
-                ) as any,
-                text: scrollYText.value,
-                number: parseFloat(scrollYText.value),
-            };
-        });
 
         return (
             <View style={{
@@ -108,12 +86,11 @@ export default function HomeAdmin() {
                     <Image
                         style={{ width: "100%" }}
                         source={require("../../assets/icons/ic_header_nologo/header.png")} />
-                    <Animated.View style={{
+                    <Animated.View style={[{
                         backgroundColor: Colors.white,
                         position: 'absolute',
                         left: 0, right: 0, top: 0, bottom: 0,
-                        ...opacity
-                    }}
+                    }, opacityStyle]}
                     ></Animated.View>
                 </Animated.View>
             </View>
@@ -124,18 +101,28 @@ export default function HomeAdmin() {
         <>
             <Page>
                 <ScrollView
+                    ref={scrollRef}
                     nestedScrollEnabled
                     contentContainerStyle={{
                         height: windowHeight - 56, // 56 is the naviagtion header height
                     }}
                     refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={onGoingHandler.refresh} />
+                        <RefreshControl refreshing={refreshing} onRefresh={() => {
+                            if (index == 0) {
+                                onGoingHandler.refetch()
+                            } else {
+                                completedHandler.refetch()
+                            }
+                        }}
+                        />
                     }>
 
                     <Tabs.Container
+                        ref={tabRef}
                         snapThreshold={0.3}
                         minHeaderHeight={MIN_HEADER_HEIGHT}
                         headerHeight={HEADER_HEIGHT}
+                        lazy={true}
                         renderHeader={() => <Header />}
                         onIndexChange={handleIndexChanged}
                         renderTabBar={(props) => {
@@ -166,12 +153,20 @@ export default function HomeAdmin() {
                             <Tabs.FlatList
                                 nestedScrollEnabled={true}
                                 style={{ padding: 16 }}
-                                data={onGoingHandler.spbLists}
+                                data={(
+                                    (onGoingHandler.isRefetching || onGoingHandler.isLoadingCatalog) &&
+                                    !onGoingHandler.isFetchingNextPage)
+                                    ? _spbMock
+                                    : onGoingHandler.spbLists}
                                 ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
                                 refreshing={(Platform.OS === "ios") ? refreshing : undefined}
-                                onRefresh={(Platform.OS === "ios") ? onGoingHandler.refresh : undefined}
+                                onRefresh={(Platform.OS === "ios") ? onGoingHandler.refetch : undefined}
                                 onEndReached={onGoingHandler.fetchNext}
                                 renderItem={(item) => {
+                                    if ((onGoingHandler.isRefetching) && !onGoingHandler.isFetchingNextPage) {
+                                        return <SPBListShimmer />
+                                    }
+
                                     return <SpbList
                                         isAdmin={true}
                                         isPM={false}
@@ -192,12 +187,18 @@ export default function HomeAdmin() {
                             <Tabs.FlatList
                                 nestedScrollEnabled={true}
                                 style={{ padding: 16 }}
-                                data={completedHandler.spbLists}
+                                data={(
+                                    (completedHandler.isRefetching || completedHandler.isFetching) &&
+                                    !completedHandler.isFetchingNextPage) ? _spbMock : completedHandler.spbLists}
                                 ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
                                 refreshing={(Platform.OS === "ios") ? refreshing : undefined}
                                 onRefresh={(Platform.OS === "ios") ? completedHandler.refresh : undefined}
                                 onEndReached={completedHandler.fetchNext}
                                 renderItem={(item) => {
+                                    if ((completedHandler.isRefetching || completedHandler.isFetching) &&
+                                        !completedHandler.isFetchingNextPage) {
+                                        return <SPBListShimmer />
+                                    }
                                     return <SpbList
                                         isAdmin={true}
                                         isPM={false}
@@ -244,17 +245,21 @@ export default function HomeAdmin() {
                         mode={"contained"}
                         shape={'rounded'}
                         placeholder={"Search"}
-                        value={search}
                         search
+                        onFocus={() => {
+                            tabRef.current?.setIndex(index)
+                        }}
                         onSubmitEditing={() => {
                             if (index == 0) {
+                                onGoingHandler.setQuery(searchKey.current)
                                 setTimeout(onGoingHandler.refresh, 1000)
                             } else {
+                                completedHandler.setQuery(searchKey.current)
                                 setTimeout(completedHandler.refresh, 1000)
                             }
                         }}
                         onChangeText={(text) => {
-                            setSearch(text)
+                            searchKey.current = text
                         }}
                     />
                 </Stack>

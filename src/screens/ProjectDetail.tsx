@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
-import { Button, Colors, Divider, Icon, Image, Page, Stack, Toolbar } from '../../tmd'
+import { Button, Colors, Divider, Icon, Image, Page, Skeleton, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
 import { _projectMock, _spbMock } from '../../tmd/data/_mock'
 import { ProjectModel } from '../models/project/project'
@@ -18,6 +18,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import StorageKey from '../utils/StorageKey'
 import moment from 'moment'
 import useProjectInfiniteQuery from '../services/project/useProjectQuery'
+import { useFocusEffect } from '@react-navigation/native'
+import { SPBListShimmer } from './components/shimmer/shimmer'
+import { SelectedMap } from '../../tmd/components/picker/MapPicker'
 
 export default function ProjectDetail() {
     const { t } = useTranslation()
@@ -25,20 +28,69 @@ export default function ProjectDetail() {
     const [projectData, setProjectData] = useState<ProjectModel>()
     const {
         spbLists,
-        isLoadingCatalog,
-        isFetchingNextPage,
-        fetchNext,
-        refresh,
-        isRefreshing,
-    } = useProjectInfiniteQuery({ search: "", status: StatusSPB.approved });
+        refetch,
+        isRefetching,
+        isFetchingNextPage
+    } = useProjectInfiniteQuery({ status: StatusSPB.approved });
 
     useEffect(() => {
         loadDefault()
     }, [])
 
+
+    useFocusEffect(
+        useCallback(() => {
+            refetch() // fetch Project Detail
+        }, [])
+    )
+
     const loadDefault = async () => {
         var data = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
         setProjectData(data)
+    }
+
+    const DetailProjectShimmer = () => {
+        return (
+            <View style={{ flex: 1 }}>
+                <Stack spacing={16}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 16 }}>
+                        <Stack spacing={8} style={{ flex: 1, justifyContent: 'center', marginRight: 16 }}>
+                            <Skeleton />
+                            <Skeleton />
+                            <Skeleton />
+                        </Stack>
+                        <Skeleton style={{ width: '20%', height: 60 }} />
+                    </View>
+                    <Divider />
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+
+                    <Divider />
+
+                    <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+                        <Skeleton style={{ flex: 1 }} />
+                        <Skeleton style={{ flex: 1 }} />
+                    </Stack>
+
+                    <View style={{ padding: 16 }}>
+                        <Skeleton height={200} />
+                    </View>
+
+                    <Stack style={{ padding: 16 }}>
+                        <SPBListShimmer />
+                        <View style={{ height: 16 }} />
+                        <SPBListShimmer />
+                        <View style={{ height: 16 }} />
+                        <SPBListShimmer />
+                        <View style={{ height: 16 }} />
+                    </Stack>
+
+                </Stack>
+            </View>
+        )
     }
 
     const header = () => {
@@ -68,7 +120,23 @@ export default function ProjectDetail() {
                     <View style={{ marginTop: 11, flexDirection: 'row', alignItems: 'center' }}>
                         <IcLocation />
                         <Typography type='label2' style={{ flexGrow: 1, paddingLeft: 8 }}>{projectData?.location.address}</Typography>
-                        <TextButton size='sm'>{t("see_in_map")}</TextButton>
+                        <TextButton size='sm'
+                            onPress={() => {
+                                navigate("MapPickerScreen", {
+                                    initial: {
+                                        fullAddress: projectData?.location.address,
+                                        location: {
+                                            // latitude: projectData?.location.lat,
+                                            // longitude: projectData?.location.lng
+                                            latitude: -8.6815,
+                                            longitude: 115.2395
+                                        },
+                                        nameAddress: projectData?.location.address
+                                    },
+                                    viewOnly: true
+                                })
+                            }}
+                        >{t("see_in_map")}</TextButton>
                     </View>
                     <Typography type='body4'>{projectData?.location.address}</Typography>
                 </View>
@@ -108,41 +176,46 @@ export default function ProjectDetail() {
 
                 <Divider />
 
-                {/* <Typography style={_s.padding} type="title3">{t("list_spb_complete")}</Typography> */}
-                {spbLists.length > 0 &&
-                    <Typography style={_s.padding} type="title3">{t("list_spb_complete", { count: spbLists.length })}</Typography>
+                {(spbLists?.length ?? 0) > 0 &&
+                    <Typography style={_s.padding} type="title3">{t("list_spb_complete", { count: spbLists?.length })}</Typography>
                 }
             </View>
         )
     }
     return (
         <Page>
-            <Toolbar title={t("job_detail")} />
+            <Toolbar title={t("project_detail")} />
             <View style={{ flex: 1, flexDirection: 'column', backgroundColor: colors.neutral.neutral_20 }}>
-                <FlatList
-                    style={{ flexGrow: 1 }}
-                    ListHeaderComponent={header}
-                    ListEmptyComponent={EmptySPBState}
-                    data={spbLists}
-                    renderItem={(item) => {
-                        return (
-                            <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
-                                <SpbList
-                                    isAdmin={false}
-                                    isPM={true}
-                                    item={item.item}
-                                    index={item.index}
-                                    onPress={() => {
-                                        navigate("DetailSPB", {
-                                            spbID: item.item.no_spb,
-                                            isPMPage: true
-                                        })
-                                    }}
-                                />
-                            </View>
-                        )
-                    }}
-                />
+                {(spbLists && isRefetching) ? (
+                    <DetailProjectShimmer />
+                ) : (
+                    <FlatList
+                        style={{ flexGrow: 1 }}
+                        ListHeaderComponent={header}
+                        ListEmptyComponent={EmptySPBState}
+                        data={spbLists}
+                        renderItem={(item) => {
+                            return (
+                                <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+                                    <SpbList
+                                        isAdmin={false}
+                                        isPM={true}
+                                        item={item.item}
+                                        index={item.index}
+                                        onPress={() => {
+                                            navigate("DetailSPB", {
+                                                spbID: item.item.no_spb,
+                                                isPMPage: true
+                                            })
+                                        }}
+                                    />
+                                </View>
+                            )
+                        }}
+                    />
+
+                )
+                }
 
                 <View style={[_s.padding, { backgroundColor: Colors.white }]}>
                     <Button

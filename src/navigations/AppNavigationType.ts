@@ -11,6 +11,7 @@ type AppNavigationType = {
     title?: string
   },
   MapPickerScreen: {
+    viewOnly: boolean
     onSelected: (selected: SelectedMap) => void;
     initial?: SelectedMap
   },

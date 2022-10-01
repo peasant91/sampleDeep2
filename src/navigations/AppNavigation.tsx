@@ -95,7 +95,7 @@ const AppNavigation = () => {
         {
           (isAuthenticated && isHeadAdmin) && (
             <>
-              {/* <Stack.Screen name={"MainScreen"} component={MainScreen} /> */}
+              {/* <Stack.Screen name={"MainScreen"} componenr={MainScreen} /> */}
               <Stack.Screen name={"HomeAdmin"} component={HomeAdmin} />
             </>
           )
