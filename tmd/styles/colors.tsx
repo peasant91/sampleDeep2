@@ -336,7 +336,7 @@ const colors: ThemeColors = {
     pressed: "#20563C",
     border: "#B7DBC9",
     hover: "#357A59",
-    surface: "#F6F6F6",
+    surface: "#D6FAE8",
   },
   info: {
     main: "#3267E3",

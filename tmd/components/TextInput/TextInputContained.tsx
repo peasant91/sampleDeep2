@@ -352,7 +352,6 @@ const TextInputContained = ({
           focused={parentState.focused}
           activeColor={activeColor}
           outlineColor={outlineColor}
-          backgroundColor={backgroundColor}
           shape={shape ?? theme?.textInput?.shape}
         />
         {/*</View>*/}

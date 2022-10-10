@@ -3,7 +3,7 @@
  * Copyright (c) 2022 - Made with love
  */
 import React from "react";
-import { KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, View } from "react-native";
+import { KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, View } from "react-native";
 import { useTheme } from "../core/theming";
 import Color from "color";
 
@@ -38,14 +38,13 @@ export default function Page({ children, statusBarColor }: Props) {
     }
     </>
   );
-
   return (
     <>
         <CStatusBar
           backgroundColor={statusBarColor ?? colors.primary.pressed}
         />
 
-        <SafeAreaView style={{flex:1}}>
+        <SafeAreaView style={{flex: 1}}>
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -57,3 +56,12 @@ export default function Page({ children, statusBarColor }: Props) {
     </>
   );
 }
+
+const _s = StyleSheet.create({
+    AndroidSafeArea: {
+      flex: 1,
+      backgroundColor: "white",
+      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    }
+  });
+

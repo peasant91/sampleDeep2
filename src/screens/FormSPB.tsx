@@ -199,6 +199,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                         style={{ backgroundColor: colors.neutral.neutral_70 }}
                         requiredLabel
                         name='submission_date'
+                        minimumDate={new Date()}
                         label={t("send_date")}
                         placeholder={t("select_date")}
                         date={defaultSPB?.created_at}

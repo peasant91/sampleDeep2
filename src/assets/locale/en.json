@@ -141,8 +141,9 @@
     "status_po": "Status PO",
     "empty_spb_title": "Belum ada SPB",
     "empty_spb_desc": "SPB yang anda ajukan pada proyek ini akan ditampilkan disini",
+    "empty_spb_admin_desc": "SPB yang diajukan oleh PM akan ditampilkan disini",
     "empty_po_title": "Belum ada dokumen PO",
-    "empty_po_desc": "PO yang dibuat oleh supplier akan ditampilkan sesuai berdasarkan SPB yang Anda dibuat.",
+    "empty_po_desc": "PO yang dibuat oleh supplier akan ditampilkan berdasarkan SPB yang Anda buat.",
     "item_submission": "Pengajuan Bahan",
     "spb_form_title": "Mohon isi formulir dengan Lengkap",
     "info_shipment": "Barang yang Anda pilih akan dikirim ke alamat proyek ini.",
@@ -165,7 +166,7 @@
     "ubah_produk": "Ubah Produk",
     "confirmation_send_spb_desc": "Data akan diteruskan untuk diverifikasi oleh admin.",
     "confirmation_send_spb_title": "Yakin ingin mengirim data?",
-    "to_detail_project": "Ke Detail Proyek",
+    "to_detail_project": "Ke Detail Pekerjaan",
     "success_send_title": "Permintaan berhasil dikirim",
     "success_send_desc": "Tunggu konfirmasi dari admin untuk barang yang Anda ajukan. Barang akan langsung dikirim ke lokasi proyek Anda.",
     "project_ongoing": "Sedang Berjalan",
@@ -173,7 +174,8 @@
     "total_unapproved": "{{count}} PO Belum di Approve",
     "po_detail": "PO Detail",
     "amount_discount": "Discount {{count}}%",
-    "amount_ppn": "PPN {{count}}%",
+    "amount_discount_title": "Discount",
+    "amount_ppn": "PPN 11%",
     "tolak": "Tolak",
     "setujui": "Setujui",
     "address": "Alamat",
@@ -191,6 +193,9 @@
     "grand_total": "Total Dibayar",
     "success": "Success",
     "received": "Received",
-    "project_detail": "Detail Proyek"
+    "project_detail": "Detail Pekerjaan",
+    "add_bahan": "Tambah Bahan",
+    "confirmation_logout_title": "Yakin ingin keluar?",
+    "confirmation_logout_desc": "Jika Anda keluar dari akun, Anda perlu masuk ulang untuk melakukan input data"
   }
 }

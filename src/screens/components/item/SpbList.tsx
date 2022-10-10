@@ -96,15 +96,15 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
     }
 
     return (
-        <Stack style={{ borderWidth: 1, borderRadius: 16, borderColor: colors.neutral.neutral_40, backgroundColor: colors.neutral.neutral_10 }}>
+        <Stack style={{ borderWidth: 1, borderRadius: 16, borderColor: colors.neutral.neutral_40, backgroundColor: colors.neutral.neutral_10, marginBottom: 16 }}>
             {
                 withProjectName && (
                     <>
                         <View style={{ flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 12 }}>
                             <IcProject height={40} width={40} />
-                            <View style={{ flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1, marginLeft: 8 }}>
+                            <View style={{ flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1, marginLeft: 8, marginRight: 8 }}>
                                 <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{item.name}</Typography>
-                                <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{moment(item.created_at).format("DD MMM YYYY")}</Typography>
+                                <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{item.location.address}</Typography>
                             </View>
                         </View>
                         <Divider />
@@ -117,7 +117,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                     <View style={{ alignSelf: 'center' }}>
                         {getIcon()}
                     </View>
-                    <Stack spacing={4} style={{ justifyContent: 'space-between' }}>
+                    <Stack spacing={4} style={{ justifyContent: 'space-between', flexShrink: 1 }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{item.no_spb}</Typography>
                         <Typography type={"body4"}>{moment(item.created_at).format("DD MMM YYYY")}</Typography>
                     </Stack>

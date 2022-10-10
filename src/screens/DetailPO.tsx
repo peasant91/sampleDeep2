@@ -5,9 +5,11 @@ import moment from 'moment'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlatList, Image, StyleSheet, View } from 'react-native'
+import NumberFormat from 'react-number-format'
 import { Button, Colors, Divider, Icon, Page, Skeleton, Stack, Toolbar } from '../../tmd'
 import AlertBottomSheet from '../../tmd/components/BottomSheet/AlertBottomSheet'
 import TextButton from '../../tmd/components/Button/TextButton'
+import { CurrencyText } from '../../tmd/components/TextInput/helpers'
 import Typography from '../../tmd/components/Typography/Typography'
 import { _poDetailMock, _poListMock, _projectMock, _spbDetailMock, _spbMock } from '../../tmd/data/_mock'
 import { useBottomSheet } from '../../tmd/providers/BottomSheetProvider'
@@ -300,24 +302,26 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                             <Typography type='title3' style={{ color: colors.neutral.neutral_90 }}>{t("payment_summary")}</Typography>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("po_subtotal", { count: data.total_item })}</Typography>
-                                <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{data.total_price}</Typography>
+                                <CurrencyText value={data.total_price} />
                             </View>
                             {(data.total_discount > 0) &&
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography>
-                                    <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>-{data.total_discount}</Typography>
+                                    {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography> */}
+                                    <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount_title")}</Typography>
+                                    <CurrencyText value={data.total_discount} />
                                 </View>
                             }
 
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_ppn", { count: data.total_discount })}</Typography>
-                                <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>-{data.total_discount}</Typography>
-                            </View>
+                            {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}> */}
+                            {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_ppn", { count: data.total_discount })}</Typography> */}
+                            {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_ppn")}</Typography> */}
+                            {/* <CurrencyText value={data.} /> */}
+                            {/* </View> */}
 
                             <Divider />
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Typography type='label1' style={{ color: colors.neutral.neutral_90 }}>{t("grand_total")}</Typography>
-                                <Typography type='label1' style={{ color: colors.neutral.neutral_90 }}>{data.grand_total}</Typography>
+                                <CurrencyText value={data.grand_total} />
                             </View>
 
 
@@ -328,10 +332,12 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                     </>
                 )}
 
-                <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                    <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("total_bahan")}</Typography>
-                    <Typography type="body1" style={{ color: colors.neutral.neutral_90 }}>{data.total_item} {t("bahan")}</Typography>
-                </View>
+                {isPMPage &&
+                    <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                        <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("total_bahan")}</Typography>
+                        <Typography type="body1" style={{ color: colors.neutral.neutral_90 }}>{data.total_item} {t("bahan")}</Typography>
+                    </View>
+                }
 
                 <View style={{ height: 16, backgroundColor: colors.neutral.neutral_20 }} />
 

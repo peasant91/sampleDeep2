@@ -297,7 +297,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                     <>
                         <View style={[_s.padding, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                             <Typography type="title3" style={{ color: colors.neutral.neutral_90 }}>{t("total_bahan")}</Typography>
-                            <Typography type="body1" style={{ color: colors.neutral.neutral_90 }}>{poData.length} {t("bahan")}</Typography>
+                            <Typography type="body1" style={{ color: colors.neutral.neutral_90 }}>{data.total} {t("bahan")}</Typography>
                         </View>
 
                         <Divider />

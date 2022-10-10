@@ -22,6 +22,8 @@ import useProjectInfiniteQuery from "../services/project/useProjectQuery";
 import { useFocusEffect } from "@react-navigation/native";
 import moment from "moment";
 import { SPBListShimmer } from "./components/shimmer/shimmer";
+import { useBottomSheet } from "../../tmd/providers/BottomSheetProvider";
+import { useAuth } from "../providers/AuthProvider";
 
 enum StatusProject {
   inProgress = "in_progress",
@@ -57,6 +59,13 @@ export default function HomePM() {
     refresh,
     isLoadingCatalog
   } = useProjectInfiniteQuery({ status: StatusSPB.waiting });
+
+  const { logout, isLoadingLogout } = useAuth();
+
+  const {
+    showConfirmationBS,
+    hideConfirmationBS,
+  } = useBottomSheet();
 
   useFocusEffect(
     useCallback(() => {
@@ -121,8 +130,18 @@ export default function HomePM() {
             icon: "exit"
           }}
           onPress={() => {
-            dispatch({
-              type: "LOGOUT",
+            showConfirmationBS({
+              title: t("confirmation_logout_title"),
+              description: t("confirmation_logout_desc"),
+              buttonPrimaryTitle: t("confirm"),
+              buttonSecondaryTitle: t("cancel"),
+              buttonPrimaryAction: (async (text) => {
+                logout()
+                hideConfirmationBS()
+                dispatch({
+                  type: "LOGOUT",
+                })
+              })
             })
           }}
         >Keluar</Button>
@@ -143,7 +162,9 @@ export default function HomePM() {
                   <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{project?.name}</Typography>
                   <Typography type={"body4"}>Dibuat {moment(project?.created_at).startOf('hour').fromNow()}</Typography>
                 </Stack>
-                <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
+                <View style={{ width: '25%' }}>
+                  <Image style={{ aspectRatio: 1 }} borderRadius={4} source={{ uri: project?.photo }} />
+                </View>
               </View>
 
               <View style={{ paddingVertical: 8, paddingHorizontal: 12, flexDirection: 'row' }}>
@@ -211,7 +232,7 @@ export default function HomePM() {
           {(isLoadingCatalog || isRefetchingProject) ?
             (
               <ScrollView
-              showsVerticalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
               >
                 <HeaderTopHeader />
                 <Typography style={{ paddingHorizontal: 12, paddingTop: 24 }} type={"title3"}>Proyek Aktif</Typography>
@@ -229,11 +250,11 @@ export default function HomePM() {
                     }}
                   >{t("see_all")}</TextButton>
                 </View>
-                <Stack spacing={16} direction={'column'} style={{flexGrow: 1, padding: 16}}>
+                <Stack spacing={16} direction={'column'} style={{ flexGrow: 1, padding: 16 }}>
                   <SPBListShimmer />
-                  <View style={{height: 16}}/>
+                  <View style={{ height: 16 }} />
                   <SPBListShimmer />
-                  <View style={{height: 16}}/>
+                  <View style={{ height: 16 }} />
                   <SPBListShimmer />
                 </Stack>
               </ScrollView>

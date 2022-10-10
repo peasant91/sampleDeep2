@@ -6,6 +6,7 @@ import { BaseProjectModel, ProjectModel } from "../../models/project/project";
 import { PODetailModel, PODetailResponse, PoListResponse, StatusPO } from "../../models/spb/po";
 import { NOT_SUPPORTED } from "react-native-maps/lib/decorateMapComponent";
 import { StatusSPB } from "../../screens/components/item/SpbList";
+import { string } from "yup";
 
 export default function useProjectService() {
     const { getAPI, postAPI, patchAPI } = useBaseService();
@@ -55,10 +56,11 @@ export default function useProjectService() {
     const getSPB = (page: number = 1, query: any) => {
         return getAPI<SpbListResponse>(`project/list-spb`, {
             params: {
-                ...query,
                 page: page,
-            },
+                ...query,
+            }
         });
+        // return getAPI<SpbListResponse>(`project/list-spb?spb_status=${query["spb_status"]}&query=${query.query}&page=${page}`)
     };
 
     const getSPBDetail = async (id: string) => {

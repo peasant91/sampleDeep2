@@ -16,16 +16,18 @@ interface Props {
   onDateChangesFormatted?: (date: string) => void;
   onDateChangeSendFormatted?: (date: string) => void;
   title?: string;
+  minimumDate?: Date
 }
 
 
 export default function DatePicker({
-                                     date,
-                                     onDateChanges,
-                                     onDateChangesFormatted,
-                                     onDateChangeSendFormatted,
-                                     ...rest
-                                   }: ComponentProps<typeof TextField> & Props) {
+  date,
+  minimumDate,
+  onDateChanges,
+  onDateChangesFormatted,
+  onDateChangeSendFormatted,
+  ...rest
+}: ComponentProps<typeof TextField> & Props) {
   const { t, momentLocale } = useLocale();
   const [isOpenPicker, setIsOpenPicker] = useState(false);
   const [selected, setSelected] = useState(date ? moment(date).toDate() : undefined);
@@ -54,6 +56,7 @@ export default function DatePicker({
 
 
       <DatePickerBottomSheet
+        minimumDate={minimumDate}
         title={rest.title}
         theme={"light"}
         initDate={selected}

@@ -8,9 +8,10 @@ import DatePicker from "../picker/DatePicker";
 
 interface Props {
   name: string;
+  minimumDate?: Date
 }
 
-export default function RHFDatePicker({ name, ...rest }: Props & ComponentProps<typeof DatePicker>) {
+export default function RHFDatePicker({ name, minimumDate, ...rest }: Props & ComponentProps<typeof DatePicker>) {
   const { control, setValue, clearErrors } = useFormContext();
   return (
     <Controller
@@ -18,6 +19,7 @@ export default function RHFDatePicker({ name, ...rest }: Props & ComponentProps<
       control={control}
       render={({ field: { onChange, onBlur, value }, fieldState }) => {
         return <DatePicker
+          minimumDate={minimumDate}
           onDateChangeSendFormatted={(val) => {
             setValue(name, val);
             clearErrors(name);

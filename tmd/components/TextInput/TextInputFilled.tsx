@@ -17,7 +17,7 @@ import color from "color";
 import type { ChildTextInputProps, RenderProps } from "./types";
 import { useTheme } from "../../core/theming";
 import LabelInput from "./Label/LabelInput";
-import { HelperText } from "../../index";
+import { Colors, HelperText } from "../../index";
 import Typography from "../Typography/Typography";
 import IconButton from "../IconButton";
 import _countries from "../../data/_countries";
@@ -99,7 +99,8 @@ const TextInputFilled = ({
   } else {
     inputTextColor = colors.text;
     placeholderColor = colors.neutral.neutral_70;
-    backgroundColors = error ? colors.danger.surface : parentState.focused ? colors.primary.surface : colors.neutral.neutral_20;
+    // backgroundColors = error ? colors.danger.surface : parentState.focused ? colors.primary.surface : colors.neutral.neutral_20;
+    backgroundColors = error ? colors.danger.surface : Colors.white
   }
 
 
@@ -346,7 +347,8 @@ const TextInputFilled = ({
 
 
         <Outline
-          outlineColor={parentState.focused && !error ? colors.primary.focus : "transparent"}
+          // outlineColor={parentState.focused && !error ? colors.primary.focus : "transparent"}
+          outlineColor={colors.primary.focus}
           backgroundColor={backgroundColors}
           shape={shape ?? theme?.textInput?.shape}
         />

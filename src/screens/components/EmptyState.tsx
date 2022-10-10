@@ -6,6 +6,17 @@ import { colors } from '../../../tmd/styles/colors'
 import IllustSPBEmpty from '../../assets/illusts/empty_spb.svg'
 import IllustPOEmpty from '../../assets/illusts/empty_po.svg'
 
+function EmptySPBStateAdmin() {
+    const { t } = useTranslation()
+    return (
+        <View style={{ alignItems: 'center', padding: 16 }}>
+            <IllustSPBEmpty />
+            <Typography type='title2' style={{ color: colors.neutral.neutral_100 }}>{t("empty_spb_title")}</Typography>
+            <Typography type='body2' style={{ textAlign: 'center', color: colors.neutral.neutral_80 }}>{t("empty_spb_admin_desc")}</Typography>
+        </View>
+    )
+}
+
 function EmptySPBState() {
     const { t } = useTranslation()
     return (
@@ -28,4 +39,4 @@ function EmptyPOState() {
     )
 }
 
-export { EmptySPBState, EmptyPOState }
+export { EmptySPBState, EmptyPOState, EmptySPBStateAdmin }

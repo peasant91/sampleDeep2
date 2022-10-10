@@ -1,7 +1,9 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { View } from "react-native"
+import NumberFormat from "react-number-format"
 import { Button, IconButton, Stack, Tag } from "../../../../tmd"
+import { CurrencyText } from "../../../../tmd/components/TextInput/helpers"
 import Typography from "../../../../tmd/components/Typography/Typography"
 import { colors } from "../../../../tmd/styles/colors"
 import { SpbItem } from "../../../models/spb/spb"
@@ -31,12 +33,30 @@ const ItemList = ({ item, index, config, onDelete, doEdit }: Props) => {
 
                 {config.withPrice && (
                     <Stack spacing={8} direction={'row'} style={{ marginBottom: 12 }}>
-                        <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{`${item.quantity} x ${item.final_price}`}</Typography>
+                        <NumberFormat
+                            value={item.final_price}
+                            displayType={'text'}
+                            thousandSeparator={"."}
+                            decimalSeparator={","}
+                            prefix={'Rp. '}
+                            renderText={formattedValue => <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{`${item.quantity} x ${formattedValue}`}</Typography>}
+                        />
+
                         {item.normal_price != item.final_price && (
-                            <Stack spacing={8} direction={'row'}>
-                                <Typography type="body2" style={{ color: colors.neutral.neutral_70, textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{item.normal_price}</Typography>
+                            <Stack spacing={8} direction={'row'} style={{marginHorizontal: 8}}>
+                                <NumberFormat
+                                    value={item.final_price}
+                                    displayType={'text'}
+                                    thousandSeparator={"."}
+                                    decimalSeparator={","}
+                                    prefix={'Rp. '}
+                                    renderText={formattedValues =>
+                                        <Typography type="body2" style={{ color: colors.neutral.neutral_70, textDecorationLine: 'line-through', textDecorationStyle: 'solid' }}>{formattedValues}</Typography>}
+                                />
+
                                 <Tag
-                                    text={t("amount_discount", { count: item.discount ?? 0 })}
+                                    style={{marginLeft: 8}}
+                                    text={t("amount_discount_title")}
                                     size="sm"
                                     shape="rounded"
                                     variant="primary" />

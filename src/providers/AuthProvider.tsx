@@ -69,7 +69,7 @@ const AuthProvider = ({ children }: any) => {
   const logout = async () => {
     try {
       setIsLoadingLogout(true);
-      await getAPI("logout");
+      await postAPI("user/logout");
       await AsyncStorage.setItem(StorageKey.ACCESS_TOKEN, "");
       dispatch({
         type: "LOGOUT",

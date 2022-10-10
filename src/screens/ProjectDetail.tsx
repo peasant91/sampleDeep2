@@ -101,7 +101,9 @@ export default function ProjectDetail() {
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData?.name}</Typography>
                         <Typography type={"body4"}>{moment(projectData?.created_at).format("Do MMMM YYYY")}</Typography>
                     </Stack>
-                    <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
+                    <View style={{ width: '25%' }}>
+                        <Image style={{ aspectRatio: 1 }} borderRadius={4} source={{ uri: projectData?.photo }} />
+                    </View>
                 </View>
 
                 <Divider />
@@ -126,10 +128,10 @@ export default function ProjectDetail() {
                                     initial: {
                                         fullAddress: projectData?.location.address,
                                         location: {
-                                            // latitude: projectData?.location.lat,
-                                            // longitude: projectData?.location.lng
-                                            latitude: -8.6815,
-                                            longitude: 115.2395
+                                            latitude: projectData?.location.lat,
+                                            longitude: projectData?.location.lng
+                                            // latitude: -8.6815,
+                                            // longitude: 115.2395
                                         },
                                         nameAddress: projectData?.location.address
                                     },
@@ -144,7 +146,7 @@ export default function ProjectDetail() {
                 <Divider />
 
                 <View style={_s.padding}>
-                    <Typography type='body3' style={{ color: colors.neutral.neutral_90 }}>{projectData?.location.address}</Typography>
+                    <Typography type='body3' style={{ color: colors.neutral.neutral_90 }}>{projectData?.description}</Typography>
                 </View>
 
                 <Divider />
@@ -196,7 +198,7 @@ export default function ProjectDetail() {
                         data={spbLists}
                         renderItem={(item) => {
                             return (
-                                <View style={{ paddingHorizontal: 16, paddingBottom: 16 }}>
+                                <View style={{ paddingHorizontal: 16 }}>
                                     <SpbList
                                         isAdmin={false}
                                         isPM={true}
@@ -226,7 +228,9 @@ export default function ProjectDetail() {
                         shape={"rounded"}
                         size={"lg"}
                         onPress={() => {
-                            navigate("FormSPB")
+                            navigate("FormSPB", {
+                                defaultSPB: null
+                            })
                         }}
                     >{t("ajukan_spb")}</Button>
                 </View>

@@ -7403,10 +7403,10 @@
     "whatwg-fetch" "^3.0.0"
     "ws" "^6.1.4"
 
-"react-number-format@^4.9.3":
-  "integrity" "sha512-am1A1xYAbENuKJ+zpM7V+B1oRTSeOHYltqVKExznIVFweBzhLmOBmyb1DfIKjHo90E0bo1p3nzVJ2NgS5xh+sQ=="
-  "resolved" "https://registry.npmjs.org/react-number-format/-/react-number-format-4.9.3.tgz"
-  "version" "4.9.3"
+"react-number-format@^4.9.4":
+  "integrity" "sha512-Gq20Z3ugqPLFgeaidnx5on9cNpbQZntPN3QgNAL/WJrNNlQnNznY0LCx7g8xtssmRBw0/hw+SCqw6zAcajooiA=="
+  "resolved" "https://registry.npmjs.org/react-number-format/-/react-number-format-4.9.4.tgz"
+  "version" "4.9.4"
   dependencies:
     "prop-types" "^15.7.2"
 

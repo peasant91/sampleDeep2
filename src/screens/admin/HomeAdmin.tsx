@@ -14,6 +14,9 @@ import { navigate } from '../../navigations/RootNavigation';
 import useProjectInfiniteQuery from '../../services/project/useProjectQuery';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SPBListShimmer } from '../components/shimmer/shimmer';
+import { EmptySPBStateAdmin } from '../components/EmptyState';
+import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
+import { useAuth } from '../../providers/AuthProvider';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -47,6 +50,8 @@ export default function HomeAdmin() {
     const scrollRef = useRef<ScrollView>(null)
     const tabRef = useRef<CollapsibleRef>(null)
 
+    const { logout, isLoadingLogout } = useAuth();
+
     const onGoingHandler = useProjectInfiniteQuery({ status: StatusSPB.waiting })
     const completedHandler = useProjectInfiniteQuery({ status: StatusSPB.approved })
 
@@ -68,6 +73,11 @@ export default function HomeAdmin() {
             completedHandler.refetch()
         }
     }
+
+    const {
+        showConfirmationBS,
+        hideConfirmationBS,
+    } = useBottomSheet();
 
     const Header = () => {
         const scrollY = useCurrentTabScrollY()
@@ -158,28 +168,31 @@ export default function HomeAdmin() {
                                     !onGoingHandler.isFetchingNextPage)
                                     ? _spbMock
                                     : onGoingHandler.spbLists}
-                                ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+                                // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
                                 refreshing={(Platform.OS === "ios") ? refreshing : undefined}
                                 onRefresh={(Platform.OS === "ios") ? onGoingHandler.refetch : undefined}
                                 onEndReached={onGoingHandler.fetchNext}
+                                ListEmptyComponent={EmptySPBStateAdmin}
                                 renderItem={(item) => {
                                     if ((onGoingHandler.isRefetching) && !onGoingHandler.isFetchingNextPage) {
                                         return <SPBListShimmer />
                                     }
 
-                                    return <SpbList
-                                        isAdmin={true}
-                                        isPM={false}
-                                        item={item.item}
-                                        index={item.index}
-                                        withProjectName={true}
-                                        onPress={() => {
-                                            navigate("DetailSPB", {
-                                                spbID: item.item.no_spb,
-                                                isAdminPage: true
-                                            })
-                                        }}
-                                    />
+                                    return (
+                                        <SpbList
+                                            isAdmin={true}
+                                            isPM={false}
+                                            item={item.item}
+                                            index={item.index}
+                                            withProjectName={true}
+                                            onPress={() => {
+                                                navigate("DetailSPB", {
+                                                    spbID: item.item.no_spb,
+                                                    isAdminPage: true
+                                                })
+                                            }}
+                                        />
+                                    )
                                 }}
                             />
                         </Tabs.Tab>
@@ -190,10 +203,11 @@ export default function HomeAdmin() {
                                 data={(
                                     (completedHandler.isRefetching || completedHandler.isFetching) &&
                                     !completedHandler.isFetchingNextPage) ? _spbMock : completedHandler.spbLists}
-                                ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+                                // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
                                 refreshing={(Platform.OS === "ios") ? refreshing : undefined}
                                 onRefresh={(Platform.OS === "ios") ? completedHandler.refresh : undefined}
                                 onEndReached={completedHandler.fetchNext}
+                                ListEmptyComponent={EmptySPBStateAdmin}
                                 renderItem={(item) => {
                                     if ((completedHandler.isRefetching || completedHandler.isFetching) &&
                                         !completedHandler.isFetchingNextPage) {
@@ -227,6 +241,7 @@ export default function HomeAdmin() {
                         />
                         <Button
                             buttonStyle={{ backgroundColor: white }}
+                            loading={isLoadingLogout}
                             size={"sm"}
                             shape={"rounded"}
                             variant={"tertiary"}
@@ -234,17 +249,29 @@ export default function HomeAdmin() {
                                 icon: "exit"
                             }}
                             onPress={() => {
-                                dispatch({
-                                    type: "LOGOUT",
+                                showConfirmationBS({
+                                    title: t("confirmation_logout_title"),
+                                    description: t("confirmation_logout_desc"),
+                                    buttonPrimaryTitle: t("confirm"),
+                                    buttonSecondaryTitle: t("cancel"),
+                                    buttonPrimaryAction: (async (text) => {
+                                        logout()
+                                        hideConfirmationBS()
+                                        dispatch({
+                                            type: "LOGOUT",
+                                        })
+                                    })
                                 })
                             }}
                         >Keluar</Button>
                     </View>
 
                     <TextField
-                        mode={"contained"}
+                        mode={"filled"}
+                        outlineColor={colors.neutral.neutral_70}
+                        style={{ backgroundColor: white }}
                         shape={'rounded'}
-                        placeholder={"Search"}
+                        placeholder={"Cari Pekerjaan"}
                         search
                         onFocus={() => {
                             tabRef.current?.setIndex(index)

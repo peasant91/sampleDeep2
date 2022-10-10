@@ -27,7 +27,7 @@ export default function Toolbar({
                                   description,
                                   backgroundColor,
                                   backable = true,
-                                  center,
+                                  center = true,
                                   size,
                                   actionButton,
                                   elevation,

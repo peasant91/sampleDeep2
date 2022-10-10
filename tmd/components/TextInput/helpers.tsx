@@ -3,6 +3,10 @@ import type { AdornmentConfig } from "./Adornment/types";
 import { ADORNMENT_OFFSET, ADORNMENT_SIZE, FLAT_INPUT_OFFSET, LABEL_PADDING_HORIZONTAL } from "./constants";
 import { AdornmentSide, AdornmentType } from "./Adornment/enums";
 import type { TextInputLabelProp } from "./types";
+import React from "react";
+import NumberFormat from "react-number-format";
+import Typography from "../Typography/Typography";
+import { colors } from "../../styles/colors";
 
 type PaddingProps = {
   height: number | null;
@@ -22,6 +26,20 @@ type PaddingProps = {
 type AdjProps = PaddingProps & {
   pad: number;
 };
+
+export const CurrencyText = ({ value }: { value: number }) => {
+  return (
+    <NumberFormat
+      value={value}
+      displayType={'text'}
+      thousandSeparator={"."}
+      decimalSeparator={","}
+      prefix={'Rp. '}
+      renderText={formattedValue => <Typography type='label1' style={{ color: colors.neutral.neutral_90 }}>{formattedValue}</Typography>}
+    />
+  )
+}
+
 
 export type Padding = { paddingTop: number; paddingBottom: number };
 
@@ -69,14 +87,14 @@ const calculateTextAreaPadding = (props: PaddingProps) => {
 };
 
 const calculateInputPadding = ({
-                                 topPosition,
-                                 fontSize,
-                                 multiline,
-                                 scale,
-                                 dense,
-                                 offset,
-                                 isAndroid,
-                               }: PaddingProps): number => {
+  topPosition,
+  fontSize,
+  multiline,
+  scale,
+  dense,
+  offset,
+  isAndroid,
+}: PaddingProps): number => {
   const refFontSize = scale * fontSize;
   let result = Math.floor(topPosition / 2);
 
@@ -92,17 +110,17 @@ const calculateInputPadding = ({
 };
 
 export const adjustPaddingOut = ({
-                                   pad,
-                                   multiline,
-                                   label,
-                                   scale,
-                                   height,
-                                   fontSize,
-                                   lineHeight,
-                                   dense,
-                                   offset,
-                                   isAndroid,
-                                 }: AdjProps): Padding => {
+  pad,
+  multiline,
+  label,
+  scale,
+  height,
+  fontSize,
+  lineHeight,
+  dense,
+  offset,
+  isAndroid,
+}: AdjProps): Padding => {
   const fontHeight = lineHeight ?? fontSize;
   const refFontHeight = scale * fontSize;
   let result = pad;
@@ -137,17 +155,17 @@ export const adjustPaddingOut = ({
 };
 
 export const adjustPaddingFlat = ({
-                                    pad,
-                                    scale,
-                                    multiline,
-                                    label,
-                                    height,
-                                    offset,
-                                    dense,
-                                    fontSize,
-                                    isAndroid,
-                                    styles,
-                                  }: AdjProps): Padding => {
+  pad,
+  scale,
+  multiline,
+  label,
+  height,
+  offset,
+  dense,
+  fontSize,
+  isAndroid,
+  styles,
+}: AdjProps): Padding => {
   let result = pad;
   let topResult = result;
   let bottomResult = result;
@@ -230,11 +248,11 @@ export const interpolatePlaceholder = (
   });
 
 export function calculateFlatAffixTopPosition({
-                                                height,
-                                                paddingTop,
-                                                paddingBottom,
-                                                affixHeight,
-                                              }: {
+  height,
+  paddingTop,
+  paddingBottom,
+  affixHeight,
+}: {
   height: number;
   paddingTop: number;
   paddingBottom: number;
@@ -249,10 +267,10 @@ export function calculateFlatAffixTopPosition({
 }
 
 export function calculateOutlinedIconAndAffixTopPosition({
-                                                           height,
-                                                           affixHeight,
-                                                           labelYOffset,
-                                                         }: {
+  height,
+  affixHeight,
+  labelYOffset,
+}: {
   height: number;
   affixHeight: number;
   labelYOffset: number;
@@ -261,8 +279,8 @@ export function calculateOutlinedIconAndAffixTopPosition({
 }
 
 export const calculateFlatInputHorizontalPadding = ({
-                                                      adornmentConfig,
-                                                    }: {
+  adornmentConfig,
+}: {
   adornmentConfig: AdornmentConfig[];
 }) => {
   let paddingLeft = LABEL_PADDING_HORIZONTAL;
