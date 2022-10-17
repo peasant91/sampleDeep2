@@ -71,6 +71,7 @@ const AuthProvider = ({ children }: any) => {
       setIsLoadingLogout(true);
       await postAPI("user/logout");
       await AsyncStorage.setItem(StorageKey.ACCESS_TOKEN, "");
+      await AsyncStorage.setItem(StorageKey.PROJECT_DATA, "");
       dispatch({
         type: "LOGOUT",
       });

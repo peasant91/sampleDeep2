@@ -18,6 +18,7 @@ export enum StatusSPB {
     rejected = "reject",
     ongoing = "ongoing",
     done = "done",
+    cancel = "cancel",
     complaint = "complaint"
 }
 
@@ -66,6 +67,9 @@ export function StatusButton({ status, style }: StatusType) {
             }
             {status == StatusSPB.done &&
                 <Tag variant="success" text={t("success")} />
+            }
+            {status == StatusSPB.cancel &&
+                <Tag variant="danger" text={t("cancel")} />
             }
         </View>
     )

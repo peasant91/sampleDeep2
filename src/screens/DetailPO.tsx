@@ -49,7 +49,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
     useEffect(() => {
         if (!showAll) {
-            setButtonTitle(t("see_more_items", { count: data.items.length - minItemShown }))
+            setButtonTitle(t("see_more_items", { count: data.total_item - minItemShown }))
         } else {
             setButtonTitle(t("see_less"))
         }
@@ -398,7 +398,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                     </Stack>
                 </View>
             )
-        } else if (data.po_status == StatusPO.approved) {
+        } else if (data.po_status == StatusPO.approved && isPMPage) {
             return (
                 <View style={_s.padding}>
                     <Stack direction='row' spacing={16}>

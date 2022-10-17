@@ -3,7 +3,7 @@
  * Copyright (c) 2022 - Made with love
  */
 import React, { useContext, useState } from "react";
-import { Image, ScrollView, StatusBar, View } from "react-native";
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StatusBar, View } from "react-native";
 import * as yup from "yup";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { Button, RHFPhoneField, RHFTextField } from "../../../tmd";
@@ -20,6 +20,7 @@ import { transparent } from "../../../tmd/styles/colors";
 import { useDispatch } from "react-redux";
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 import { useBottomSheet } from "../../../tmd/providers/BottomSheetProvider";
+import { getStatusBarHeight } from "react-native-iphone-x-helper";
 
 
 export default function LoginScreen() {
@@ -45,6 +46,7 @@ export default function LoginScreen() {
     try {
       await login(data?.username, data?.password);
     } catch (e) {
+      console.log("ANJENG", e)
       showErrorBS(e)
     }
   };
@@ -52,70 +54,72 @@ export default function LoginScreen() {
   const [scrollable, setScrollable] = useState(true);
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar
-        translucent={true}
-        backgroundColor={transparent}
-      />
-      <ScrollView
-        scrollEnabled={scrollable}
-        style={{
-          flex: 1,
-        }}>
-        <View style={{
-          top: 0,
-          left: 0,
-          right: 0
-        }}>
-          <Image
-            style={{ width: "100%" }}
-            source={require("../../assets/icons/ic_header/header.png")} />
-        </View>
-
-        <FormProvider {...method}>
-          <Stack p={16} spacing={16} style={{
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          scrollEnabled={scrollable}
+          style={{
             flex: 1,
           }}>
+          <View style={{
+            top: 0,
+            left: 0,
+            right: 0
+          }}>
+            <Image
+              style={{ width: "100%" }}
+              source={require("../../assets/icons/ic_header/header.png")} />
+          </View>
 
-            <Stack spacing={8} style={{ flex: 1 }}>
-              <Typography type={"title1"}>{t("welcome_title")}</Typography>
-              <Typography type={"body1"}>{t("welcome_desc")}</Typography>
+          <FormProvider {...method}>
+            <Stack p={16} spacing={16} style={{
+              flex: 1,
+            }}>
+
+              <Stack spacing={8} style={{ flex: 1 }}>
+                <Typography type={"title1"}>{t("welcome_title")}</Typography>
+                <Typography type={"body1"}>{t("welcome_desc")}</Typography>
+              </Stack>
+              <View>
+                <RHFTextField
+                  requiredLabel
+                  mode={"contained"}
+                  isRequired={true}
+                  name={"username"}
+                  placeholder={t('placeholder.username')}
+                  label={t('labels.username')}
+                />
+              </View>
+
+              <View>
+                <RHFTextField
+                  requiredLabel
+                  name={"password"}
+                  label={"Password"}
+                  mode={"contained"}
+                  placeholder={t('placeholder.password')}
+                  password
+                />
+              </View>
+
+              <Button
+                loading={isLoadingLogin}
+                onPress={method.handleSubmit(onSubmit, (e) => {
+                  console.log(e);
+                })}
+                style={{
+                  marginTop: 24,
+                }}
+                fullWidth
+              >Login</Button>
+
             </Stack>
-            <View>
-              <RHFTextField
-                requiredLabel
-                mode={"contained"}
-                isRequired={true}
-                name={"username"}
-                placeholder={t('placeholder.username')}
-                label={t('labels.username')}
-              />
-            </View>
+          </FormProvider>
+        </ScrollView>
 
-            <View>
-              <RHFTextField
-                requiredLabel
-                name={"password"}
-                label={"Password"}
-                mode={"contained"}
-                placeholder={t('placeholder.password')}
-                password
-              />
-            </View>
-
-            <Button
-              loading={isLoadingLogin}
-              onPress={method.handleSubmit(onSubmit, (e) => {
-                console.log(e);
-              })}
-              style={{
-                marginTop: 24,
-              }}
-              fullWidth
-            >Login</Button>
-
-          </Stack>
-        </FormProvider>
-      </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }

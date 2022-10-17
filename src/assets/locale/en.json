@@ -1,8 +1,8 @@
 {
   "translation": {
     "welcome_to_rnstarterkit": "Welcome to React Native Starter Kit",
-    "back": "Back",
-    "sure": "Sure",
+    "back": "Kembali",
+    "sure": "Yakin",
     "errors": {
       "no_connection_title": "You seem to be offline",
       "no_connection_description": "Please check your Wi-Fi connection or cellular data and try again.",
@@ -110,7 +110,8 @@
     "see_all": "Lihat Semua",
     "see_detail": "Lihat Detail",
     "status_spb": "Status SPB",
-    "update": "Update",
+    "job_status": "Status Pekerjaan",
+    "update": "Perbarui",
     "job_detail": "Detail SPB",
     "id_spb": "No. SPB",
     "id_po": "No. PO",
@@ -121,7 +122,7 @@
     "item_image": "Gambar Bahan",
     "item_list": "Daftar Bahan",
     "unit": "Unit",
-    "notes": "Notes",
+    "notes": "Catatan",
     "see_more_items": "Lihat {{count}} Barang Lainnya",
     "see_less": "Lihat lebih sedikit",
     "total_bahan": "Total Bahan",
@@ -196,6 +197,7 @@
     "project_detail": "Detail Pekerjaan",
     "add_bahan": "Tambah Bahan",
     "confirmation_logout_title": "Yakin ingin keluar?",
-    "confirmation_logout_desc": "Jika Anda keluar dari akun, Anda perlu masuk ulang untuk melakukan input data"
+    "confirmation_logout_desc": "Jika Anda keluar dari akun, Anda perlu masuk ulang untuk melakukan input data",
+    "complaint": "Komplain"
   }
 }

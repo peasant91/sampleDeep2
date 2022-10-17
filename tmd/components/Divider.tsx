@@ -32,8 +32,11 @@ export default function Divider({ variant, size = "xs", ...props }: Props & Reac
   return <View
     style={[{
       borderStyle: variant == "dotted" ? "dotted" : "solid",
-      borderTopWidth: borderWidth,
-      borderTopColor: colors.neutral.neutral_40,
+      // borderTopWidth: borderWidth,
+      // borderTopColor: colors.neutral.neutral_40,
+      borderWidth: 1,
+      // borderRadius: 1,
+      borderColor: colors.neutral.neutral_40
       // backgroundColor: colors.neutral.neutral_40,
     },
 

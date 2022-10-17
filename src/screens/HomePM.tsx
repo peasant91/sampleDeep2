@@ -1,7 +1,7 @@
 import Color from "color";
 import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, LayoutAnimation, NativeScrollEvent, NativeSyntheticEvent, SafeAreaView, StatusBar, StyleSheet, View, ViewStyle } from "react-native";
+import { Image, KeyboardAvoidingView, LayoutAnimation, NativeScrollEvent, NativeSyntheticEvent, Platform, SafeAreaView, StatusBar, StyleSheet, View, ViewStyle } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import { useDispatch } from "react-redux";
@@ -133,7 +133,7 @@ export default function HomePM() {
             showConfirmationBS({
               title: t("confirmation_logout_title"),
               description: t("confirmation_logout_desc"),
-              buttonPrimaryTitle: t("confirm"),
+              buttonPrimaryTitle: t("sure"),
               buttonSecondaryTitle: t("cancel"),
               buttonPrimaryAction: (async (text) => {
                 logout()
@@ -220,96 +220,100 @@ export default function HomePM() {
   }
 
   return (
-    <Page>
-      <Stack style={{ flex: 1 }}>
-        <StatusBar
-          translucent={true}
-          backgroundColor={transparent}
-          hidden={true}
-        />
+    <View style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <Stack style={{ flex: 1 }}>
+          <StatusBar
+            translucent={true}
+            backgroundColor={transparent}
+            hidden={true}
+          />
 
-        <View style={{ flex: 1 }}>
-          {(isLoadingCatalog || isRefetchingProject) ?
-            (
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-              >
-                <HeaderTopHeader />
-                <Typography style={{ paddingHorizontal: 12, paddingTop: 24 }} type={"title3"}>Proyek Aktif</Typography>
-                <HeaderShimmer
-                  props={{ margin: 16 }}
+          <View style={{ flex: 1 }}>
+            {(isLoadingCatalog || isRefetchingProject) ?
+              (
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                >
+                  <HeaderTopHeader />
+                  <Typography style={{ paddingHorizontal: 12, paddingTop: 24 }} type={"title3"}>Proyek Aktif</Typography>
+                  <HeaderShimmer
+                    props={{ margin: 16 }}
+                  />
+                  <View style={{ paddingHorizontal: 12, flexDirection: 'row', justifyContent: "space-between" }}>
+                    <Typography type={"title3"}>Riwayat SPB</Typography>
+                    <TextButton
+                      underline
+                      style={{ alignSelf: 'center' }}
+                      size="md"
+                      onPress={() => {
+                        navigate("ListSPB");
+                      }}
+                    >{t("see_all")}</TextButton>
+                  </View>
+                  <Stack spacing={16} direction={'column'} style={{ flexGrow: 1, padding: 16 }}>
+                    <SPBListShimmer />
+                    <View style={{ height: 16 }} />
+                    <SPBListShimmer />
+                    <View style={{ height: 16 }} />
+                    <SPBListShimmer />
+                  </Stack>
+                </ScrollView>
+
+              ) : (
+
+                <FlatList
+                  ListHeaderComponent={Header}
+                  ListFooterComponent={() => <View style={{ height: 16 }} />}
+                  ListEmptyComponent={EmptySPBState}
+                  ItemSeparatorComponent={() => {
+                    return <View style={{ height: 16 }} />
+                  }}
+                  data={spbLists}
+                  renderItem={(item) => {
+                    return (
+                      <View style={{ paddingHorizontal: 16 }}>
+
+                        {(spbLists) ?
+                          <SpbList
+                            isAdmin={false}
+                            isPM={true}
+                            onPress={() => navigate("DetailSPB", {
+                              spbID: item.item.no_spb,
+                              isPMPage: true
+                            })}
+                            item={item.item}
+                            index={item.index} />
+                          :
+                          <View>
+                          </View>}
+
+                      </View>
+                    )
+                  }}
                 />
-                <View style={{ paddingHorizontal: 12, flexDirection: 'row', justifyContent: "space-between" }}>
-                  <Typography type={"title3"}>Riwayat SPB</Typography>
-                  <TextButton
-                    underline
-                    style={{ alignSelf: 'center' }}
-                    size="md"
-                    onPress={() => {
-                      navigate("ListSPB");
-                    }}
-                  >{t("see_all")}</TextButton>
-                </View>
-                <Stack spacing={16} direction={'column'} style={{ flexGrow: 1, padding: 16 }}>
-                  <SPBListShimmer />
-                  <View style={{ height: 16 }} />
-                  <SPBListShimmer />
-                  <View style={{ height: 16 }} />
-                  <SPBListShimmer />
-                </Stack>
-              </ScrollView>
+              )}
+          </View>
 
-            ) : (
-
-              <FlatList
-                ListHeaderComponent={Header}
-                ListFooterComponent={() => <View style={{ height: 16 }} />}
-                ListEmptyComponent={EmptySPBState}
-                ItemSeparatorComponent={() => {
-                  return <View style={{ height: 16 }} />
-                }}
-                data={spbLists}
-                renderItem={(item) => {
-                  return (
-                    <View style={{ paddingHorizontal: 16 }}>
-
-                      {(spbLists) ?
-                        <SpbList
-                          isAdmin={false}
-                          isPM={true}
-                          onPress={() => navigate("DetailSPB", {
-                            spbID: item.item.no_spb,
-                            isPMPage: true
-                          })}
-                          item={item.item}
-                          index={item.index} />
-                        :
-                        <View>
-                        </View>}
-
-                    </View>
-                  )
-                }}
-              />
-            )}
-        </View>
-
-        {!isLoadingProject &&
-          <Button
-            style={{ alignSelf: 'center', position: 'absolute', bottom: 32 }}
-            variant="primary"
-            shape="rounded"
-            size="lg"
-            icon={{ icon: "document-attach" }}
-            onPress={() => {
-              navigate("FormSPB", {
-                defaultSPB: null
-              })
-            }}
-          >{t("ajukan_spb")}</Button>
-        }
-      </Stack>
-    </Page>
-
+          {!isLoadingProject &&
+            <Button
+              style={{ alignSelf: 'center', position: 'absolute', bottom: 32 }}
+              variant="primary"
+              shape="rounded"
+              size="lg"
+              icon={{ icon: "document-attach" }}
+              onPress={() => {
+                navigate("FormSPB", {
+                  defaultSPB: null
+                })
+              }}
+            >{t("ajukan_spb")}</Button>
+          }
+        </Stack>
+      </KeyboardAvoidingView>
+    </View>
   )
 }

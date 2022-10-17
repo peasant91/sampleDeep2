@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, Platform, RefreshControl, useWindowDimensions, View } from 'react-native'
+import { Dimensions, Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, useWindowDimensions, View } from 'react-native'
 import { useDispatch } from 'react-redux';
 import { Button, Page, Stack, TextField, useTheme } from '../../../tmd';
 import { _spbMock } from '../../../tmd/data/_mock';
-import { colors, white } from '../../../tmd/styles/colors';
+import { colors, transparent, white } from '../../../tmd/styles/colors';
 import { CollapsibleRef, MaterialTabBar, Tabs, useCurrentTabScrollY } from 'react-native-collapsible-tab-view'
 import SpbList, { StatusSPB } from '../components/item/SpbList';
 import { normalizeSize } from '../../../tmd/utils/normalizeSize';
@@ -17,6 +17,7 @@ import { SPBListShimmer } from '../components/shimmer/shimmer';
 import { EmptySPBStateAdmin } from '../components/EmptyState';
 import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
 import { useAuth } from '../../providers/AuthProvider';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -108,8 +109,16 @@ export default function HomeAdmin() {
     }
 
     return (
-        <>
-            <Page>
+        <View style={{ flex: 1 }}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
+            >
+                <StatusBar
+                    translucent={true}
+                    backgroundColor={transparent}
+                    hidden={true}
+                />
                 <ScrollView
                     ref={scrollRef}
                     nestedScrollEnabled
@@ -234,7 +243,7 @@ export default function HomeAdmin() {
 
                 </ScrollView>
 
-                <Stack spacing={12} style={{ position: 'absolute', left: 16, right: 16, top: 16 }}>
+                <Stack spacing={12} style={{ position: 'absolute', left: 16, right: 16, top: getStatusBarHeight() }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Image
                             source={require("../../assets/icons/ic_logo/ic_logo.png")}
@@ -252,7 +261,7 @@ export default function HomeAdmin() {
                                 showConfirmationBS({
                                     title: t("confirmation_logout_title"),
                                     description: t("confirmation_logout_desc"),
-                                    buttonPrimaryTitle: t("confirm"),
+                                    buttonPrimaryTitle: t("sure"),
                                     buttonSecondaryTitle: t("cancel"),
                                     buttonPrimaryAction: (async (text) => {
                                         logout()
@@ -290,7 +299,7 @@ export default function HomeAdmin() {
                         }}
                     />
                 </Stack>
-            </Page>
-        </>
+            </KeyboardAvoidingView>
+        </View>
     )
 }

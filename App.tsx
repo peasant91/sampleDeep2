@@ -13,7 +13,7 @@
  * NPM IS SUCKS
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { DefaultTheme, Provider as ThemeProvider } from "./tmd";
 import AppNavigation from "./src/navigations/AppNavigation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -27,38 +27,51 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./src/redux/stores/store";
 import { PersistGate } from "redux-persist/integration/react";
 import ModalProvider from "./tmd/providers/ModalProvider";
+import SplashScreen from "./src/screens/SplashScreen";
 
 // Create a client
 const queryClient = new QueryClient();
 const App = () => {
+  const [gateLifted, setGateLifted] = useState(false)
+
+  const onBeforeLift = () => {
+    setTimeout(() => {
+      setGateLifted(true)
+    }, 3000)
+  }
+
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <GestureHandlerRootView style={{ flex: 1 }}>{/* content */}
-          <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={DefaultTheme}>
-              <LocaleProvider>
-                <Host>
-                  <AuthProvider>
-                    <BottomSheetProvider>
-                      <ModalProvider>
-                        <PermissionProvider>
-                          <AppNavigation />
-                        </PermissionProvider>
-                      </ModalProvider>
-                    </BottomSheetProvider>
-                  </AuthProvider>
-                </Host>
-              </LocaleProvider>
-            </ThemeProvider>
-          </QueryClientProvider>
-        </GestureHandlerRootView>
+      <PersistGate persistor={persistor} onBeforeLift={onBeforeLift}>
+        {!gateLifted ?
+          <SplashScreen />
+          :
+          <GestureHandlerRootView style={{ flex: 1 }}>{/* content */}
+            <QueryClientProvider client={queryClient}>
+              <ThemeProvider theme={DefaultTheme}>
+                <LocaleProvider>
+                  <Host>
+                    <AuthProvider>
+                      <BottomSheetProvider>
+                        <ModalProvider>
+                          <PermissionProvider>
+                            <AppNavigation />
+                          </PermissionProvider>
+                        </ModalProvider>
+                      </BottomSheetProvider>
+                    </AuthProvider>
+                  </Host>
+                </LocaleProvider>
+              </ThemeProvider>
+            </QueryClientProvider>
+          </GestureHandlerRootView>
+        }
       </PersistGate>
     </Provider>
   );
 };
 
-const ZustandPersistGate = ({children}: any) => {
+const ZustandPersistGate = ({ children }: any) => {
 
 }
 

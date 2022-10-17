@@ -24,6 +24,9 @@ import useProjectService from '../services/project/useProjectService'
 import moment from 'moment'
 import RNFS from 'react-native-fs'
 import { defaults } from 'lodash'
+import { ProjectModel } from '../models/project/project'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import StorageKey from '../utils/StorageKey'
 
 
 export interface IBahan {
@@ -56,7 +59,8 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         })
         return array
     })
-    const projectData = _projectMock
+    // const projectData = _projectMock
+    var projectData = useRef<ProjectModel>()
     const defaultSPB = route.params.defaultSPB ?? null
     const { isLoadingProject, postSPB, patchSPB } = useProjectService()
 
@@ -68,13 +72,26 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         }, [noSPB])
     }
 
+    useEffect(() => {
+        loadDefault()
+    }, [])
+
+    const loadDefault = async () => {
+        try {
+            projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
+        } catch {
+        }
+    }
+
     const submitForm = async () => {
         var query: any = {}
 
         const date = moment(new Date()).format("hh:mm:ss")
-        const _date = moment(method.getValues().submission_date, "DD MMMM YYYY").format("YYYY-MM-DD") + " " + date
+        console.log(method.getValues().submission_date);
+        const _date = moment(method.getValues().submission_date).format("YYYY-MM-DD") + " " + date
         query["delivery_date"] = _date
         query["items"] = items
+        console.log(query);
 
         try {
             query["photo"] = await RNFS.readFile(imageURL.current, 'base64').then(value => value)
@@ -133,7 +150,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
     const defaultValues = {
         no_spb: defaultSPB?.no_spb,
-        submission_date: moment(defaultSPB?.created_at).format("D MMMM YYYY") ?? "",
+        submission_date: moment(defaultSPB?.created_at).format()
     };
 
     const method = useForm({
@@ -202,7 +219,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                         minimumDate={new Date()}
                         label={t("send_date")}
                         placeholder={t("select_date")}
-                        date={defaultSPB?.created_at}
+                        date={method.getValues().submission_date}
                     />
 
                     <Typography type='title3' style={{ color: colors.neutral.neutral_100 }}>{t("item_photo")}</Typography>
@@ -235,8 +252,8 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                         <View style={{ marginTop: 11, flexDirection: 'row' }}>
                             <Icon icon='location' size={18} />
                             <Stack>
-                                <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectData.location.address}</Typography>
-                                <Typography type='body3' style={{ paddingLeft: 8 }}>{projectData.location.address}</Typography>
+                                <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectData.current?.location.address}</Typography>
+                                <Typography type='body3' style={{ paddingLeft: 8 }}>{projectData.current?.location.address}</Typography>
                             </Stack>
                         </View>
                     </View>
@@ -320,6 +337,15 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
             {showBS.show &&
                 <BottomSheet
+                style={{shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                
+                elevation: 5,}}
                     ref={bottomSheetRef}
                     index={0}
                     snapPoints={snapPoints}

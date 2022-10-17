@@ -8,6 +8,7 @@ export enum StatusPO {
   approved = "approved",
   complaint = "complaint",
   received = "received",
+  cancel = "cancel",
   done = "done"
 }
 

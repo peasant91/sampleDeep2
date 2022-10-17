@@ -51,7 +51,7 @@ const authReducer = (state: AuthState = initialState, action: any) => {
     case "INITIALIZE":
       return {
         ...state,
-        isAuthenticated: action.payload.isAuthenticated,
+        sAuthenticated: action.payload.isAuthenticated,
       };
     default:
       return state;

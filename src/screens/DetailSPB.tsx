@@ -201,7 +201,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                 <Divider />
 
                 <View style={[{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }, _s.padding]}>
-                    <Typography type={"body3"}>{t("status_spb")}</Typography>
+                    <Typography type={"body3"}>{t("job_status")}</Typography>
                     <StatusButton
                         status={data.spb_status}
                     />
@@ -209,14 +209,14 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
                 <Divider />
 
-                <View style={_s.padding}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={[_s.padding, {flexDirection: 'row'}]}>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
                         <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
-                        <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.created_at).format("DD MMMM YYYY")}</Typography>
-                    </View>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
                         <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
+                        <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.created_at).format("DD MMMM YYYY")}</Typography>
+                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
                     </View>
                 </View>
 
@@ -243,7 +243,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                             }}
                         />
                         <View style={{ position: 'absolute', alignSelf: 'center', height: '100%', justifyContent: 'center' }}>
-                            <Icon icon="search-circle" color={colors.neutral.neutral_10} size={40} />
+                            {/* <Icon icon="search-circle" color={colors.neutral.neutral_10} size={40} /> */}
                             <IconButton
                                 shape={"rounded"}
                                 onPress={handleOpenViewer}

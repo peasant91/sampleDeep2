@@ -44,6 +44,9 @@ export function StatusButton({ status, style }: StatusType) {
             {status == StatusPO.rejected &&
                 <Tag variant="danger" text={t("rejected")} />
             }
+            {status == StatusPO.cancel &&
+                <Tag variant="danger" text={t("cancel")} />
+            }
             {status == StatusPO.received &&
                 <Tag variant="success" text={t("received")} />
             }
@@ -76,7 +79,7 @@ const POListItem = ({ item, index, type, onPress, withProjectName }: Props) => {
                     </Stack>
                 </Stack>
 
-                <StatusButton status={item.po_status} style={{ alignSelf: 'center', flexShrink: 0 }} />
+                <StatusButton status={item.po_status} style={{ alignSelf: 'center', flexShrink: 0, marginLeft: 8 }} />
             </View>
 
             <Divider />

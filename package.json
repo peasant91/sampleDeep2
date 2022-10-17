@@ -7,7 +7,7 @@
     "android": "react-native run-android",
     "android:staging": "SET ENVFILE=.env.staging && react-native run-android",
     "android:debug": "SET ENVFILE=.env.debug && react-native run-android",
-    "ios": "react-native run-ios --simulator=\"iPhone 11\"",
+    "ios": "react-native run-ios --simulator=\"iPhone 14\"",
     "ios:staging": "SET ENVFILE=.env.staging && react-native run-ios",
     "ios:debug": "SET ENVFILE=.env.debug && react-native run-ios",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && rm -rf android/app/src/main/res/drawable-* && rm -rf android/app/src/main/res/raw/* && cd android && ./gradlew assembleRelease && cd ..",

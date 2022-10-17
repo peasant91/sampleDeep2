@@ -61,7 +61,7 @@ export default function Toolbar({
             isShowBack &&
             (
               <View onLayout={(event) => {
-                setIconViewWidth(event.nativeEvent.layout.width);
+                // setIconViewWidth(event.nativeEvent.layout.width);
               }}>
                 <IconButton
                   shape={"rounded"}

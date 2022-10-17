@@ -6,6 +6,7 @@ import { IBahan } from "../screens/FormSPB";
 
 type AppNavigationType = {
   //utils
+  SplashScreen: undefined,
   GalleryListScreen: {
     images: GalleryItem[],
     title?: string
