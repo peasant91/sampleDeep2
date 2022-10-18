@@ -19,7 +19,8 @@ export enum StatusSPB {
     ongoing = "ongoing",
     done = "done",
     cancel = "cancel",
-    complaint = "complaint"
+    complaint = "complaint",
+    revision = "revision"
 }
 
 type StatusType = {
@@ -52,6 +53,9 @@ export function StatusButton({ status, style }: StatusType) {
             }
             {status == StatusSPB.complaint &&
                 <Tag variant="warning" text={t("complain")} />
+            }
+            {status == StatusSPB.revision &&
+                <Tag variant="warning" text={t("revision")} />
             }
             {status == StatusSPB.inProgress &&
                 <Tag variant="primary" text={t("in_progress")} />

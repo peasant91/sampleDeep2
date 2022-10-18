@@ -62,5 +62,6 @@ export interface PODetailModel {
   complaint?: string
   notes?: string
   payment_term: string[]
+  last_updated?: string
 }
 

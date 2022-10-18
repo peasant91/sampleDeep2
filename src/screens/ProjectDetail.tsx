@@ -109,7 +109,7 @@ export default function ProjectDetail() {
                 <Divider />
 
                 <View style={[{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }, _s.padding]}>
-                    <Typography type={"body3"}>{t("status_spb")}</Typography>
+                    <Typography type={"body3"}>{t("job_status")}</Typography>
                     <StatusButton
                         status={projectData?.status ?? ""}
                     />

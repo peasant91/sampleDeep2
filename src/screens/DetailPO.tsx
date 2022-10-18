@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlatList, Image, StyleSheet, View } from 'react-native'
 import NumberFormat from 'react-number-format'
-import { Button, Colors, Divider, Icon, Page, Skeleton, Stack, Toolbar } from '../../tmd'
+import { Alert, Button, Colors, Divider, Icon, Page, Skeleton, Stack, Toolbar } from '../../tmd'
 import AlertBottomSheet from '../../tmd/components/BottomSheet/AlertBottomSheet'
 import TextButton from '../../tmd/components/Button/TextButton'
 import { CurrencyText } from '../../tmd/components/TextInput/helpers'
@@ -23,7 +23,7 @@ import usePODetailQuery from '../services/project/usePODetailQuery'
 import useProjectService from '../services/project/useProjectService'
 import StorageKey from '../utils/StorageKey'
 import ItemList from './components/item/itemList'
-import { StatusButton, StatusSPB } from './components/item/SpbList'
+import { StatusButton } from './components/item/PoList'
 
 export default function DetailPO({ route }: NativeStackScreenProps<AppNavigationType, "DetailPO">) {
     const isAdminPage = route.params.isAdminPage
@@ -209,6 +209,13 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                 <View style={[_s.padding]}>
                     <Stack spacing={16}>
+                        {data.last_updated &&
+                            <Alert
+                                variant='info'
+                                type='outlined'
+                                description={t("last_updated_desc", { date: moment(data.last_updated).format("Do MMMM YYYY, hh:ss") })}
+                            />
+                        }
                         <View>
                             <View style={{ flex: 1, flexDirection: 'row' }}>
                                 <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
@@ -361,7 +368,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
     const ButtonPage = () => {
         // kondisi barang belom di approve oleh admin, button hanya muncul di admin saja
-        if (data.po_status == StatusPO.waiting) {
+        if (data.po_status == StatusPO.waiting && isAdminPage) {
             return (
                 <View style={_s.padding}>
                     <Stack direction='row' spacing={16}>
@@ -398,7 +405,9 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                     </Stack>
                 </View>
             )
-        } else if (data.po_status == StatusPO.approved && isPMPage) {
+        } else if (
+            (data.po_status == StatusPO.waiting || data.po_status == StatusPO.complaint) &&
+            isPMPage) {
             return (
                 <View style={_s.padding}>
                     <Stack direction='row' spacing={16}>

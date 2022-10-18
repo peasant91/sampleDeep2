@@ -58,7 +58,7 @@ export default function HomePM() {
     spbLists,
     refresh,
     isLoadingCatalog
-  } = useProjectInfiniteQuery({ status: StatusSPB.waiting });
+  } = useProjectInfiniteQuery({ status: StatusSPB.waiting + "," +StatusSPB.revision });
 
   const { logout, isLoadingLogout } = useAuth();
 

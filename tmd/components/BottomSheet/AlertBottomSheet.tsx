@@ -35,6 +35,7 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
   const { t } = useTranslation();
   useEffect(() => {
     if (props.open) {
+      method.reset()
       modalizeRef?.current?.open();
     } else {
       modalizeRef.current?.close();

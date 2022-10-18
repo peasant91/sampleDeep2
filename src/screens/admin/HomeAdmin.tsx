@@ -123,7 +123,7 @@ export default function HomeAdmin() {
                     ref={scrollRef}
                     nestedScrollEnabled
                     contentContainerStyle={{
-                        height: windowHeight - 56, // 56 is the naviagtion header height
+                        height: windowHeight, // 56 is the naviagtion header height
                     }}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={() => {

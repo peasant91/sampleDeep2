@@ -100,32 +100,32 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         }
         if (defaultSPB == null) {
             await postSPB(method.getValues().no_spb ?? "", query)
-            .then((response) => {
-                if (response != undefined) {
-                    showAlertBS({
-                        title:"Success Ajukan SPB Baru",
-                        buttonPrimaryTitle:"OK",
-                        buttonPrimaryAction:() => {
-                            hideAlertBS()
-                            goBack()
-                        }
-                    })
-                }
-            })
+                .then((response) => {
+                    if (response != undefined) {
+                        showAlertBS({
+                            title: "Success Ajukan SPB Baru",
+                            buttonPrimaryTitle: "OK",
+                            buttonPrimaryAction: () => {
+                                hideAlertBS()
+                                goBack()
+                            }
+                        })
+                    }
+                })
         } else {
             await patchSPB(method.getValues().no_spb ?? "", query)
-            .then((response) => {
-                if (response != undefined) {
-                    showAlertBS({
-                        title:`Success Merubah SPB ${defaultSPB.no_spb}`,
-                        buttonPrimaryTitle:"OK",
-                        buttonPrimaryAction:() => {
-                            hideAlertBS()
-                            goBack()
-                        }
-                    })
-                }
-            })
+                .then((response) => {
+                    if (response != undefined) {
+                        showAlertBS({
+                            title: `Success Merubah SPB ${defaultSPB.no_spb}`,
+                            buttonPrimaryTitle: "OK",
+                            buttonPrimaryAction: () => {
+                                hideAlertBS()
+                                goBack()
+                            }
+                        })
+                    }
+                })
         }
     }
 
@@ -203,6 +203,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
 
                     <RHFTextField
+                        multiline
                         requiredLabel
                         disabled={true}
                         name='no_spb'
@@ -337,15 +338,18 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
             {showBS.show &&
                 <BottomSheet
-                style={{shadowColor: "#000",
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                
-                elevation: 5,}}
+                    style={{
+                        backgroundColor: 'white',
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+
+                        elevation: 5,
+                    }}
                     ref={bottomSheetRef}
                     index={0}
                     snapPoints={snapPoints}

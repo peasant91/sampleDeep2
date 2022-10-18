@@ -9,9 +9,10 @@ import TextField from "../TextInput/TextField";
 interface Props {
   name: string
   isRequired?: boolean
+  multiline?: boolean
 }
 
-export default function RHFTextField({ name, isRequired, ...props }: Props & ComponentProps<typeof TextField>) {
+export default function RHFTextField({ name, isRequired, multiline, ...props }: Props & ComponentProps<typeof TextField>) {
   const { control } = useFormContext();
   return <Controller
     control={control}
@@ -19,6 +20,7 @@ export default function RHFTextField({ name, isRequired, ...props }: Props & Com
     render={({ field: { onChange, onBlur, value }, fieldState }) => {
       return <TextField
         onBlur={onBlur}
+        multiline={multiline ?? false}
         onChangeText={onChange}
         value={value}
         error={fieldState.error != undefined}

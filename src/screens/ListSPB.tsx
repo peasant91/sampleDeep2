@@ -14,7 +14,6 @@ import Toolbar from "../../tmd/components/Toolbar/Toolbar";
 import { _spbMock } from "../../tmd/data/_mock";
 import SpbList, { StatusSPB } from "./components/item/SpbList";
 import { useTranslation } from "react-i18next";
-import { transparent } from "../../tmd/styles/colors";
 import { navigate } from "../navigations/RootNavigation";
 import useProjectInfiniteQuery from "../services/project/useProjectQuery";
 import { SPBListShimmer } from "./components/shimmer/shimmer";
@@ -29,7 +28,7 @@ export default function ListSPB() {
         isRefreshing,
         isRefetching,
 
-    } = useProjectInfiniteQuery({ status: StatusSPB.waiting });
+    } = useProjectInfiniteQuery({ status: "" });
     const { t } = useTranslation()
 
     return (
