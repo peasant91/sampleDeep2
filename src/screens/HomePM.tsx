@@ -1,7 +1,7 @@
 import Color from "color";
 import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, KeyboardAvoidingView, LayoutAnimation, NativeScrollEvent, NativeSyntheticEvent, Platform, SafeAreaView, StatusBar, StyleSheet, View, ViewStyle } from "react-native";
+import { Image, KeyboardAvoidingView, LayoutAnimation, NativeScrollEvent, NativeSyntheticEvent, Platform, RefreshControl, SafeAreaView, StatusBar, StyleSheet, View, ViewStyle } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import { useDispatch } from "react-redux";
@@ -27,7 +27,9 @@ import { useAuth } from "../providers/AuthProvider";
 
 enum StatusProject {
   inProgress = "in_progress",
-  finish = "finish"
+  finish = "finish",
+  done = "done",
+  success = "success"
 }
 
 type _StatusProject = {
@@ -42,9 +44,13 @@ export function StatusButton({ status }: _StatusProject) {
       {status == StatusProject.inProgress &&
         <Tag variant="primary" text={t("in_progress")} />
       }
-      {status == StatusProject.finish &&
+      {(status == StatusProject.finish || status == StatusProject.success) &&
         <Tag variant="success" text={t("success")} />
       }
+      {status == StatusProject.done &&
+        <Tag variant="success" text={t("done")} />
+      }
+      
     </View>
   )
 
@@ -54,11 +60,12 @@ export default function HomePM() {
   const { t } = useTranslation();
   const dispatch = useDispatch()
   const { project, isLoadingProject, refetch, isRefetchingProject } = usePMProjectQuery();
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const {
     spbLists,
     refresh,
     isLoadingCatalog
-  } = useProjectInfiniteQuery({ status: StatusSPB.waiting + "," +StatusSPB.revision });
+  } = useProjectInfiniteQuery({ status: StatusSPB.waiting + "," + StatusSPB.revision });
 
   const { logout, isLoadingLogout } = useAuth();
 
@@ -237,7 +244,12 @@ export default function HomePM() {
               (
                 <ScrollView
                   showsVerticalScrollIndicator={false}
-                >
+                  refreshControl={
+                    <RefreshControl refreshing={isRefetchingProject} onRefresh={() => {
+                      refetch()
+                    }}
+                    />
+                  }>
                   <HeaderTopHeader />
                   <Typography style={{ paddingHorizontal: 12, paddingTop: 24 }} type={"title3"}>Proyek Aktif</Typography>
                   <HeaderShimmer
@@ -266,11 +278,20 @@ export default function HomePM() {
               ) : (
 
                 <FlatList
+                style={{flex: 1}}
                   ListHeaderComponent={Header}
-                  ListFooterComponent={() => <View style={{ height: 16 }} />}
+                  ListFooterComponent={() => <View style={{ height: 80 }} />}
                   ListEmptyComponent={EmptySPBState}
                   ItemSeparatorComponent={() => {
                     return <View style={{ height: 16 }} />
+                  }}
+                  keyExtractor={(item, index) => index.toString()}
+                  enabled={true}
+                  refreshing={isRefreshing}
+                  onRefresh={() => {
+                    setIsRefreshing(true)
+                    refresh()
+                    refetch()
                   }}
                   data={spbLists}
                   renderItem={(item) => {

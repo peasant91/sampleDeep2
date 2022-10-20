@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { navigate } from "../navigations/RootNavigation";
 import useProjectInfiniteQuery from "../services/project/useProjectQuery";
 import { SPBListShimmer } from "./components/shimmer/shimmer";
+import { EmptySPBState } from "./components/EmptyState";
 
 export default function ListSPB() {
     const {
@@ -40,7 +41,7 @@ export default function ListSPB() {
             }}>
                 {
                     ((isRefreshing || isRefetching || isLoadingCatalog) && !isFetchingNextPage) ? (
-                        <Stack spacing={16} style={{padding: 16}}>
+                        <Stack spacing={16} style={{ padding: 16 }}>
                             <Typography>Loading...</Typography>
                             <SPBListShimmer />
                             <View />
@@ -82,7 +83,7 @@ export default function ListSPB() {
                                 onEndReached={fetchNext}
                                 ListEmptyComponent={() => {
                                     if (!isLoadingCatalog) {
-                                        return <Typography>empty</Typography>;
+                                        return <EmptySPBState />
                                     } else {
                                         return <></>;
                                     }

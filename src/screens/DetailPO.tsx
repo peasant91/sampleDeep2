@@ -216,7 +216,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 description={t("last_updated_desc", { date: moment(data.last_updated).format("Do MMMM YYYY, hh:ss") })}
                             />
                         }
-                        <View>
+                        {/* <View>
                             <View style={{ flex: 1, flexDirection: 'row' }}>
                                 <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
                                 <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.spb_created_at).format("Do MMMM YYYY")}</Typography>
@@ -225,37 +225,47 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
                             </View>
+                        </View> */}
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
+                                <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
+                            </View>
+                            
+                            <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
+                                <Typography type={"label2"}>{moment(data.spb_created_at).format("DD MMMM YYYY")}</Typography>
+                                <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
+                            </View>
                         </View>
 
-                        <View>
-                            <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
                                 <Typography style={{ flex: 1 }} type={"label2"}>{data.no_po}</Typography>
-                                <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.po_created_at).format("Do MMMM YYYY")}</Typography>
-                            </View>
-                            <View style={{ flexDirection: 'row' }}>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_po")}</Typography>
+                            </View>
+                            <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
+                                <Typography style={{}} type={"label2"}>{moment(data.po_created_at).format("Do MMMM YYYY")}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_po")}</Typography>
                             </View>
                         </View>
 
-                        <View>
-                            <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
                                 <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.name}</Typography>
-                                <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.address}</Typography>
-                            </View>
-                            <View style={{ flexDirection: 'row' }}>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("order_recipient")}</Typography>
+                            </View>
+                            <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
+                                <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.address}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("address")}</Typography>
                             </View>
                         </View>
 
-                        <View>
-                            <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
                                 <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.delivery_estimation).format("Do MMMM YYYY")}</Typography>
-
-                            </View>
-                            <View style={{ flexDirection: 'row' }}>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("estimated_delivery")}</Typography>
+                            </View>
+                            <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
                             </View>
                         </View>
 
@@ -316,6 +326,14 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                     {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography> */}
                                     <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount_title")}</Typography>
                                     <CurrencyText value={data.total_discount} />
+                                </View>
+                            }
+
+                            {(data.is_tax_active) &&
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography> */}
+                                    <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>PPN 11%</Typography>
+                                    <CurrencyText value={data.total_ppn} />
                                 </View>
                             }
 

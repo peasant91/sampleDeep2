@@ -58,6 +58,8 @@ export interface PODetailModel {
   total_price: number
   total_discount: number
   grand_total: number
+  total_ppn: number
+  is_tax_active: boolean
   // total: number
   complaint?: string
   notes?: string

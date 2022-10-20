@@ -23,8 +23,8 @@ import AppNavigationType from '../navigations/AppNavigationType'
 import useProjectService from '../services/project/useProjectService'
 import moment from 'moment'
 import RNFS from 'react-native-fs'
-import { defaults } from 'lodash'
-import { ProjectModel } from '../models/project/project'
+import { curry, defaults } from 'lodash'
+import { ProjectLocationModel, ProjectModel } from '../models/project/project'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import StorageKey from '../utils/StorageKey'
 
@@ -45,6 +45,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         index: 0
     })
     const { showConfirmationBS, hideConfirmationBS, showAlertBS, hideAlertBS } = useBottomSheet()
+    const [projectLocation, setprojectLocation] = useState<ProjectLocationModel>()
     const [items, setItems] = useState<BahanModel[]>(() => {
         var array: BahanModel[] = []
         route.params.defaultSPB?.items.map(item => {
@@ -79,6 +80,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
     const loadDefault = async () => {
         try {
             projectData.current = JSON.parse(await AsyncStorage.getItem(StorageKey.PROJECT_DATA) || "")
+            setprojectLocation(projectData.current?.location)
         } catch {
         }
     }
@@ -87,7 +89,6 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         var query: any = {}
 
         const date = moment(new Date()).format("hh:mm:ss")
-        console.log(method.getValues().submission_date);
         const _date = moment(method.getValues().submission_date).format("YYYY-MM-DD") + " " + date
         query["delivery_date"] = _date
         query["items"] = items
@@ -102,14 +103,15 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
             await postSPB(method.getValues().no_spb ?? "", query)
                 .then((response) => {
                     if (response != undefined) {
-                        showAlertBS({
-                            title: "Success Ajukan SPB Baru",
-                            buttonPrimaryTitle: "OK",
-                            buttonPrimaryAction: () => {
-                                hideAlertBS()
-                                goBack()
-                            }
-                        })
+                        navigate("SuccessPage")
+                        // showAlertBS({
+                        //     title: "Success Ajukan SPB Baru",
+                        //     buttonPrimaryTitle: "OK",
+                        //     buttonPrimaryAction: () => {
+                        //         hideAlertBS()
+                        //         goBack()
+                        //     }
+                        // })
                     }
                 })
         } else {
@@ -181,7 +183,6 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
     }, [])
 
     const onSubmit = (data: any) => {
-        console.log(data)
         if (items.length == 0) {
             showAlertBS({
                 title: "Daftar Bahan harus lebih dari 1"
@@ -203,6 +204,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
 
                     <RHFTextField
+                    style={{paddingVertical: 4}}
                         multiline
                         requiredLabel
                         disabled={true}
@@ -253,8 +255,9 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                         <View style={{ marginTop: 11, flexDirection: 'row' }}>
                             <Icon icon='location' size={18} />
                             <Stack>
-                                <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectData.current?.location.address}</Typography>
-                                <Typography type='body3' style={{ paddingLeft: 8 }}>{projectData.current?.location.address}</Typography>
+                                {/* <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectData.current?.location.address}</Typography> */}
+                                <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectLocation?.address}</Typography>
+                                <Typography type='body3' style={{ paddingLeft: 8 }}>{projectLocation?.address}</Typography>
                             </Stack>
                         </View>
                     </View>

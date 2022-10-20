@@ -45,7 +45,7 @@ const ItemList = ({ item, index, config, onDelete, doEdit }: Props) => {
                         {item.normal_price != item.final_price && (
                             <Stack spacing={8} direction={'row'} style={{marginHorizontal: 8}}>
                                 <NumberFormat
-                                    value={item.final_price}
+                                    value={item.normal_price}
                                     displayType={'text'}
                                     thousandSeparator={"."}
                                     decimalSeparator={","}

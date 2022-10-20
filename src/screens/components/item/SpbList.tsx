@@ -10,6 +10,7 @@ import IcProject from '../../../assets/illusts/icon_project.svg'
 import { useTranslation } from "react-i18next"
 import { t } from "i18next"
 import moment from "moment"
+import { EmptySPBState } from "../EmptyState"
 
 export enum StatusSPB {
     inProgress = "in_progress",
@@ -20,7 +21,8 @@ export enum StatusSPB {
     done = "done",
     cancel = "cancel",
     complaint = "complaint",
-    revision = "revision"
+    revision = "revision",
+    finish = "finish"
 }
 
 type StatusType = {
@@ -72,6 +74,9 @@ export function StatusButton({ status, style }: StatusType) {
             {status == StatusSPB.done &&
                 <Tag variant="success" text={t("success")} />
             }
+            {status == StatusSPB.finish &&
+                <Tag variant="success" text={t("finish")} />
+            }
             {status == StatusSPB.cancel &&
                 <Tag variant="danger" text={t("cancel")} />
             }
@@ -109,8 +114,8 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                 withProjectName && (
                     <>
                         <View style={{ flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 12 }}>
-                            <IcProject height={40} width={40} />
-                            <View style={{ flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1, marginLeft: 8, marginRight: 8 }}>
+                            <IcProject height={40} width={40} style={{ alignSelf: 'center' }} />
+                            <View style={{ flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1, marginLeft: 8, marginRight: 8, flex: 1 }}>
                                 <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{item.name}</Typography>
                                 <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{item.location.address}</Typography>
                             </View>
@@ -121,7 +126,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
             }
 
             <View style={{ paddingVertical: 12, paddingHorizontal: 12, flexDirection: "row", justifyContent: 'space-between' }}>
-                <Stack spacing={8} style={{flexShrink: 1}} direction="row">
+                <Stack spacing={8} style={{ flexShrink: 1 }} direction="row">
                     <View style={{ alignSelf: 'center' }}>
                         {getIcon()}
                     </View>
@@ -149,7 +154,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                     borderRadius: 8
                 }}>
                     <Icon icon="warning" style={{ width: 20, aspectRatio: 1 }} />
-                    <Typography type="body3" style={{ flexGrow: 1, textAlignVertical: 'center' }}>{t("total_unapproved", {count: item.total_unapproved!})}</Typography>
+                    <Typography type="body3" style={{ flexGrow: 1, textAlignVertical: 'center' }}>{t("total_unapproved", { count: item.total_unapproved! })}</Typography>
                 </Stack>
 
             )}

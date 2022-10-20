@@ -42,6 +42,7 @@ const AuthProvider = ({ children }: any) => {
         credential, password,
       });
       await AsyncStorage.setItem(StorageKey.ACCESS_TOKEN, res.data.access_token);
+      await AsyncStorage.setItem(StorageKey.PROJECT_DATA, "");
       if (res.data.role == "head_admin") {
         dispatch({
           type: "LOGINADMIN",

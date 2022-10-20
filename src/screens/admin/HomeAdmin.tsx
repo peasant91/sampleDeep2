@@ -53,8 +53,8 @@ export default function HomeAdmin() {
 
     const { logout, isLoadingLogout } = useAuth();
 
-    const onGoingHandler = useProjectInfiniteQuery({ status: StatusSPB.waiting })
-    const completedHandler = useProjectInfiniteQuery({ status: StatusSPB.approved })
+    const onGoingHandler = useProjectInfiniteQuery({ status: "in_progress" })
+    const completedHandler = useProjectInfiniteQuery({ status: "done" })
 
     const theme = useTheme()
 
@@ -282,6 +282,16 @@ export default function HomeAdmin() {
                         shape={'rounded'}
                         placeholder={"Cari Pekerjaan"}
                         search
+                        onClear={() => {
+                            searchKey.current = "";
+                            if (index == 0) {
+                                onGoingHandler.setQuery(searchKey.current)
+                                setTimeout(onGoingHandler.refresh, 1000)
+                            } else {
+                                completedHandler.setQuery(searchKey.current)
+                                setTimeout(completedHandler.refresh, 1000)
+                            }
+                        }}
                         onFocus={() => {
                             tabRef.current?.setIndex(index)
                         }}

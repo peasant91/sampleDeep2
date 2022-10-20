@@ -1,11 +1,13 @@
+import BottomSheet, { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import moment from "moment";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, StyleSheet, View } from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { Image, StyleSheet, TouchableNativeFeedback, View } from "react-native";
+import { FlatList, GestureDetector, ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { SlideInLeft } from "react-native-reanimated";
 import { Button, Divider, Icon, IconButton, Page, Skeleton, Stack, Toolbar } from "../../tmd";
 import TextButton from "../../tmd/components/Button/TextButton";
 import ImageViewerModal from "../../tmd/components/Modal/ImageViewerModal";
@@ -30,6 +32,10 @@ import { POListShimmer } from "./components/shimmer/shimmer";
 
 export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigationType, "DetailSPB">) {
     const { t } = useTranslation()
+
+    const [showBS, setShowBS] = useState<boolean>(false)
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+
     const minItemShown: number = 3
 
     const noSPB = route.params.spbID
@@ -76,6 +82,23 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
         }, [])
     )
 
+    useEffect(() => {
+        setButtonTitle(t("see_more_items", { count: data.items.length - minItemShown }))
+    }, [data])
+
+
+    // variables
+    const snapPoints = useMemo(() => [200], []);
+
+    // callbacks
+    const handleSheetChanges = useCallback((index: number) => {
+        console.log('handleSheetChanges', index);
+    }, []);
+
+    const handlePresentModalPress = useCallback(() => {
+        bottomSheetRef.current?.present();
+    }, []);
+
     const approveSPB = async () => {
         await patchSPBStatus(data.no_spb, StatusSPB.approved)
             .then((response) => {
@@ -83,6 +106,23 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                     showAlertBS({
                         title: `Success`,
                         description: `SPB ${data.no_spb} telah disetujui`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
+    }
+
+    const askRevisionSPB = async () => {
+        await patchSPBStatus(data.no_spb, StatusSPB.revision)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Success`,
+                        description: `SPB ${data.no_spb} telah diajukan untuk revisi`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
                             hideAlertBS()
@@ -130,7 +170,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                     >{t("ajukan_spb")}</Button>
                 }
 
-                {status == StatusSPB.waiting &&
+                {(status == StatusSPB.waiting || status == StatusSPB.revision) &&
                     <Button
                         style={{ flexBasis: 64 }}
                         fullWidth={true}
@@ -195,7 +235,8 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                             <Typography type={"body4"}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
                         </View>
                     </Stack>
-                    <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
+                    {/* <Image style={{ aspectRatio: 1, width: '25%', marginLeft: 16 }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} /> */}
+                    <Image style={{ aspectRatio: 1, width: '25%', marginLeft: 16 }} borderRadius={4} source={{ uri: data.image }} />
                 </View>
 
                 <Divider />
@@ -209,14 +250,14 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
                 <Divider />
 
-                <View style={[_s.padding, {flexDirection: 'row'}]}>
+                <View style={[_s.padding, { flexDirection: 'row' }]}>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
-                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
+                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
                     </View>
                     <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
-                        <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.created_at).format("DD MMMM YYYY")}</Typography>
-                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
+                        <Typography type={"label2"}>{moment(data.created_at).format("DD MMMM YYYY")}</Typography>
+                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
                     </View>
                 </View>
 
@@ -346,46 +387,47 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
     return (
         <Page>
             <Toolbar title={t("job_detail")} />
-            <View style={{ flex: 1, flexDirection: 'column' }}>
-                {(data || !isLoading || !isRefetchingSPB) ? (
-                    <FlatList
-                        style={{ flexGrow: 1 }}
-                        ListHeaderComponent={header}
-                        ListFooterComponent={footer}
-                        extraData={showAll}
-                        data={(showAll) ? data.items : data.items.slice(0, minItemShown)}
-                        ItemSeparatorComponent={() => {
-                            return (
-                                <View style={{ height: 12 }} />
-                            )
-                        }}
-                        renderItem={(item) => {
-                            return (
-                                <ItemList
-                                    item={item.item}
-                                    index={item.index}
-                                    config={{
-                                        withNote: true,
-                                    }}
-                                />
-                            )
-                        }}
-                    />
-                ) : (
-                    <DetailSPBShimmer />
-                )
-                }
+            <BottomSheetModalProvider>
+                <View style={{ flex: 1, flexDirection: 'column' }}>
+                    {(data || !isLoading || !isRefetchingSPB) ? (
+                        <FlatList
+                            style={{ flexGrow: 1 }}
+                            ListHeaderComponent={header}
+                            ListFooterComponent={footer}
+                            extraData={showAll}
+                            data={(showAll) ? data.items : data.items.slice(0, minItemShown)}
+                            ItemSeparatorComponent={() => {
+                                return (
+                                    <View style={{ height: 12 }} />
+                                )
+                            }}
+                            renderItem={(item) => {
+                                return (
+                                    <ItemList
+                                        item={item.item}
+                                        index={item.index}
+                                        config={{
+                                            withNote: true,
+                                        }}
+                                    />
+                                )
+                            }}
+                        />
+                    ) : (
+                        <DetailSPBShimmer />
+                    )
+                    }
 
-                {(!isLoading) && (
-                    <View style={_s.padding}>
-                        {(isPMPage) && (
-                            <PrimaryButton
-                                status={data.spb_status} />
-                        )}
+                    {(!isLoading) && (
+                        <View style={_s.padding}>
+                            {(isPMPage) && (
+                                <PrimaryButton
+                                    status={data.spb_status} />
+                            )}
 
-                        {(isAdminPage && data.spb_status == StatusSPB.waiting) && (
-                            <Stack spacing={16} direction="row">
-                                <Button
+                            {(isAdminPage && data.spb_status == StatusSPB.waiting) && (
+                                <Stack spacing={16} direction="row">
+                                    {/* <Button
                                     loading={isLoadingProject}
                                     fullWidth
                                     variant="secondary"
@@ -394,30 +436,100 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                     onPress={() => {
                                         rejectSPB()
                                     }}
-                                >{t("tolak")}</Button>
+                                >{t("tolak")}</Button> */}
+                                    <IconButton source="material-community" icon={"dots-horizontal"} color={colors.primary.main} themeSize="lg" variant="secondary"
+                                        onPress={() => {
+                                            handlePresentModalPress()
+                                        }} />
 
-                                <Button
-                                    loading={isLoadingProject}
-                                    fullWidth
-                                    variant="primary"
-                                    shape="rounded"
-                                    size="lg"
+                                    <Button
+                                        loading={isLoadingProject}
+                                        fullWidth
+                                        variant="primary"
+                                        shape="rounded"
+                                        size="lg"
+                                        onPress={() => {
+                                            approveSPB()
+                                        }}
+                                    >{t("setujui")}</Button>
+                                </Stack>
+                            )}
+                        </View>
+                    )
+                    }
+
+                    <BottomSheetModal
+                        style={{
+                            borderRadius: 20,
+                            backgroundColor: 'white',
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 2,
+                            },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 3.84,
+
+                            elevation: 5,
+                        }}
+                        ref={bottomSheetRef}
+                        index={0}
+                        snapPoints={snapPoints}
+                        onChange={handleSheetChanges}
+                        enablePanDownToClose={true}
+                        backdropComponent={() => {
+                            return (
+                                <TouchableWithoutFeedback
                                     onPress={() => {
-                                        approveSPB()
+                                        console.log("ANJENG TANAH")
                                     }}
-                                >{t("setujui")}</Button>
-                            </Stack>
-                        )}
-                    </View>
-                )
-                }
+                                >
+                                    <View style={{ flex: 1, backgroundColor: 'red' }} />
+                                </TouchableWithoutFeedback>
+                            )
+                        }}
+                        onDismiss={() => {
+                        }}
+                    >
+                        <View>
+                            <Typography type="title2" style={{ padding: 16 }}>Lainnya</Typography>
+                            <TouchableNativeFeedback
+                                onPress={() => {
+                                    bottomSheetRef.current?.dismiss()
+                                    rejectSPB()
+                                }}
+                            >
+                                <View>
+                                    <View style={{ padding: 16, flexDirection: "row", justifyContent: 'space-between' }}>
+                                        <Typography type="label1">Tolak SPB</Typography>
+                                        <Icon icon="chevron-forward" color={colors.neutral.neutral_90} />
+                                    </View>
+                                    <Divider style={{ marginLeft: 16 }} />
+                                </View>
+                            </TouchableNativeFeedback>
 
-      <ImageViewerModal
-        images={[{image: data.image ?? ""}]}
-        onClose={() => {
-        setIsShowViewer(false)
-      }} open={isShowViewer}/>
-            </View>
+                            <TouchableNativeFeedback
+                                onPress={() => {
+                                    bottomSheetRef.current?.dismiss()
+                                    askRevisionSPB()
+                                }}
+                            >
+                                <View style={{ padding: 16, flexDirection: "row", justifyContent: 'space-between' }}>
+                                    <Typography type="label1">Revisi SPB</Typography>
+                                    <Icon icon="chevron-forward" color={colors.neutral.neutral_90} />
+                                </View>
+                            </TouchableNativeFeedback>
+                        </View>
+                    </BottomSheetModal>
+
+
+                    <ImageViewerModal
+                        images={[{ image: data.image ?? "" }]}
+                        onClose={() => {
+                            setIsShowViewer(false)
+                        }} open={isShowViewer} />
+                </View>
+            </BottomSheetModalProvider>
         </Page>
     )
 }
