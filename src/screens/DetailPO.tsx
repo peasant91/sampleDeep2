@@ -190,10 +190,11 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                         <Typography type={"body4"}>{moment(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
-                            <Typography type={"body4"}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
+                            <Typography type={"body4"} style={{marginRight: 32}} numberOfLines={1}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
                         </View>
                     </Stack>
-                    <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} />
+                    {/* <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} /> */}
+                    <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={{ uri: projectData.current?.photo }} />
                 </View>
 
                 <Divider />

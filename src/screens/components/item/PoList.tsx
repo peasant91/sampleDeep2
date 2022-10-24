@@ -27,6 +27,16 @@ const Item = ({ item, index }: { item: POItem, index: number }) => {
     )
 }
 
+const CustomItem = ({ items }: { items: POItem[] }) => {
+    var qty = items.reduce((a, item) => { return a + item.quantity }, 0)
+    return (
+        <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+            <Typography type="body3">{items.length} Bahan Lainnya</Typography>
+            <Typography type="body3">x{qty}</Typography>
+        </View>
+    )
+}
+
 export function StatusButton({ status, style }: StatusType) {
     const { t } = useTranslation()
 
@@ -87,13 +97,28 @@ const POListItem = ({ item, index, type, onPress, withProjectName }: Props) => {
             <FlatList
                 scrollEnabled={false}
                 style={{ paddingHorizontal: 12, paddingVertical: 12 }}
-                data={item.items}
+                // data={item.items}
+                data={(item.items.length > 3) ? item.items.slice(0, 3) : item.items}
                 ItemSeparatorComponent={() => {
                     return (
                         <View style={{ height: 8 }} />
                     )
                 }}
-                renderItem={Item}
+                // renderItem={Item}
+                renderItem={(_item) => {
+                    return (
+                        (item.items.length == 3 || _item.index < 2) ?
+                            <Item
+                                item={_item.item}
+                                index={_item.index}
+                            />
+                            :
+                            <CustomItem
+                                items={item.items.slice(2, item.items.length)}
+                            />
+                    )
+
+                }}
             />
 
             <Divider />

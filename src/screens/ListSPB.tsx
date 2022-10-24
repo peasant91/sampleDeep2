@@ -18,6 +18,7 @@ import { navigate } from "../navigations/RootNavigation";
 import useProjectInfiniteQuery from "../services/project/useProjectQuery";
 import { SPBListShimmer } from "./components/shimmer/shimmer";
 import { EmptySPBState } from "./components/EmptyState";
+import { SpbListItem } from "../models/spb/spb";
 
 export default function ListSPB() {
     const {
@@ -31,6 +32,8 @@ export default function ListSPB() {
 
     } = useProjectInfiniteQuery({ status: "" });
     const { t } = useTranslation()
+
+    const test: SpbListItem[] = []
 
     return (
         <Page>
@@ -81,9 +84,13 @@ export default function ListSPB() {
                                 }}
                                 onEndReachedThreshold={0.5}
                                 onEndReached={fetchNext}
+                                contentContainerStyle={{flexGrow: 1}}
                                 ListEmptyComponent={() => {
                                     if (!isLoadingCatalog) {
-                                        return <EmptySPBState />
+                                        return (
+                                            <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+                                                <EmptySPBState />
+                                            </View>)
                                     } else {
                                         return <></>;
                                     }

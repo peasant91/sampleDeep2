@@ -233,7 +233,7 @@ const TextInputFilled = ({
               style: [
                 !multiline || (multiline && height)
                   ? { height: height ?? MIN_HEIGHT }
-                  : {},
+                  : { height: height},
                 {
                   ...font,
                   fontSize,

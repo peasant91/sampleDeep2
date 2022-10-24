@@ -38,8 +38,9 @@ export default function Divider({ variant, size = "xs", ...props }: Props & Reac
     },
 
     iosDivider: {
-      borderWidth: 1,
-      backgroundColor: colors.neutral.neutral_40,
+      borderWidth: 0.5,
+      borderColor: colors.neutral.neutral_40,
+      // borderStyle: 'dashed'
     }
   })
   

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { FlatList, Image, StyleProp, View, ViewStyle } from "react-native"
 import { Button, Divider, Icon, Stack, Tag } from "../../../../tmd"
 import Typography from "../../../../tmd/components/Typography/Typography"
@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next"
 import { t } from "i18next"
 import moment from "moment"
 import { EmptySPBState } from "../EmptyState"
+import { POItem } from "../../../models/spb/po"
+import { number } from "yup/lib/locale"
 
 export enum StatusSPB {
     inProgress = "in_progress",
@@ -33,16 +35,6 @@ type StatusType = {
 type PageType = {
     isPM: boolean
     isAdmin: boolean
-}
-
-const Item = ({ item, index }: { item: SpbItem, index: number }) => {
-    const _item: SpbItem = item;
-    return (
-        <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Typography type="body3">{item.name}</Typography>
-            <Typography type="body3">x{item.quantity} {item.unit}</Typography>
-        </View>
-    )
 }
 
 export function StatusButton({ status, style }: StatusType) {
@@ -108,6 +100,26 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
         }
     }
 
+    const Item = ({ item, index }: { item: SpbItem, index: number }) => {
+        const _item: SpbItem = item;
+        return (
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                <Typography type="body3">{item.name}</Typography>
+                <Typography type="body3">x{item.quantity} {item.unit}</Typography>
+            </View>
+        )
+    }
+
+    const CustomItem = ({ items }: { items: POItem[] }) => {
+        var qty = items.reduce((a, item) => { return a + item.quantity}, 0)
+        return (
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+                <Typography type="body3">{items.length} Bahan Lainnya</Typography>
+                <Typography type="body3">x{qty}</Typography>
+            </View>
+        )
+    }
+
     return (
         <Stack style={{ borderWidth: 1, borderRadius: 16, borderColor: colors.neutral.neutral_40, backgroundColor: colors.neutral.neutral_10, marginBottom: 16 }}>
             {
@@ -161,13 +173,26 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
             <FlatList
                 scrollEnabled={false}
                 style={{ paddingHorizontal: 12, paddingVertical: 12 }}
-                data={item.items}
+                data={(item.items.length > 3) ? item.items.slice(0, 3) : item.items}
                 ItemSeparatorComponent={() => {
                     return (
                         <View style={{ height: 8 }} />
                     )
                 }}
-                renderItem={Item}
+                renderItem={(_item) => {
+                    return (
+                        (item.items.length == 3 || _item.index < 2) ?
+                            <Item
+                                item={_item.item}
+                                index={_item.index}
+                            />
+                            :
+                            <CustomItem
+                                items={item.items.slice(2, item.items.length)}
+                            />
+                    )
+
+                }}
             />
 
             <Divider />

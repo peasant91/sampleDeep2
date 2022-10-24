@@ -51,6 +51,7 @@ export interface SPBDetailModel {
   notes?: string
   photo?: string
   image?: string
+  estimated_date?: string
 }
 
 

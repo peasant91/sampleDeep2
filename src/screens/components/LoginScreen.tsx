@@ -52,12 +52,10 @@ export default function LoginScreen() {
   };
 
   const [scrollable, setScrollable] = useState(true);
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
+
   return (
     <View style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
         <ScrollView
           scrollEnabled={scrollable}
           style={{
@@ -118,8 +116,6 @@ export default function LoginScreen() {
             </Stack>
           </FormProvider>
         </ScrollView>
-
-      </KeyboardAvoidingView>
     </View>
   );
 }

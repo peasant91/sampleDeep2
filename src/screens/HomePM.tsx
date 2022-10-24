@@ -1,19 +1,15 @@
-import Color from "color";
 import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, KeyboardAvoidingView, LayoutAnimation, NativeScrollEvent, NativeSyntheticEvent, Platform, RefreshControl, SafeAreaView, StatusBar, StyleSheet, View, ViewStyle } from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, View, ViewStyle, FlatList } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import { useDispatch } from "react-redux";
 import { Divider, IconButton, Page, Skeleton, Stack, Tag } from "../../tmd";
 import Button from "../../tmd/components/Button/Button";
 import TextButton from "../../tmd/components/Button/TextButton";
-import Title from "../../tmd/components/Typography/Title";
 import Typography from "../../tmd/components/Typography/Typography";
-import { black, colors, red100, transparent, white } from "../../tmd/styles/colors";
-import { SpbListItem } from "../models/spb/spb";
+import { colors, transparent, white } from "../../tmd/styles/colors";
 import SpbList, { StatusSPB } from "./components/item/SpbList";
-import ICDocument from "../assets/icons/ic_document.svg"
 import { _spbMock } from "../../tmd/data/_mock";
 import { navigate } from "../navigations/RootNavigation";
 import { EmptySPBState } from "./components/EmptyState";
@@ -45,12 +41,12 @@ export function StatusButton({ status }: _StatusProject) {
         <Tag variant="primary" text={t("in_progress")} />
       }
       {(status == StatusProject.finish || status == StatusProject.success) &&
-        <Tag variant="success" text={t("success")} />
+        <Tag variant="success" text={t("finish")} />
       }
       {status == StatusProject.done &&
-        <Tag variant="success" text={t("done")} />
+        <Tag variant="success" text={t("finish")} />
       }
-      
+
     </View>
   )
 
@@ -234,9 +230,9 @@ export default function HomePM() {
       >
         <Stack style={{ flex: 1 }}>
           <StatusBar
-            translucent={true}
-            backgroundColor={transparent}
-            hidden={true}
+            translucent={false}
+            // backgroundColor={transparent}
+            hidden={false}
           />
 
           <View style={{ flex: 1 }}>
@@ -278,7 +274,7 @@ export default function HomePM() {
               ) : (
 
                 <FlatList
-                style={{flex: 1}}
+                  style={{ flex: 1, zIndex: 1000 }}
                   ListHeaderComponent={Header}
                   ListFooterComponent={() => <View style={{ height: 80 }} />}
                   ListEmptyComponent={EmptySPBState}
@@ -286,12 +282,18 @@ export default function HomePM() {
                     return <View style={{ height: 16 }} />
                   }}
                   keyExtractor={(item, index) => index.toString()}
-                  enabled={true}
                   refreshing={isRefreshing}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={isRefreshing}
+                      onRefresh={() => {
+                        refresh()
+                        refetch()
+                      }}
+                    />
+                  }
                   onRefresh={() => {
                     setIsRefreshing(true)
-                    refresh()
-                    refetch()
                   }}
                   data={spbLists}
                   renderItem={(item) => {

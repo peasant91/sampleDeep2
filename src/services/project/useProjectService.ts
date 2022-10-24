@@ -20,6 +20,7 @@ export default function useProjectService() {
             setIsLoading(false);
             return res;
         } catch (e) {
+            console.log(e)
             setIsLoading(false);
             showErrorBS(e);
         }
@@ -38,11 +39,12 @@ export default function useProjectService() {
         }
     }
 
-    const patchSPBStatus = async (noSPB: string, status: StatusSPB) => {
+    const patchSPBStatus = async (noSPB: string, status: StatusSPB, notes?: string) => {
         try {
             setIsLoading(true);
             const res = await patchAPI(`project/spb/${noSPB}/status`, {
-                "spb_status": status
+                "spb_status": status,
+                "notes": notes ?? ""
             })
             setIsLoading(false);
             return res;

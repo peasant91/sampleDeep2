@@ -11,7 +11,7 @@ import { _projectMock, _spbMock } from '../../tmd/data/_mock'
 import ImagePicker from '../../tmd/components/picker/ImagePicker'
 import { FlatList } from 'react-native-gesture-handler'
 import { BahanModel, ListBahan } from '../models/spb/bahan'
-import { goBack, navigate } from '../navigations/RootNavigation'
+import { goBack, navigate, navigationRef } from '../navigations/RootNavigation'
 import ItemList from './components/item/itemList'
 import { SPBDetailModel, SpbItem } from '../models/spb/spb'
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -53,7 +53,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                 id: item.id,
                 name: item.name,
                 unit: item.unit,
-                notes: item.notes,
+                notes: item.notes ?? "",
                 quantity: item.quantity
             }
             array.push(_bahan)
@@ -102,7 +102,14 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         if (defaultSPB == null) {
             await postSPB(method.getValues().no_spb ?? "", query)
                 .then((response) => {
+                    console.log("ANJENG", response)
                     if (response != undefined) {
+                        navigationRef.reset({
+                            routes: [
+                                { name: "HomePM" },
+                                { name: "ProjectDetail" }
+                            ]
+                        })
                         navigate("SuccessPage")
                         // showAlertBS({
                         //     title: "Success Ajukan SPB Baru",
@@ -119,7 +126,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                 .then((response) => {
                     if (response != undefined) {
                         showAlertBS({
-                            title: `Success Merubah SPB ${defaultSPB.no_spb}`,
+                            title: `Sukses Mengubah SPB ${defaultSPB.no_spb}`,
                             buttonPrimaryTitle: "OK",
                             buttonPrimaryAction: () => {
                                 hideAlertBS()
@@ -152,7 +159,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
     const defaultValues = {
         no_spb: defaultSPB?.no_spb,
-        submission_date: moment(defaultSPB?.created_at).format()
+        submission_date: moment(defaultSPB?.created_at).format(),
     };
 
     const method = useForm({
@@ -204,7 +211,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
 
                     <RHFTextField
-                    style={{paddingVertical: 4}}
+                        style={{ paddingVertical: 4 }}
                         multiline
                         requiredLabel
                         disabled={true}

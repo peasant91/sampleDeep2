@@ -14,7 +14,7 @@ export default function SuccessPage() {
 
     return (
         <Page>
-            <View style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
                 <Stack>
                     <ICSuccess width={width / 2} style={{ aspectRatio: 1, alignSelf: 'center' }} />
 
@@ -30,13 +30,16 @@ export default function SuccessPage() {
                     variant='primary'
                     shape='rounded'
                     size='lg'
-                    onPress={() => navigationRef.reset({
-                        index: 0,
-                        routes: [
-                            { name: 'HomePM' },
-                            { name: "ProjectDetail" }
-                        ]
-                    })}
+                    onPress={() => {
+                        navigate("ProjectDetail")
+                    }}
+                // onPress={() => navigationRef.reset({
+                //     // index: 1,
+                //     routes: [
+                //         // { name: 'HomePM' },
+                //         { name: "ProjectDetail" }
+                //     ]
+                // })}
                 >
                     {t("to_detail_project")}
                 </Button>

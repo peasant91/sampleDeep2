@@ -49,11 +49,11 @@
       "bluetooth_title": "Bluetooth Anda sepertinya mati..",
       "bluetooth_description": "Nyalakan bluetooth untuk menggunakan fitur ini."
     },
-    "allow": "Allow",
+    "allow": "Izinkan",
     "save": "Simpan",
-    "reset": "Reset",
-    "apply_filter": "Apply Filter",
-    "choose_date": "Choose Date",
+    "reset": "Hapus",
+    "apply_filter": "Pasang Filter",
+    "choose_date": "Pilih Tanggal",
     "date_filters": {
       "one_month_ago": "One Month Ago",
       "two_months_ago": "Two Months Ago",
@@ -203,6 +203,11 @@
     "edit": "Ubah",
     "revision": "Revisi",
     "rejected": "Ditolak",
-    "last_updated_desc": "Terakhir diperbaharui : {{date}}"
+    "last_updated_desc": "Terakhir diperbaharui : {{date}}",
+    "spb_reject_title": "Tolak SPB?",
+    "spb_confirm_title": "Setujui SPB?",
+    "spb_revision_title": "Revisi SPB?",
+    "spb_reject_desc": "Mohon cek kembali SPB yang dikirim oleh PM.\n Aksi ini tidak dapat dikembalikan",
+    "spb_bahan_date": "Tanggal Pengiriman"
   }
 }

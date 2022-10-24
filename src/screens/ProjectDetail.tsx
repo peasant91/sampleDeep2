@@ -40,7 +40,7 @@ export default function ProjectDetail() {
 
     useFocusEffect(
         useCallback(() => {
-            refetch() // fetch Project Detail
+            refetch() // fetch listProject
         }, [])
     )
 
@@ -121,7 +121,7 @@ export default function ProjectDetail() {
                     <Typography type="title3">{t("project_location")}</Typography>
                     <View style={{ marginTop: 11, flexDirection: 'row', alignItems: 'center' }}>
                         <IcLocation />
-                        <Typography type='label2' style={{ flexGrow: 1, paddingLeft: 8 }}>{projectData?.location.address}</Typography>
+                        <Typography type='label2' style={{ flexShrink: 1, paddingLeft: 8 }}>{projectData?.location.address}</Typography>
                         <TextButton size='sm'
                             onPress={() => {
                                 navigate("MapPickerScreen", {

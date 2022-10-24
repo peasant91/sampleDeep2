@@ -74,6 +74,7 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
 
   return {
     setQuery: setQuery,
+    // spbLists: mappedData,
     spbLists: mappedData,
     isLoadingCatalog: isLoading,
     fetchNext,

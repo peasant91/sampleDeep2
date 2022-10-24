@@ -99,8 +99,8 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
         bottomSheetRef.current?.present();
     }, []);
 
-    const approveSPB = async () => {
-        await patchSPBStatus(data.no_spb, StatusSPB.approved)
+    const approveSPB = async (text: string) => {
+        await patchSPBStatus(data.no_spb, StatusSPB.approved, text)
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
@@ -116,8 +116,8 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
             })
     }
 
-    const askRevisionSPB = async () => {
-        await patchSPBStatus(data.no_spb, StatusSPB.revision)
+    const askRevisionSPB = async (text: string) => {
+        await patchSPBStatus(data.no_spb, StatusSPB.revision, text)
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
@@ -133,8 +133,8 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
             })
     }
 
-    const rejectSPB = async () => {
-        await patchSPBStatus(data.no_spb, StatusSPB.rejected)
+    const rejectSPB = async (text: string) => {
+        await patchSPBStatus(data.no_spb, StatusSPB.rejected, text)
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
@@ -232,17 +232,17 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                         <Typography type={"body4"}>{moment(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
-                            <Typography type={"body4"}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
+                            <Typography type={"body4"} style={{ marginRight: 32 }} numberOfLines={1}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
                         </View>
                     </Stack>
                     {/* <Image style={{ aspectRatio: 1, width: '25%', marginLeft: 16 }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} /> */}
-                    <Image style={{ aspectRatio: 1, width: '25%', marginLeft: 16 }} borderRadius={4} source={{ uri: data.image }} />
+                    <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={{ uri: projectData.current?.photo ?? data.project.image }} />
                 </View>
 
                 <Divider />
 
                 <View style={[{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }, _s.padding]}>
-                    <Typography type={"body3"}>{t("job_status")}</Typography>
+                    <Typography type={"body3"}>{t("status_spb")}</Typography>
                     <StatusButton
                         status={data.spb_status}
                     />
@@ -251,13 +251,20 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                 <Divider />
 
                 <View style={[_s.padding, { flexDirection: 'row' }]}>
-                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                    <View style={{ flex: 1, flexDirection: 'column', paddingRight: 8 }}>
                         <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
                         <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
                     </View>
                     <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
                         <Typography type={"label2"}>{moment(data.created_at).format("DD MMMM YYYY")}</Typography>
                         <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
+                    </View>
+                </View>
+
+                <View style={[_s.padding, { flexDirection: 'row' }]}>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        <Typography type={"label2"}>{moment(data.estimated_date ?? data.created_at).format("DD MMMM YYYY")}</Typography>
+                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("spb_bahan_date")}</Typography>
                     </View>
                 </View>
 
@@ -273,35 +280,39 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
                 <Divider />
 
-                <View style={_s.padding}>
-                    <Typography type="title3">{t("item_image")}</Typography>
-                    <View style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 16 }}>
-                        <Image
-                            style={{ width: '100%', height: '100%', borderRadius: 8 }}
-                            source={{ uri: data.image }}
-                            onLoadStart={() => {
-                                setImageLoaded(true)
-                            }}
-                        />
-                        <View style={{ position: 'absolute', alignSelf: 'center', height: '100%', justifyContent: 'center' }}>
-                            {/* <Icon icon="search-circle" color={colors.neutral.neutral_10} size={40} /> */}
-                            <IconButton
-                                shape={"rounded"}
-                                onPress={handleOpenViewer}
-                                size={40}
-                                variant={"tertiary"}
-                                icon={"search"} />
+                {data.image != null &&
+                    <>
+                        <View style={_s.padding}>
+                            <Typography type="title3">{t("item_image")}</Typography>
+                            <View style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 16 }}>
+                                <Image
+                                    style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                                    source={{ uri: data.image }}
+                                    onLoadStart={() => {
+                                        setImageLoaded(true)
+                                    }}
+                                />
+                                <View style={{ position: 'absolute', alignSelf: 'center', height: '100%', justifyContent: 'center' }}>
+                                    {/* <Icon icon="search-circle" color={colors.neutral.neutral_10} size={40} /> */}
+                                    <IconButton
+                                        shape={"rounded"}
+                                        onPress={handleOpenViewer}
+                                        size={40}
+                                        variant={"tertiary"}
+                                        icon={"search"} />
+                                </View>
+
+                                {!imageLoaded &&
+                                    <View style={{ position: 'absolute', borderRadius: 8, height: '100%', width: '100%', backgroundColor: colors.neutral.neutral_50 }}>
+                                    </View>
+                                }
+                            </View>
                         </View>
 
-                        {!imageLoaded &&
-                            <View style={{ position: 'absolute', borderRadius: 8, height: '100%', width: '100%', backgroundColor: colors.neutral.neutral_50 }}>
-                            </View>
-                        }
-                    </View>
-                </View>
+                        <Divider />
+                    </>
 
-                <Divider />
-
+                }
                 <View style={_s.padding}>
                     <Typography type="title3">{t("item_list")}</Typography>
                 </View>
@@ -425,23 +436,40 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                     status={data.spb_status} />
                             )}
 
-                            {(isAdminPage && data.spb_status == StatusSPB.waiting) && (
+                            {(isAdminPage && (data.spb_status == StatusSPB.waiting || data.spb_status == StatusSPB.revision)) && (
                                 <Stack spacing={16} direction="row">
-                                    {/* <Button
-                                    loading={isLoadingProject}
-                                    fullWidth
-                                    variant="secondary"
-                                    shape="rounded"
-                                    size="lg"
-                                    onPress={() => {
-                                        rejectSPB()
-                                    }}
-                                >{t("tolak")}</Button> */}
-                                    <IconButton source="material-community" icon={"dots-horizontal"} color={colors.primary.main} themeSize="lg" variant="secondary"
-                                        onPress={() => {
-                                            handlePresentModalPress()
-                                        }} />
 
+                                    {(data.spb_status == StatusSPB.revision) ?
+
+                                        <Button
+                                            loading={isLoadingProject}
+                                            fullWidth
+                                            variant="secondary"
+                                            shape="rounded"
+                                            size="lg"
+                                            onPress={() => {
+                                                showConfirmationBS({
+                                                    title: t("spb_reject_title"),
+                                                    description: t("spb_reject_desc"),
+                                                    withNotes: true,
+                                                    noteIsRequired: true,
+                                                    buttonPrimaryTitle: t("confirm"),
+                                                    buttonSecondaryTitle: t("cancel"),
+                                                    buttonPrimaryAction: ((text) => {
+                                                        rejectSPB(text ?? "")
+                                                        hideConfirmationBS()
+                                                    })
+                                                })
+                                            }}
+                                        >{t("tolak")}</Button>
+                                        :
+
+                                        <IconButton source="material-community" icon={"dots-horizontal"} color={colors.primary.main} themeSize="lg" variant="secondary"
+                                            onPress={() => {
+                                                handlePresentModalPress()
+                                            }} />
+
+                                    }
                                     <Button
                                         loading={isLoadingProject}
                                         fullWidth
@@ -449,7 +477,18 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                         shape="rounded"
                                         size="lg"
                                         onPress={() => {
-                                            approveSPB()
+                                            showConfirmationBS({
+                                                title: t("spb_confirm_title"),
+                                                description: t("spb_reject_desc"),
+                                                withNotes: true,
+                                                noteIsRequired: false,
+                                                buttonPrimaryTitle: t("confirm"),
+                                                buttonSecondaryTitle: t("cancel"),
+                                                buttonPrimaryAction: ((text) => {
+                                                    approveSPB(text ?? "")
+                                                    hideConfirmationBS()
+                                                })
+                                            })
                                         }}
                                     >{t("setujui")}</Button>
                                 </Stack>
@@ -496,7 +535,18 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                             <TouchableNativeFeedback
                                 onPress={() => {
                                     bottomSheetRef.current?.dismiss()
-                                    rejectSPB()
+                                    showConfirmationBS({
+                                        title: t("spb_reject_title"),
+                                        description: t("spb_reject_desc"),
+                                        withNotes: true,
+                                        noteIsRequired: true,
+                                        buttonPrimaryTitle: t("confirm"),
+                                        buttonSecondaryTitle: t("cancel"),
+                                        buttonPrimaryAction: ((text) => {
+                                            rejectSPB(text ?? "")
+                                            hideConfirmationBS()
+                                        })
+                                    })
                                 }}
                             >
                                 <View>
@@ -511,7 +561,18 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                             <TouchableNativeFeedback
                                 onPress={() => {
                                     bottomSheetRef.current?.dismiss()
-                                    askRevisionSPB()
+                                    showConfirmationBS({
+                                        title: t("spb_revision_title"),
+                                        description: t("spb_reject_desc"),
+                                        withNotes: true,
+                                        noteIsRequired: true,
+                                        buttonPrimaryTitle: t("confirm"),
+                                        buttonSecondaryTitle: t("cancel"),
+                                        buttonPrimaryAction: ((text) => {
+                                            askRevisionSPB(text ?? "")
+                                            hideConfirmationBS()
+                                        })
+                                    })
                                 }}
                             >
                                 <View style={{ padding: 16, flexDirection: "row", justifyContent: 'space-between' }}>

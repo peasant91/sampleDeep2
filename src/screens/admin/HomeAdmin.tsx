@@ -284,11 +284,11 @@ export default function HomeAdmin() {
                         search
                         onClear={() => {
                             searchKey.current = "";
+                            onGoingHandler.setQuery(searchKey.current)
+                            completedHandler.setQuery(searchKey.current)
                             if (index == 0) {
-                                onGoingHandler.setQuery(searchKey.current)
                                 setTimeout(onGoingHandler.refresh, 1000)
                             } else {
-                                completedHandler.setQuery(searchKey.current)
                                 setTimeout(completedHandler.refresh, 1000)
                             }
                         }}
@@ -296,11 +296,11 @@ export default function HomeAdmin() {
                             tabRef.current?.setIndex(index)
                         }}
                         onSubmitEditing={() => {
+                            onGoingHandler.setQuery(searchKey.current)
+                            completedHandler.setQuery(searchKey.current)
                             if (index == 0) {
-                                onGoingHandler.setQuery(searchKey.current)
                                 setTimeout(onGoingHandler.refresh, 1000)
                             } else {
-                                completedHandler.setQuery(searchKey.current)
                                 setTimeout(completedHandler.refresh, 1000)
                             }
                         }}
