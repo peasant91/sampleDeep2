@@ -2,7 +2,7 @@
  * Created by Widiana Putra on 27/06/2022
  * Copyright (c) 2022 - Made with love
  */
-import React from "react";
+import React, { useCallback } from "react";
 import Typography from "../../tmd/components/Typography/Typography";
 import { CatalogItem } from "../models/catalog/Catalog";
 import { FlatList, StatusBar, View } from "react-native";
@@ -19,6 +19,7 @@ import useProjectInfiniteQuery from "../services/project/useProjectQuery";
 import { SPBListShimmer } from "./components/shimmer/shimmer";
 import { EmptySPBState } from "./components/EmptyState";
 import { SpbListItem } from "../models/spb/spb";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ListSPB() {
     const {
@@ -33,7 +34,11 @@ export default function ListSPB() {
     } = useProjectInfiniteQuery({ status: "" });
     const { t } = useTranslation()
 
-    const test: SpbListItem[] = []
+    useFocusEffect(
+        useCallback(() => {
+            refresh()
+        }, [])
+    )
 
     return (
         <Page>
@@ -42,64 +47,49 @@ export default function ListSPB() {
             <View style={{
                 flex: 1,
             }}>
-                {
-                    ((isRefreshing || isRefetching || isLoadingCatalog) && !isFetchingNextPage) ? (
-                        <Stack spacing={16} style={{ padding: 16 }}>
-                            <Typography>Loading...</Typography>
-                            <SPBListShimmer />
-                            <View />
-                            <SPBListShimmer />
-                            <View />
-                            <SPBListShimmer />
-                        </Stack>
-                    ) : (
-
-                        <View style={{ flex: 1, padding: 16 }}>
-                            <FlatList
-                                showsVerticalScrollIndicator={false}
-                                data={spbLists}
-                                ItemSeparatorComponent={() => {
-                                    return <View style={{ height: 16 }} />
-                                }}
-                                renderItem={(item) => {
-                                    return (
-                                        <SpbList
-                                            isAdmin={false}
-                                            isPM={true}
-                                            item={item.item}
-                                            index={item.index}
-                                            onPress={() => {
-                                                navigate("DetailSPB", {
-                                                    spbID: item.item.no_spb,
-                                                    isPMPage: true
-                                                })
-                                            }}
-                                        />
-                                    )
-                                }}
-                                onRefresh={refresh}
-                                refreshing={isRefreshing}
-                                style={{
-                                    flexGrow: 1,
-                                }}
-                                onEndReachedThreshold={0.5}
-                                onEndReached={fetchNext}
-                                contentContainerStyle={{flexGrow: 1}}
-                                ListEmptyComponent={() => {
-                                    if (!isLoadingCatalog) {
-                                        return (
-                                            <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
-                                                <EmptySPBState />
-                                            </View>)
-                                    } else {
-                                        return <></>;
-                                    }
-                                }}
-                            />
-                        </View>
-                    )
-                }
-
+                <View style={{ flex: 1, padding: 16 }}>
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={spbLists}
+                        ItemSeparatorComponent={() => {
+                            return <View style={{ height: 16 }} />
+                        }}
+                        renderItem={(item) => {
+                            return (
+                                <SpbList
+                                    isAdmin={false}
+                                    isPM={true}
+                                    item={item.item}
+                                    index={item.index}
+                                    onPress={() => {
+                                        navigate("DetailSPB", {
+                                            spbID: item.item.no_spb,
+                                            isPMPage: true
+                                        })
+                                    }}
+                                />
+                            )
+                        }}
+                        onRefresh={refresh}
+                        refreshing={isRefreshing}
+                        style={{
+                            flexGrow: 1,
+                        }}
+                        onEndReachedThreshold={0.5}
+                        onEndReached={fetchNext}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        ListEmptyComponent={() => {
+                            if (!isLoadingCatalog) {
+                                return (
+                                    <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+                                        <EmptySPBState />
+                                    </View>)
+                            } else {
+                                return <></>;
+                            }
+                        }}
+                    />
+                </View>
                 {
                     isFetchingNextPage &&
                     <Typography style={{

@@ -117,7 +117,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
-                        title: `Success`,
+                        title: `Sukses`,
                         description: `PO ${data.no_po} dari ${data.no_spb} telah disetujui`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -135,7 +135,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
-                        title: `Success`,
+                        title: `Sukses`,
                         description: `PO ${data.no_po} dari ${data.no_spb} telah ditolak`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -169,7 +169,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
-                        title: `Success`,
+                        title: `Sukses`,
                         description: `Barang barang PO ${data.no_po} dari ${data.no_spb} telah diterima`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -214,7 +214,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                             <Alert
                                 variant='info'
                                 type='outlined'
-                                description={t("last_updated_desc", { date: moment(data.last_updated).format("Do MMMM YYYY, hh:ss") })}
+                                description={t("last_updated_desc", { date: moment(data.last_updated).format("Do MMMM YYYY, HH:mm") })}
                             />
                         }
                         {/* <View>
@@ -425,7 +425,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                 </View>
             )
         } else if (
-            (data.po_status == StatusPO.waiting || data.po_status == StatusPO.complaint) &&
+            (data.po_status == StatusPO.waiting || data.po_status == StatusPO.complaint || data.po_status == StatusPO.approved) &&
             isPMPage) {
             return (
                 <View style={_s.padding}>

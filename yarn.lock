@@ -7310,6 +7310,11 @@
   "resolved" "https://registry.npmjs.org/react-native-signature-canvas/-/react-native-signature-canvas-4.4.1.tgz"
   "version" "4.4.1"
 
+"react-native-status-bar-height@^2.6.0":
+  "integrity" "sha512-z3SGLF0mHT+OlJDq7B7h/jXPjWcdBT3V14Le5L2PjntjjWM3+EJzq2BcXDwV+v67KFNJic5pgA26cCmseYek6w=="
+  "resolved" "https://registry.npmjs.org/react-native-status-bar-height/-/react-native-status-bar-height-2.6.0.tgz"
+  "version" "2.6.0"
+
 "react-native-super-grid@^4.4.0":
   "integrity" "sha512-0msesnKyrOuT0xtlmFzQMgbRLBKnQel/AgJWWh/4UZAnRtLgQufzuVvnuQnyFQQb0ioQa3GkfMwr2ayFn5BHoA=="
   "resolved" "https://registry.npmjs.org/react-native-super-grid/-/react-native-super-grid-4.4.0.tgz"

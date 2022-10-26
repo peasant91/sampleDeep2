@@ -8,6 +8,7 @@ import type { RenderProps } from "./types";
 import TextInputContained from "./TextInputContained";
 import TextInputFilled from "./TextInputFilled";
 import { IconProps } from "../Icon";
+import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
 
 const BLUR_ANIMATION_DURATION = 180;
 const FOCUS_ANIMATION_DURATION = 150;
@@ -138,13 +139,13 @@ export type TextInputProps = React.ComponentPropsWithRef<typeof NativeTextInput>
   //phone
   initialPhoneCode?: string;
 
-//  changed
+  //  changed
   onInvokeTextChanged?: (value: string) => void;
 
-//  picker
+  //  picker
   onOpenPicker?: () => void;
 
-//  label
+  //  label
   requiredLabel?: boolean
 };
 

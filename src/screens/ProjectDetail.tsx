@@ -119,26 +119,31 @@ export default function ProjectDetail() {
 
                 <View style={_s.padding}>
                     <Typography type="title3">{t("project_location")}</Typography>
-                    <View style={{ marginTop: 11, flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ marginTop: 11, flexDirection: 'row', alignItems: 'center', flexGrow: 1 }}>
                         <IcLocation />
-                        <Typography type='label2' style={{ flexShrink: 1, paddingLeft: 8 }}>{projectData?.location.address}</Typography>
-                        <TextButton size='sm'
-                            onPress={() => {
-                                navigate("MapPickerScreen", {
-                                    initial: {
-                                        fullAddress: projectData?.location.address,
-                                        location: {
-                                            latitude: projectData?.location.lat,
-                                            longitude: projectData?.location.lng
-                                            // latitude: -8.6815,
-                                            // longitude: 115.2395
+                        <View style={{ justifyContent: 'space-between', flexDirection: 'row', flex: 1 }}>
+                            <Typography numberOfLines={1} type='label2' style={{ paddingLeft: 8, flexShrink: 1 }}>{projectData?.location.address_title ?? projectData?.location.address}</Typography>
+                            <TextButton size='sm'
+                                style={{ alignSelf: 'flex-end' }}
+                                onPress={() => {
+                                    navigate("MapPickerScreen", {
+                                        initial: {
+                                            fullAddress: projectData?.location.address,
+                                            location: {
+                                                latitude: projectData?.location.lat,
+                                                longitude: projectData?.location.lng
+                                                // latitude: -8.6815,
+                                                // longitude: 115.2395
+                                            },
+                                            nameAddress: projectData?.location.address
                                         },
-                                        nameAddress: projectData?.location.address
-                                    },
-                                    viewOnly: true
-                                })
-                            }}
-                        >{t("see_in_map")}</TextButton>
+                                        viewOnly: true
+                                    })
+                                }}
+                            >{t("see_in_map")}</TextButton>
+
+                        </View>
+
                     </View>
                     <Typography type='body4'>{projectData?.location.address}</Typography>
                 </View>

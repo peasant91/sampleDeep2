@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, StyleSheet, TouchableNativeFeedback, View } from "react-native";
+import { Image, SafeAreaView, StyleSheet, TouchableNativeFeedback, View } from "react-native";
 import { FlatList, GestureDetector, ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { SlideInLeft } from "react-native-reanimated";
 import { Button, Divider, Icon, IconButton, Page, Skeleton, Stack, Toolbar } from "../../tmd";
@@ -456,8 +456,10 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                                     buttonPrimaryTitle: t("confirm"),
                                                     buttonSecondaryTitle: t("cancel"),
                                                     buttonPrimaryAction: ((text) => {
-                                                        rejectSPB(text ?? "")
                                                         hideConfirmationBS()
+                                                        setTimeout(() => {
+                                                            rejectSPB(text ?? "")
+                                                        }, 1000)
                                                     })
                                                 })
                                             }}
@@ -485,8 +487,10 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                                 buttonPrimaryTitle: t("confirm"),
                                                 buttonSecondaryTitle: t("cancel"),
                                                 buttonPrimaryAction: ((text) => {
-                                                    approveSPB(text ?? "")
                                                     hideConfirmationBS()
+                                                    setTimeout(() => {
+                                                        approveSPB(text ?? "")
+                                                    }, 1000)
                                                 })
                                             })
                                         }}
@@ -543,8 +547,10 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                         buttonPrimaryTitle: t("confirm"),
                                         buttonSecondaryTitle: t("cancel"),
                                         buttonPrimaryAction: ((text) => {
-                                            rejectSPB(text ?? "")
                                             hideConfirmationBS()
+                                            setTimeout(() => {
+                                                rejectSPB(text ?? "")
+                                            }, 1000)
                                         })
                                     })
                                 }}
@@ -569,8 +575,10 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                         buttonPrimaryTitle: t("confirm"),
                                         buttonSecondaryTitle: t("cancel"),
                                         buttonPrimaryAction: ((text) => {
-                                            askRevisionSPB(text ?? "")
                                             hideConfirmationBS()
+                                            setTimeout(() => {
+                                                askRevisionSPB(text ?? "")
+                                            }, 1000)
                                         })
                                     })
                                 }}

@@ -233,7 +233,7 @@ const TextInputFilled = ({
               style: [
                 !multiline || (multiline && height)
                   ? { height: height ?? MIN_HEIGHT }
-                  : { height: height},
+                  : { height: height },
                 {
                   ...font,
                   fontSize,
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    bottom: 0,
+    bottom: (Platform.OS == "ios") ? -4 : 0,
   },
   labelContainer: {
     paddingBottom: 0,

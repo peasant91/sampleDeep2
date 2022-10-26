@@ -37,14 +37,15 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
   }, {
     keepPreviousData: false,
     getNextPageParam: (lastPage) => {
-      if (lastPage.meta.current_page == lastPage.meta.last_page) {
+      if (lastPage.meta.current_page >= lastPage.meta.last_page) {
         return null
       }
       return lastPage.meta.current_page + 1
     },
   });
 
-  const mappedData = data?.pages.map(it => it.data).flat();
+  // const mappedData = data?.pages.map(it => it.data).flat();
+  const mappedData = data?.pages ? data.pages.flatMap((page) => [...page.data]) : []
 
   useEffect(() => {
     if (error) {
@@ -74,7 +75,6 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
 
   return {
     setQuery: setQuery,
-    // spbLists: mappedData,
     spbLists: mappedData,
     isLoadingCatalog: isLoading,
     fetchNext,

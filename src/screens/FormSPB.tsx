@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native'
 import { Alert, Button, Divider, Icon, Page, RHFDatePicker, RHFTextField, Stack, Toolbar } from '../../tmd'
 import Typography from '../../tmd/components/Typography/Typography'
 import { colors } from '../../tmd/styles/colors'
@@ -27,6 +27,7 @@ import { curry, defaults } from 'lodash'
 import { ProjectLocationModel, ProjectModel } from '../models/project/project'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import StorageKey from '../utils/StorageKey'
+import { Modalize } from 'react-native-modalize'
 
 
 export interface IBahan {
@@ -34,18 +35,10 @@ export interface IBahan {
 }
 
 export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationType, "FormSPB">) {
-    type bottomSheetSelector = {
-        show: boolean,
-        index: number
-    }
-
     const { t } = useTranslation()
-    const [showBS, setShowBS] = useState<bottomSheetSelector>({
-        show: false,
-        index: 0
-    })
     const { showConfirmationBS, hideConfirmationBS, showAlertBS, hideAlertBS } = useBottomSheet()
     const [projectLocation, setprojectLocation] = useState<ProjectLocationModel>()
+    const [editIndex, setEditIndex] = useState(0)
     const [items, setItems] = useState<BahanModel[]>(() => {
         var array: BahanModel[] = []
         route.params.defaultSPB?.items.map(item => {
@@ -102,7 +95,6 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
         if (defaultSPB == null) {
             await postSPB(method.getValues().no_spb ?? "", query)
                 .then((response) => {
-                    console.log("ANJENG", response)
                     if (response != undefined) {
                         navigationRef.reset({
                             routes: [
@@ -159,7 +151,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
     const defaultValues = {
         no_spb: defaultSPB?.no_spb,
-        submission_date: moment(defaultSPB?.created_at).format(),
+        submission_date: moment(defaultSPB?.estimated_date ?? defaultSPB?.created_at).format(),
     };
 
     const method = useForm({
@@ -175,16 +167,10 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
     // ref
     const bottomSheetRef = useRef<BottomSheet>(null);
+    const modalizeRef = useRef<Modalize>(null);
     const imageURL = useRef<string>(defaultSPB?.image ?? "")
 
     // variables
-    const snapPoints = useMemo(() => [368], []);
-
-    // callbacks
-    const handleSheetChanges = useCallback((index: number) => {
-        console.log('handleSheetChanges', index);
-    }, []);
-
     useEffect(() => {
         bottomSheetRef.current?.forceClose()
     }, [])
@@ -211,7 +197,6 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
 
                     <RHFTextField
-                        style={{ paddingVertical: 4 }}
                         multiline
                         requiredLabel
                         disabled={true}
@@ -263,7 +248,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                             <Icon icon='location' size={18} />
                             <Stack>
                                 {/* <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectData.current?.location.address}</Typography> */}
-                                <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectLocation?.address}</Typography>
+                                <Typography type='label1' style={{ paddingLeft: 8, color: colors.neutral.neutral_90 }}>{projectLocation?.address_title ?? projectLocation?.address}</Typography>
                                 <Typography type='body3' style={{ paddingLeft: 8 }}>{projectLocation?.address}</Typography>
                             </Stack>
                         </View>
@@ -323,10 +308,12 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
                                 withEdit: true
                             }}
                             doEdit={() => {
-                                setShowBS({
-                                    index: index,
-                                    show: true
-                                })
+                                setEditIndex(index)
+                                modalizeRef.current?.open()
+                                // setShowBS({
+                                //     index: index,
+                                //     show: true
+                                // })
                             }}
                             onDelete={(index) => {
                                 return doDelete(index)
@@ -346,49 +333,28 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
 
             </FormProvider>
 
-            {showBS.show &&
-                <BottomSheet
-                    style={{
-                        backgroundColor: 'white',
-                        shadowColor: "#000",
-                        shadowOffset: {
-                            width: 0,
-                            height: 2,
-                        },
-                        shadowOpacity: 0.25,
-                        shadowRadius: 3.84,
+            <Modalize
+                ref={modalizeRef}
+                closeOnOverlayTap={true}
+                handlePosition={"inside"}
+                adjustToContentHeight
+                modalStyle={{
+                    borderTopRightRadius: 16,
+                    borderTopLeftRadius: 16,
+                }}
+            >
+                <AddBahanBottomSheet
+                    item={items[editIndex]}
+                    index={editIndex}
+                    onSave={(data: BahanModel) => {
+                        var array = [...items]
+                        array[editIndex] = data
+                        setItems(array)
+                        modalizeRef.current?.close()
+                    }}
+                />
+            </Modalize>
 
-                        elevation: 5,
-                    }}
-                    ref={bottomSheetRef}
-                    index={0}
-                    snapPoints={snapPoints}
-                    onChange={handleSheetChanges}
-                    enablePanDownToClose={true}
-                    onClose={() => {
-                        setShowBS({
-                            index: 0,
-                            show: false
-                        })
-                    }}
-                >
-                    <View>
-                        <AddBahanBottomSheet
-                            item={items[showBS.index]}
-                            index={showBS.index}
-                            onSave={(data: BahanModel) => {
-                                var array = [...items]
-                                array[showBS.index] = data
-                                setItems(array)
-                                setShowBS({
-                                    index: 0,
-                                    show: false
-                                })
-                            }}
-                        />
-                    </View>
-                </BottomSheet>
-            }
         </Page >
     )
 }

@@ -72,7 +72,6 @@ export default function HomePM() {
 
   useFocusEffect(
     useCallback(() => {
-      refetch() // fetch Project Detail
       refresh() // fetch Riwayat SPB
     }, [])
   )

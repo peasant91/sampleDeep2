@@ -1,6 +1,7 @@
 import { string } from "yup"
 
 export interface ProjectLocationModel {
+    address_title?: string
     address: string
     lat: number
     lng: number

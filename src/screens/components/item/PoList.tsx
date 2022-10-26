@@ -58,7 +58,7 @@ export function StatusButton({ status, style }: StatusType) {
                 <Tag variant="danger" text={t("cancel")} />
             }
             {status == StatusPO.received &&
-                <Tag variant="success" text={t("received")} />
+                <Tag variant="primary" text={t("received")} />
             }
         </View>
     )

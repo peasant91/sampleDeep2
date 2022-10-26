@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, useWindowDimensions, View } from 'react-native'
 import { useDispatch } from 'react-redux';
@@ -18,6 +18,7 @@ import { EmptySPBStateAdmin } from '../components/EmptyState';
 import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
+import { useFocusEffect } from '@react-navigation/native';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -58,8 +59,8 @@ export default function HomeAdmin() {
 
     const theme = useTheme()
 
-    const HEADER_HEIGHT = Dimensions.get('window').width
-    const MIN_HEADER_HEIGHT = 128
+    const HEADER_HEIGHT = Dimensions.get('window').width + 16
+    const MIN_HEADER_HEIGHT = 128 + 16
 
     const [routes] = useState([
         { key: "first", title: t("project_ongoing") },
@@ -69,9 +70,9 @@ export default function HomeAdmin() {
     const handleIndexChanged = (index: number) => {
         setIndex(index)
         if (index == 0) {
-            onGoingHandler.refetch()
+            onGoingHandler.refresh()
         } else {
-            completedHandler.refetch()
+            completedHandler.refresh()
         }
     }
 
@@ -79,6 +80,16 @@ export default function HomeAdmin() {
         showConfirmationBS,
         hideConfirmationBS,
     } = useBottomSheet();
+
+    useFocusEffect(
+        useCallback(() => {
+            if (index == 0) {
+                onGoingHandler.refetch()
+            } else {
+                completedHandler.refetch()
+            }
+        }, [])
+    )
 
     const Header = () => {
         const scrollY = useCurrentTabScrollY()
@@ -110,119 +121,90 @@ export default function HomeAdmin() {
 
     return (
         <View style={{ flex: 1 }}>
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
-            >
-                <StatusBar
-                    translucent={true}
-                    backgroundColor={transparent}
-                    hidden={true}
-                />
-                <ScrollView
-                    ref={scrollRef}
-                    nestedScrollEnabled
-                    contentContainerStyle={{
-                        height: windowHeight, // 56 is the naviagtion header height
+            > */}
+            <StatusBar
+                translucent={false}
+                // backgroundColor={transparent}
+                hidden={false}
+            />
+            <ScrollView
+                ref={scrollRef}
+                nestedScrollEnabled
+                contentContainerStyle={{
+                    height: windowHeight, // 56 is the naviagtion header height
+                }}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={() => {
+                        handleIndexChanged(index)
+                        // if (index == 0) {
+                        //     onGoingHandler.refresh()
+                        // } else {
+                        //     completedHandler.refresh()
+                        // }
                     }}
-                    refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={() => {
-                            if (index == 0) {
-                                onGoingHandler.refetch()
-                            } else {
-                                completedHandler.refetch()
-                            }
-                        }}
+                    />
+                }>
+
+                <Tabs.Container
+                    ref={tabRef}
+                    snapThreshold={0.3}
+                    minHeaderHeight={MIN_HEADER_HEIGHT}
+                    headerHeight={HEADER_HEIGHT}
+                    lazy={true}
+                    renderHeader={() => <Header />}
+                    onIndexChange={handleIndexChanged}
+                    renderTabBar={(props) => {
+                        return <MaterialTabBar
+                            {...props}
+                            activeColor={colors.primary.main}
+                            inactiveColor={colors.neutral.neutral_70}
+                            labelStyle={{
+                                color: colors.primary.main,
+                                fontSize: normalizeSize(14),
+                                letterSpacing: 0.1,
+                                ...theme.fonts.medium
+                            }}
+                            style={{
+                                backgroundColor: colors.neutral.neutral_10,
+                                width: "auto",
+                            }}
+                            onTabPress={function (name: string): void {
+                                props.onTabPress(name)
+                            }}
+                            indicatorStyle={{ backgroundColor: colors.primary.main, height: 2, alignSelf: 'flex-start', width: '20%' }}
+                            tabStyle={{ alignSelf: 'flex-start', justifyContent: 'flex-start', flexDirection: 'row', width: 'auto', padding: 0, marginRight: 18, }}
+                            scrollEnabled={true}
                         />
-                    }>
-
-                    <Tabs.Container
-                        ref={tabRef}
-                        snapThreshold={0.3}
-                        minHeaderHeight={MIN_HEADER_HEIGHT}
-                        headerHeight={HEADER_HEIGHT}
-                        lazy={true}
-                        renderHeader={() => <Header />}
-                        onIndexChange={handleIndexChanged}
-                        renderTabBar={(props) => {
-                            return <MaterialTabBar
-                                {...props}
-                                activeColor={colors.primary.main}
-                                inactiveColor={colors.neutral.neutral_70}
-                                labelStyle={{
-                                    color: colors.primary.main,
-                                    fontSize: normalizeSize(14),
-                                    letterSpacing: 0.1,
-                                    ...theme.fonts.medium
-                                }}
-                                style={{
-                                    backgroundColor: colors.neutral.neutral_10,
-                                    width: "auto",
-                                }}
-                                onTabPress={function (name: string): void {
-                                    props.onTabPress(name)
-                                }}
-                                indicatorStyle={{ backgroundColor: colors.primary.main, height: 2, alignSelf: 'flex-start', width: '20%' }}
-                                tabStyle={{ alignSelf: 'flex-start', justifyContent: 'flex-start', flexDirection: 'row', width: 'auto', padding: 0, marginRight: 18, }}
-                                scrollEnabled={true}
-                            />
-                        }}
-                    >
-                        <Tabs.Tab name={routes[0].title}>
-                            <Tabs.FlatList
-                                nestedScrollEnabled={true}
-                                style={{ padding: 16 }}
-                                data={(
-                                    (onGoingHandler.isRefetching || onGoingHandler.isLoadingCatalog) &&
-                                    !onGoingHandler.isFetchingNextPage)
-                                    ? _spbMock
-                                    : onGoingHandler.spbLists}
-                                // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-                                refreshing={(Platform.OS === "ios") ? refreshing : undefined}
-                                onRefresh={(Platform.OS === "ios") ? onGoingHandler.refetch : undefined}
-                                onEndReached={onGoingHandler.fetchNext}
-                                ListEmptyComponent={EmptySPBStateAdmin}
-                                renderItem={(item) => {
-                                    if ((onGoingHandler.isRefetching) && !onGoingHandler.isFetchingNextPage) {
-                                        return <SPBListShimmer />
-                                    }
-
-                                    return (
-                                        <SpbList
-                                            isAdmin={true}
-                                            isPM={false}
-                                            item={item.item}
-                                            index={item.index}
-                                            withProjectName={true}
-                                            onPress={() => {
-                                                navigate("DetailSPB", {
-                                                    spbID: item.item.no_spb,
-                                                    isAdminPage: true
-                                                })
-                                            }}
-                                        />
-                                    )
-                                }}
-                            />
-                        </Tabs.Tab>
-                        <Tabs.Tab name={routes[1].title}>
-                            <Tabs.FlatList
-                                nestedScrollEnabled={true}
-                                style={{ padding: 16 }}
-                                data={(
-                                    (completedHandler.isRefetching || completedHandler.isFetching) &&
-                                    !completedHandler.isFetchingNextPage) ? _spbMock : completedHandler.spbLists}
-                                // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-                                refreshing={(Platform.OS === "ios") ? refreshing : undefined}
-                                onRefresh={(Platform.OS === "ios") ? completedHandler.refresh : undefined}
-                                onEndReached={completedHandler.fetchNext}
-                                ListEmptyComponent={EmptySPBStateAdmin}
-                                renderItem={(item) => {
-                                    if ((completedHandler.isRefetching || completedHandler.isFetching) &&
-                                        !completedHandler.isFetchingNextPage) {
-                                        return <SPBListShimmer />
-                                    }
-                                    return <SpbList
+                    }}
+                >
+                    <Tabs.Tab name={routes[0].title}>
+                        <Tabs.FlatList
+                            nestedScrollEnabled={true}
+                            showsVerticalScrollIndicator={false}
+                            style={{ padding: 16 }}
+                            data={onGoingHandler.spbLists}
+                            // data={(
+                            //     (onGoingHandler.isRefetching || onGoingHandler.isLoadingCatalog)
+                            //     ? _spbMock
+                            //     : onGoingHandler.spbLists)}
+                            // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+                            refreshing={(Platform.OS === "ios") ? onGoingHandler.isRefreshing : undefined}
+                            onRefresh={(Platform.OS === "ios") ? onGoingHandler.refresh : undefined}
+                            onEndReached={onGoingHandler.fetchNext}
+                            ListEmptyComponent={EmptySPBStateAdmin}
+                            ListFooterComponent={<View style={{ height: 32 }} />}
+                            renderItem={(item) => {
+                                if ((refreshing || onGoingHandler.isRefreshing) &&
+                                    !onGoingHandler.isFetchingNextPage) {
+                                    return <View style={{ marginBottom: 16 }}>
+                                        <SPBListShimmer />
+                                    </View>
+                                }
+                                return (
+                                    <SpbList
                                         isAdmin={true}
                                         isPM={false}
                                         item={item.item}
@@ -235,81 +217,120 @@ export default function HomeAdmin() {
                                             })
                                         }}
                                     />
-                                }}
-                            />
-                        </Tabs.Tab>
-
-                    </Tabs.Container>
-
-                </ScrollView>
-
-                <Stack spacing={12} style={{ position: 'absolute', left: 16, right: 16, top: getStatusBarHeight() }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Image
-                            source={require("../../assets/icons/ic_logo/ic_logo.png")}
-                        />
-                        <Button
-                            buttonStyle={{ backgroundColor: white }}
-                            loading={isLoadingLogout}
-                            size={"sm"}
-                            shape={"rounded"}
-                            variant={"tertiary"}
-                            icon={{
-                                icon: "exit"
+                                )
                             }}
-                            onPress={() => {
-                                showConfirmationBS({
-                                    title: t("confirmation_logout_title"),
-                                    description: t("confirmation_logout_desc"),
-                                    buttonPrimaryTitle: t("sure"),
-                                    buttonSecondaryTitle: t("cancel"),
-                                    buttonPrimaryAction: (async (text) => {
-                                        logout()
-                                        hideConfirmationBS()
-                                        dispatch({
-                                            type: "LOGOUT",
+                        />
+                    </Tabs.Tab>
+                    <Tabs.Tab name={routes[1].title}>
+                        <Tabs.FlatList
+                            nestedScrollEnabled={true}
+                            showsVerticalScrollIndicator={false}
+                            style={{ padding: 16 }}
+                            data={completedHandler.spbLists}
+                            // data={(
+                            //     (completedHandler.isRefetching || completedHandler.isFetching) &&
+                            //     !completedHandler.isFetchingNextPage) ? _spbMock : completedHandler.spbLists}
+                            // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+                            refreshing={(Platform.OS === "ios") ? refreshing : undefined}
+                            onRefresh={(Platform.OS === "ios") ? completedHandler.refresh : undefined}
+                            onEndReached={completedHandler.fetchNext}
+                            ListFooterComponent={<View style={{ height: 32 }} />}
+                            ListEmptyComponent={EmptySPBStateAdmin}
+                            renderItem={(item) => {
+                                if ((refreshing || completedHandler.isRefreshing) &&
+                                    !completedHandler.isFetchingNextPage) {
+                                    return <View style={{ marginBottom: 16 }}>
+                                        <SPBListShimmer />
+                                    </View>
+                                }
+                                return <SpbList
+                                    isAdmin={true}
+                                    isPM={false}
+                                    item={item.item}
+                                    index={item.index}
+                                    withProjectName={true}
+                                    onPress={() => {
+                                        navigate("DetailSPB", {
+                                            spbID: item.item.no_spb,
+                                            isAdminPage: true
                                         })
+                                    }}
+                                />
+                            }}
+                        />
+                    </Tabs.Tab>
+
+                </Tabs.Container>
+
+            </ScrollView>
+
+            <Stack spacing={12} style={{ position: 'absolute', left: 16, right: 16, top: getStatusBarHeight() + 16 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Image
+                        source={require("../../assets/icons/ic_logo/ic_logo.png")}
+                    />
+                    <Button
+                        buttonStyle={{ backgroundColor: white }}
+                        loading={isLoadingLogout}
+                        size={"sm"}
+                        shape={"rounded"}
+                        variant={"tertiary"}
+                        icon={{
+                            icon: "exit"
+                        }}
+                        onPress={() => {
+                            showConfirmationBS({
+                                title: t("confirmation_logout_title"),
+                                description: t("confirmation_logout_desc"),
+                                buttonPrimaryTitle: t("sure"),
+                                buttonSecondaryTitle: t("cancel"),
+                                buttonPrimaryAction: (async (text) => {
+                                    logout()
+                                    hideConfirmationBS()
+                                    dispatch({
+                                        type: "LOGOUT",
                                     })
                                 })
-                            }}
-                        >Keluar</Button>
-                    </View>
+                            })
+                        }}
+                    >Keluar</Button>
+                </View>
 
-                    <TextField
-                        mode={"filled"}
-                        outlineColor={colors.neutral.neutral_70}
-                        style={{ backgroundColor: white }}
-                        shape={'rounded'}
-                        placeholder={"Cari Pekerjaan"}
-                        search
-                        onClear={() => {
-                            searchKey.current = "";
-                            onGoingHandler.setQuery(searchKey.current)
-                            completedHandler.setQuery(searchKey.current)
-                            if (index == 0) {
-                                setTimeout(onGoingHandler.refresh, 1000)
-                            } else {
-                                setTimeout(completedHandler.refresh, 1000)
-                            }
-                        }}
-                        onFocus={() => {
-                            tabRef.current?.setIndex(index)
-                        }}
-                        onSubmitEditing={() => {
-                            onGoingHandler.setQuery(searchKey.current)
-                            completedHandler.setQuery(searchKey.current)
-                            if (index == 0) {
-                                setTimeout(onGoingHandler.refresh, 1000)
-                            } else {
-                                setTimeout(completedHandler.refresh, 1000)
-                            }
-                        }}
-                        onChangeText={(text) => {
-                            searchKey.current = text
-                        }}
-                    />
-                </Stack>
-            </KeyboardAvoidingView>
+                <TextField
+                    mode={"filled"}
+                    outlineColor={colors.neutral.neutral_70}
+                    style={{ backgroundColor: white }}
+                    shape={'rounded'}
+                    placeholder={"Cari Pekerjaan"}
+                    search
+                    onClear={() => {
+                        searchKey.current = "";
+                        onGoingHandler.setQuery(searchKey.current)
+                        completedHandler.setQuery(searchKey.current)
+                        if (index == 0) {
+                            setTimeout(onGoingHandler.refresh, 1000)
+                        } else {
+                            setTimeout(completedHandler.refresh, 1000)
+                        }
+                    }}
+                    onFocus={() => {
+                        tabRef.current?.setIndex(index)
+                    }}
+                    onSubmitEditing={() => {
+                        onGoingHandler.setQuery(searchKey.current)
+                        completedHandler.setQuery(searchKey.current)
+                        if (index == 0) {
+                            setTimeout(onGoingHandler.refresh, 1000)
+                        } else {
+                            setTimeout(completedHandler.refresh, 1000)
+                        }
+                    }}
+                    onChangeText={(text) => {
+                        searchKey.current = text
+                    }}
+                />
+            </Stack>
+            {/* </KeyboardAvoidingView> */}
         </View>
     )
 }

@@ -18,6 +18,7 @@ export interface SpbItem {
   quantity: number
   unit: string
   notes?: string
+  amount_discount?: number
   discount?: number
   normal_price?: number
   final_price?: number

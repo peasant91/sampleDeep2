@@ -56,7 +56,7 @@ const ItemList = ({ item, index, config, onDelete, doEdit }: Props) => {
 
                                 <Tag
                                     style={{marginLeft: 8}}
-                                    text={item.discount + "% OFF"}
+                                    text={(item.amount_discount ?? item.discount) + "% OFF"}
                                     size="sm"
                                     shape="rounded"
                                     variant="primary" />
