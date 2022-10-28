@@ -30,7 +30,7 @@ export default function Toolbar({
                                   center = true,
                                   size,
                                   actionButton,
-                                  elevation,
+                                  elevation = 2,
                                 }: Props) {
   const { colors, toolbar } = useTheme();
   const usedBg = backgroundColor || colors.neutral.neutral_10;

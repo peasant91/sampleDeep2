@@ -114,8 +114,8 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     return (
         <Page>
             <Toolbar title={t("add_bahan")} />
-            <View style={{ flexGrow: 1, paddingBottom: 130 }}>
-                <ScrollView style={{ flexGrow: 1 }}>
+            <View style={{ flex: 1}}>
+                <ScrollView style={{ flex: 1}}>
                     <Stack>
                         <FormProvider {...method}>
                             {listBahan.map(function (item, index) {
@@ -150,7 +150,9 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
                                 style={{ padding: 16 }}
                                 onPress={addMore}
                             >{t("add_more")}</Button>
-                        </FormProvider>
+                        </FormProvider> 
+
+                        <View style={{height: 130 }} />
                     </Stack>
 
                 </ScrollView>

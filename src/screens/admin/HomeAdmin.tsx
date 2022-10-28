@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, useWindowDimensions, View } from 'react-native'
 import { useDispatch } from 'react-redux';
@@ -18,7 +18,7 @@ import { EmptySPBStateAdmin } from '../components/EmptyState';
 import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -62,6 +62,8 @@ export default function HomeAdmin() {
     const HEADER_HEIGHT = Dimensions.get('window').width + 16
     const MIN_HEADER_HEIGHT = 128 + 16
 
+    const _isFocus = useIsFocused()
+
     const [routes] = useState([
         { key: "first", title: t("project_ongoing") },
         { key: "second", title: t("project_done") },
@@ -70,7 +72,7 @@ export default function HomeAdmin() {
     const handleIndexChanged = (index: number) => {
         setIndex(index)
         if (index == 0) {
-            onGoingHandler.refresh()
+            onGoingHandler.doRefresh()
         } else {
             completedHandler.refresh()
         }
@@ -81,15 +83,14 @@ export default function HomeAdmin() {
         hideConfirmationBS,
     } = useBottomSheet();
 
-    useFocusEffect(
-        useCallback(() => {
-            if (index == 0) {
-                onGoingHandler.refetch()
-            } else {
-                completedHandler.refetch()
-            }
-        }, [])
-    )
+    useEffect(() => {
+    }, [index])
+
+    useEffect(() => {
+        if (_isFocus) {
+            handleIndexChanged(index)
+        }
+    }, [_isFocus])
 
     const Header = () => {
         const scrollY = useCurrentTabScrollY()
@@ -153,7 +154,7 @@ export default function HomeAdmin() {
                     snapThreshold={0.3}
                     minHeaderHeight={MIN_HEADER_HEIGHT}
                     headerHeight={HEADER_HEIGHT}
-                    lazy={true}
+                    lazy
                     renderHeader={() => <Header />}
                     onIndexChange={handleIndexChanged}
                     renderTabBar={(props) => {

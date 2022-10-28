@@ -77,6 +77,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
     useFocusEffect(
         useCallback(() => {
+            setShowAll(false)
             refetchSPB()
             refetchPOList()
         }, [])
@@ -104,7 +105,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
-                        title: `Success`,
+                        title: `Sukses`,
                         description: `SPB ${data.no_spb} telah disetujui`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -121,7 +122,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
-                        title: `Success`,
+                        title: `Sukses`,
                         description: `SPB ${data.no_spb} telah diajukan untuk revisi`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -138,7 +139,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
-                        title: `Success`,
+                        title: `Sukses`,
                         description: `SPB ${data.no_spb} telah ditolak`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -158,31 +159,36 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
         return (
             <>
                 {status == StatusSPB.ongoing &&
-                    <Button
-                        style={{ flexBasis: 64 }}
-                        fullWidth={true}
-                        variant="primary"
-                        icon={{ icon: "document-attach" }}
-                        shape={"rounded"}
-                        size={"lg"}
-                        onPress={() => {
-                        }}
-                    >{t("ajukan_spb")}</Button>
+                    <View>
+                        <Button
+                            style={{ flexBasis: 64 }}
+                            fullWidth={true}
+                            variant="primary"
+                            icon={{ icon: "document-attach" }}
+                            shape={"rounded"}
+                            size={"lg"}
+                            onPress={() => {
+                            }}
+                        >{t("ajukan_spb")}</Button>
+                    </View >
                 }
 
-                {(status == StatusSPB.waiting || status == StatusSPB.revision) &&
-                    <Button
-                        style={{ flexBasis: 64 }}
-                        fullWidth={true}
-                        variant="primary"
-                        shape={"rounded"}
-                        size={"lg"}
-                        onPress={() => {
-                            navigate("FormSPB", {
-                                defaultSPB: data
-                            })
-                        }}
-                    >{t("update")}</Button>
+                {
+                    (status == StatusSPB.waiting || status == StatusSPB.revision) &&
+                    <View style={_s.padding}>
+                        <Button
+                            style={{ flexBasis: 64 }}
+                            fullWidth={true}
+                            variant="primary"
+                            shape={"rounded"}
+                            size={"lg"}
+                            onPress={() => {
+                                navigate("FormSPB", {
+                                    defaultSPB: data
+                                })
+                            }}
+                        >{t("update")}</Button>
+                    </View>
                 }
             </>
         )
@@ -397,12 +403,12 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
     return (
         <Page>
-            <Toolbar title={t("job_detail")} />
+            <Toolbar elevation={2} title={t("job_detail")} />
             <BottomSheetModalProvider>
                 <View style={{ flex: 1, flexDirection: 'column' }}>
                     {(data || !isLoading || !isRefetchingSPB) ? (
                         <FlatList
-                            style={{ flexGrow: 1 }}
+                            style={{ flex: 1 }}
                             ListHeaderComponent={header}
                             ListFooterComponent={footer}
                             extraData={showAll}
@@ -430,14 +436,14 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                     }
 
                     {(!isLoading) && (
-                        <View style={_s.padding}>
+                        <>
                             {(isPMPage) && (
                                 <PrimaryButton
                                     status={data.spb_status} />
                             )}
 
                             {(isAdminPage && (data.spb_status == StatusSPB.waiting || data.spb_status == StatusSPB.revision)) && (
-                                <Stack spacing={16} direction="row">
+                                <Stack spacing={16} style={_s.padding} direction="row">
 
                                     {(data.spb_status == StatusSPB.revision) ?
 
@@ -497,7 +503,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                     >{t("setujui")}</Button>
                                 </Stack>
                             )}
-                        </View>
+                        </>
                     )
                     }
 

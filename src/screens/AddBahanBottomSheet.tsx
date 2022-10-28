@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import { Button, Colors, Divider, IconButton, RHFTextField, Stack, TextField } from '../../tmd'
 import { BahanModel } from '../models/spb/bahan'
 import * as yup from "yup";
@@ -123,7 +123,7 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                                                     (fieldState.error?.message?.slice(1) ?? "")
                                                 }
                                                 // defaultValue={String(qty)}
-                                                keyboardType='number-pad'
+                                                keyboardType={Platform.OS == "android" ? "numeric" : "number-pad"}
                                                 numberOfLines={1}
                                             />
                                         }}
@@ -145,6 +145,8 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                     <RHFTextField
                         name={'notes'}
                         defaultValue={item.notes}
+                        maxLength={200}
+                        multiline={true}
                         label={t("note_bahan")}
                         placeholder={t("note_bahan_placeholder")}
                     />

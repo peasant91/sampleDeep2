@@ -130,6 +130,24 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
     }
 
+    const rejectPO = async () => {
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.rejected)
+            .then((response) => {
+                if (response != undefined) {
+                    showAlertBS({
+                        title: `Sukses`,
+                        description: `PO ${data.no_po} dari ${data.no_spb} telah dibatalkan`,
+                        buttonPrimaryTitle: "OK",
+                        buttonPrimaryAction: () => {
+                            hideAlertBS()
+                            goBack()
+                        }
+                    })
+                }
+            })
+
+    }
+
     const totalPO = async () => {
         await patchPOStatus(data.no_spb, data.no_po, StatusPO.rejected)
             .then((response) => {
@@ -194,7 +212,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                         </View>
                     </Stack>
                     {/* <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} /> */}
-                    <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={{ uri: projectData.current?.photo }} />
+                    <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={{ uri: projectData.current?.photo ?? data.project.image }} />
                 </View>
 
                 <Divider />
@@ -424,8 +442,34 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                     </Stack>
                 </View>
             )
+
+        } else if (data.po_status == StatusPO.approved && isAdminPage) {
+            return (
+                <View style={_s.padding}>
+                    <Stack direction='row' spacing={16}>
+                        <Button
+                            fullWidth={true}
+                            shape='rounded'
+                            size='lg'
+                            variant='secondary'
+                            onPress={() => {
+                                showConfirmationBS({
+                                    title: t("po_cancel_title_conf"),
+                                    description: t("po_cancel_desc"),
+                                    buttonPrimaryTitle: t("cancel_title"),
+                                    buttonSecondaryTitle: t("back"),
+                                    buttonPrimaryAction: ((text) => {
+                                        rejectPO()
+                                        hideConfirmationBS()
+                                    })
+                                })
+                            }}
+                        >{t("po_cancel_title")}</Button>
+                    </Stack>
+                </View>
+            )
         } else if (
-            (data.po_status == StatusPO.waiting || data.po_status == StatusPO.complaint || data.po_status == StatusPO.approved) &&
+            (data.po_status == StatusPO.complaint || data.po_status == StatusPO.approved) &&
             isPMPage) {
             return (
                 <View style={_s.padding}>
@@ -481,7 +525,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
     return (
         <Page>
-            <Toolbar title={t("po_detail")} />
+            <Toolbar elevation={2} title={t("po_detail")} />
             <View style={{ flex: 1, flexDirection: 'column' }}>
 
                 {(isLoading || isRefetchingPO) ? (

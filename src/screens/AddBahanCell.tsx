@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { TextInput, View } from 'react-native'
+import { Platform, TextInput, View } from 'react-native'
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { t } from 'i18next';
@@ -100,18 +100,18 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                                             }
                                             return
                                         }}
-                                        value={String(getValues(yQty))}
+                                        value={String(parseInt(getValues(yQty)))}
                                         defaultValue={String(getValues(yQty))}
                                         error={fieldState.error != undefined}
                                         underlineColor={colors.primary.main}
                                         textAlign={'center'}
-                                        style={{textAlign: 'center'}}
+                                        style={{ textAlign: 'center' }}
                                         mode={'flat'}
                                         errorText={
                                             fieldState.error?.message?.charAt(0).toUpperCase() +
                                             (fieldState.error?.message?.slice(1) ?? "")
                                         }
-                                        keyboardType='number-pad'
+                                        keyboardType={Platform.OS == "android" ? "numeric" : "number-pad"}
                                         numberOfLines={1}
                                     />
                                 }}
@@ -133,6 +133,8 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
             <RHFTextField
                 name={yNote}
                 defaultValue={getValues(yNote)}
+                maxLength={200}
+                multiline
                 label={t("note_bahan")}
                 placeholder={t("note_bahan_placeholder")}
             />

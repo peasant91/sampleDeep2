@@ -31,45 +31,45 @@ const ROUNDED_RADIUS = 32;
 const ICON_BUTTON = MIN_HEIGHT - 20;
 
 const TextInputFilled = ({
-                           disabled = false,
-                           editable = true,
-                           label,
-                           error = false,
-                           selectionColor,
-                           underlineColor: _underlineColor,
-                           outlineColor: customOutlineColor,
-                           activeOutlineColor,
-                           dense,
-                           style,
-                           render = (props: RenderProps) => <NativeTextInput {...props} />,
-                           multiline = false,
-                           parentState,
-                           innerRef,
-                           onFocus,
-                           forceFocus,
-                           onBlur,
-                           onChangeText,
-                           onLayoutAnimatedText,
-                           onLeftAffixLayoutChange,
-                           onRightAffixLayoutChange,
-                           left,
-                           right,
-                           placeholderTextColor,
-                           maxLength,
-                           value,
-                           errorText = "",
-                           helperText,
-                           suffixText,
-                           suffixIcon,
-                           secureTextEntry,
-                           prefixIcon,
-                           prefixText,
-                           counter,
-                           password,
-                           shape,
-                           initialPhoneCode,
-                           ...rest
-                         }: ChildTextInputProps) => {
+  disabled = false,
+  editable = true,
+  label,
+  error = false,
+  selectionColor,
+  underlineColor: _underlineColor,
+  outlineColor: customOutlineColor,
+  activeOutlineColor,
+  dense,
+  style,
+  render = (props: RenderProps) => <NativeTextInput {...props} />,
+  multiline = false,
+  parentState,
+  innerRef,
+  onFocus,
+  forceFocus,
+  onBlur,
+  onChangeText,
+  onLayoutAnimatedText,
+  onLeftAffixLayoutChange,
+  onRightAffixLayoutChange,
+  left,
+  right,
+  placeholderTextColor,
+  maxLength,
+  value,
+  errorText = "",
+  helperText,
+  suffixText,
+  suffixIcon,
+  secureTextEntry,
+  prefixIcon,
+  prefixText,
+  counter,
+  password,
+  shape,
+  initialPhoneCode,
+  ...rest
+}: ChildTextInputProps) => {
   const theme = useTheme();
   const [isShowPassword, setIsShowPassword] = useState(!password);
   const [isShowSearch, setIsShowSearch] = useState(false);
@@ -136,7 +136,7 @@ const TextInputFilled = ({
               alignItems: "center",
               display: "flex",
             }]}
-            >
+        >
           {
             rest.search &&
             <View style={{
@@ -145,7 +145,7 @@ const TextInputFilled = ({
               justifyContent: "center",
               alignItems: "center",
               display: "flex",
-              marginRight:Platform.OS == "ios" ? 8 : 0,
+              marginRight: Platform.OS == "ios" ? 8 : 0,
             }}>
               <Icon icon={"search"} size={20} color={colors.neutral.neutral_70} />
             </View>
@@ -159,7 +159,7 @@ const TextInputFilled = ({
               justifyContent: "center",
               alignItems: "center",
               display: "flex",
-              marginRight:Platform.OS == "ios" ? 8 : 0,
+              marginRight: Platform.OS == "ios" ? 8 : 0,
             }}>
               {
                 prefixIcon &&
@@ -201,7 +201,9 @@ const TextInputFilled = ({
             style={{
               flexGrow: 1,
               flex: 1,
-
+              minHeight: (multiline) ? MIN_HEIGHT : undefined,
+              bottom: (multiline && Platform.OS == "ios") ? 4 : 0,
+              justifyContent: 'center'
             }}
           >
             {render?.({
@@ -373,7 +375,7 @@ const TextInputFilled = ({
           {
             (counter && maxLength) &&
             <Typography style={{ flexShrink: 1, paddingLeft: 3, color: theme.colors.neutral.neutral_90 }}
-                        type={"body3"}>
+              type={"body3"}>
               {value?.length ?? 0} / {maxLength}
             </Typography>
           }
@@ -437,10 +439,10 @@ type OutlineProps = {
 };
 
 const Outline = ({
-                   outlineColor,
-                   backgroundColor,
-                   shape,
-                 }: OutlineProps) => {
+  outlineColor,
+  backgroundColor,
+  shape,
+}: OutlineProps) => {
   const theme = useTheme();
   const { colors } = theme;
   return <View
@@ -473,7 +475,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    bottom: (Platform.OS == "ios") ? -4 : 0,
+    // bottom: (Platform.OS == "ios") ? -4 : 0,
+    bottom: 0
   },
   labelContainer: {
     paddingBottom: 0,
