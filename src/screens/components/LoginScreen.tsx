@@ -46,7 +46,6 @@ export default function LoginScreen() {
     try {
       await login(data?.username, data?.password);
     } catch (e) {
-      console.log("ANJENG", e)
       showErrorBS(e)
     }
   };

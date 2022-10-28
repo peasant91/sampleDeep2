@@ -106,6 +106,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                 if (response != undefined) {
                     showAlertBS({
                         title: `Sukses`,
+                        dismissible: false,
                         description: `SPB ${data.no_spb} telah disetujui`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -123,6 +124,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                 if (response != undefined) {
                     showAlertBS({
                         title: `Sukses`,
+                        dismissible: false,
                         description: `SPB ${data.no_spb} telah diajukan untuk revisi`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
@@ -139,6 +141,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
+                        dismissible: false,
                         title: `Sukses`,
                         description: `SPB ${data.no_spb} telah ditolak`,
                         buttonPrimaryTitle: "OK",
@@ -487,6 +490,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                                         onPress={() => {
                                             showConfirmationBS({
                                                 title: t("spb_confirm_title"),
+                                                dismissible: false,
                                                 description: t("spb_reject_desc"),
                                                 withNotes: true,
                                                 noteIsRequired: false,
@@ -530,7 +534,6 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                             return (
                                 <TouchableWithoutFeedback
                                     onPress={() => {
-                                        console.log("ANJENG TANAH")
                                     }}
                                 >
                                     <View style={{ flex: 1, backgroundColor: 'red' }} />

@@ -3,17 +3,16 @@
  * Copyright (c) 2022 - Made with love
  */
 import React, { useEffect, useRef } from "react";
+import { Button, Stack, RHFTextField } from "../../index";
 import { Modalize } from "react-native-modalize";
-import { Portal } from "react-native-portalize";
+import Portal from "../Portal/Portal";
 import { SafeAreaView, View } from "react-native";
 import Typography from "../Typography/Typography";
 import { useTheme } from "../../core/theming";
-import { Button, RHFTextField, Stack } from "../../index";
 import { useTranslation } from "react-i18next";
 import { FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 export interface BSProps {
   open: boolean;
   imageNode?: React.ReactNode;
@@ -33,12 +32,13 @@ export interface BSProps {
 export default function AlertBottomSheet({ dismissible = true, ...props }: BSProps) {
   const modalizeRef = useRef<Modalize>(null);
   const { t } = useTranslation();
+
   useEffect(() => {
     if (props.open) {
-      method.reset()
-      modalizeRef?.current?.open();
+      method.clearErrors()
+      handleOpen();
     } else {
-      modalizeRef.current?.close();
+      handleClose();
     }
   }, [props.open]);
 
@@ -73,24 +73,34 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
 
   const handleClose = () => {
     modalizeRef?.current?.close();
-    // props.onClose();
+    props.onClose();
+  };
+
+  const handleOpen = () => {
+    modalizeRef?.current?.open();
   };
 
   const theme = useTheme();
   return (
     <Portal>
       <Modalize
-        closeOnOverlayTap={dismissible ? dismissible : true}
         handlePosition={"inside"}
-        withHandle={dismissible}
-        adjustToContentHeight
         modalStyle={{
           padding: 16,
           borderTopRightRadius: 16,
           borderTopLeftRadius: 16,
         }}
-
-        onClose={dismissible ? props.onClose : undefined}
+        onClose={props.onClose}
+        closeOnOverlayTap={dismissible}
+        withHandle={dismissible}
+        adjustToContentHeight
+        onBackButtonPress={dismissible == false
+          ? () => {
+            return true;
+          }
+          : undefined}
+        tapGestureEnabled={dismissible}
+        panGestureEnabled={dismissible}
         ref={modalizeRef}
       >
         <SafeAreaView style={{ flex: 1 }}>
@@ -173,9 +183,7 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
                     }
                   }}
                 >{props.buttonPrimaryTitle ?? t("back")}</Button>
-
               </Stack>
-
             </View>
           </FormProvider>
         </SafeAreaView>

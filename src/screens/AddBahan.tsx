@@ -83,7 +83,6 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     };
 
     const onError = (errors: any) => {
-        console.log("ANJENG ON ERROR", errors)
         console.log(JSON.stringify(errors, null, 2));
     };
 

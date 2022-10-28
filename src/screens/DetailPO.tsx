@@ -117,6 +117,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
+                        dismissible: false,
                         title: `Sukses`,
                         description: `PO ${data.no_po} dari ${data.no_spb} telah disetujui`,
                         buttonPrimaryTitle: "OK",
@@ -135,6 +136,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
+                        dismissible: false,
                         title: `Sukses`,
                         description: `PO ${data.no_po} dari ${data.no_spb} telah dibatalkan`,
                         buttonPrimaryTitle: "OK",
@@ -153,6 +155,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
+                        dismissible: false,
                         title: `Sukses`,
                         description: `PO ${data.no_po} dari ${data.no_spb} telah ditolak`,
                         buttonPrimaryTitle: "OK",
@@ -170,6 +173,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
+                        dismissible: false,
                         title: `Berhasil Komplain`,
                         description: `PO ${data.no_po} dari ${data.no_spb} telah dikomplain`,
                         buttonPrimaryTitle: "OK",
@@ -188,6 +192,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                 if (response != undefined) {
                     showAlertBS({
                         title: `Sukses`,
+                        dismissible: false,
                         description: `Barang barang PO ${data.no_po} dari ${data.no_spb} telah diterima`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {

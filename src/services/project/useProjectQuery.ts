@@ -61,7 +61,6 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
 
   const refresh = async () => {
     try {
-      console.log("ANJENG MASUK REFRESH")
       setIsRefreshing(true);
       await rest.refetch();
       setIsRefreshing(false);

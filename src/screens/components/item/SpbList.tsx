@@ -13,6 +13,7 @@ import moment from "moment"
 import { EmptySPBState } from "../EmptyState"
 import { POItem } from "../../../models/spb/po"
 import { number } from "yup/lib/locale"
+import { JumpingTransition } from "react-native-reanimated"
 
 export enum StatusSPB {
     inProgress = "in_progress",
@@ -163,10 +164,10 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                     marginBottom: 8,
                     borderWidth: 2,
                     borderColor: colors.warning.main,
-                    borderRadius: 8
+                    borderRadius: 8,
                 }}>
-                    <Icon icon="warning" style={{ width: 20, aspectRatio: 1 }} />
-                    <Typography type="body3" style={{ flexGrow: 1, textAlignVertical: 'center' }}>{t("total_unapproved", { count: item.total_unapproved! })}</Typography>
+                    <Icon icon="warning" style={{ width: 20, aspectRatio: 1 }} color={colors.warning.main} />
+                    <Typography type="body3" style={{ flexGrow: 1, alignSelf: 'center', color: colors.neutral.neutral_100 }}>{t("total_unapproved", { count: item.total_unapproved! })}</Typography>
                 </Stack>
 
             )}

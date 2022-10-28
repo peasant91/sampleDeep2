@@ -18,7 +18,7 @@ import { EmptySPBStateAdmin } from '../components/EmptyState';
 import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -46,6 +46,7 @@ export default function HomeAdmin() {
     const { t } = useTranslation()
     const [index, setIndex] = useState(0)
     const [refreshing, setRefreshing] = useRefresh()
+    const [manualRefresh, setManualRefresh] = useState(false)
     const windowHeight = useWindowDimensions().height
 
     const searchKey = useRef<string>("")
@@ -69,13 +70,17 @@ export default function HomeAdmin() {
         { key: "second", title: t("project_done") },
     ]);
 
-    const handleIndexChanged = (index: number) => {
+    const handleIndexChanged = async (index: number) => {
         setIndex(index)
+        setManualRefresh(true)
         if (index == 0) {
-            onGoingHandler.doRefresh()
+            await onGoingHandler.refetch()
+            // onGoingHandler.refresh()
         } else {
-            completedHandler.refresh()
+            await completedHandler.refetch()
+            // completedHandler.refresh()
         }
+        setManualRefresh(false)
     }
 
     const {
@@ -122,13 +127,8 @@ export default function HomeAdmin() {
 
     return (
         <View style={{ flex: 1 }}>
-            {/* <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={{ flex: 1 }}
-            > */}
             <StatusBar
                 translucent={false}
-                // backgroundColor={transparent}
                 hidden={false}
             />
             <ScrollView
@@ -140,11 +140,6 @@ export default function HomeAdmin() {
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={() => {
                         handleIndexChanged(index)
-                        // if (index == 0) {
-                        //     onGoingHandler.refresh()
-                        // } else {
-                        //     completedHandler.refresh()
-                        // }
                     }}
                     />
                 }>
@@ -187,19 +182,13 @@ export default function HomeAdmin() {
                             showsVerticalScrollIndicator={false}
                             style={{ padding: 16 }}
                             data={onGoingHandler.spbLists}
-                            // data={(
-                            //     (onGoingHandler.isRefetching || onGoingHandler.isLoadingCatalog)
-                            //     ? _spbMock
-                            //     : onGoingHandler.spbLists)}
-                            // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-                            refreshing={(Platform.OS === "ios") ? onGoingHandler.isRefreshing : undefined}
-                            onRefresh={(Platform.OS === "ios") ? onGoingHandler.refresh : undefined}
+                            refreshing={(Platform.OS === "ios") ? manualRefresh : undefined}
+                            onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(0) : undefined}
                             onEndReached={onGoingHandler.fetchNext}
                             ListEmptyComponent={EmptySPBStateAdmin}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             renderItem={(item) => {
-                                if ((refreshing || onGoingHandler.isRefreshing) &&
-                                    !onGoingHandler.isFetchingNextPage) {
+                                if (refreshing || manualRefresh) {
                                     return <View style={{ marginBottom: 16 }}>
                                         <SPBListShimmer />
                                     </View>
@@ -228,18 +217,13 @@ export default function HomeAdmin() {
                             showsVerticalScrollIndicator={false}
                             style={{ padding: 16 }}
                             data={completedHandler.spbLists}
-                            // data={(
-                            //     (completedHandler.isRefetching || completedHandler.isFetching) &&
-                            //     !completedHandler.isFetchingNextPage) ? _spbMock : completedHandler.spbLists}
-                            // ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-                            refreshing={(Platform.OS === "ios") ? refreshing : undefined}
-                            onRefresh={(Platform.OS === "ios") ? completedHandler.refresh : undefined}
+                            refreshing={(Platform.OS === "ios") ? manualRefresh : undefined}
+                            onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(1) : undefined}
                             onEndReached={completedHandler.fetchNext}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             ListEmptyComponent={EmptySPBStateAdmin}
                             renderItem={(item) => {
-                                if ((refreshing || completedHandler.isRefreshing) &&
-                                    !completedHandler.isFetchingNextPage) {
+                                if (refreshing || manualRefresh) {
                                     return <View style={{ marginBottom: 16 }}>
                                         <SPBListShimmer />
                                     </View>

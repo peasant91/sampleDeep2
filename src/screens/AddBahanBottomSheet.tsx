@@ -46,8 +46,6 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
 
     const onError = (errors: any) => {
         console.log(errors)
-        // console.log("ANJENG ON ERROR", errors)
-        // console.log(JSON.stringify(errors, null, 2));
     };
 
     return (

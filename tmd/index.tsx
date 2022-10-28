@@ -55,4 +55,5 @@ export { default as Tooltip } from "./components/Tooltip/Tooltip";
 export { default as TooltipStepper } from "./components/Tooltip/TooltipStepper";
 
 export {default as Image} from "./components/Image/Image"
+export { Modalize } from "./components/Modalize";
 export {default as Toolbar} from "./components/Toolbar/Toolbar"
