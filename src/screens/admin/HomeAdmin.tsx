@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, useWindowDimensions, View } from 'react-native'
+import { Dimensions, Image, ScrollView, StatusBar, useWindowDimensions, View } from 'react-native'
 import { useDispatch } from 'react-redux';
 import { Button, Page, Stack, TextField, useTheme } from '../../../tmd';
 import { _spbMock } from '../../../tmd/data/_mock';
@@ -12,13 +12,12 @@ import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { navigate } from '../../navigations/RootNavigation';
 import useProjectInfiniteQuery from '../../services/project/useProjectQuery';
-import { ScrollView } from 'react-native-gesture-handler';
 import { SPBListShimmer } from '../components/shimmer/shimmer';
 import { EmptySPBStateAdmin } from '../components/EmptyState';
 import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
 import { useAuth } from '../../providers/AuthProvider';
-import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { useIsFocused } from '@react-navigation/native';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -50,7 +49,6 @@ export default function HomeAdmin() {
     const windowHeight = useWindowDimensions().height
 
     const searchKey = useRef<string>("")
-    const scrollRef = useRef<ScrollView>(null)
     const tabRef = useRef<CollapsibleRef>(null)
 
     const { logout, isLoadingLogout } = useAuth();
@@ -61,7 +59,7 @@ export default function HomeAdmin() {
     const theme = useTheme()
 
     const HEADER_HEIGHT = Dimensions.get('window').width + 16
-    const MIN_HEADER_HEIGHT = 128 + 16
+    const MIN_HEADER_HEIGHT = 128
 
     const _isFocus = useIsFocused()
 
@@ -93,7 +91,11 @@ export default function HomeAdmin() {
 
     useEffect(() => {
         if (_isFocus) {
-            handleIndexChanged(index)
+            if (index == 0) {
+                onGoingHandler.refetch()
+            } else {
+                completedHandler.refetch()
+            }
         }
     }, [_isFocus])
 
@@ -131,25 +133,15 @@ export default function HomeAdmin() {
                 translucent={false}
                 hidden={false}
             />
-            <ScrollView
-                ref={scrollRef}
-                nestedScrollEnabled
-                contentContainerStyle={{
-                    height: windowHeight, // 56 is the naviagtion header height
-                }}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={() => {
-                        handleIndexChanged(index)
-                    }}
-                    />
-                }>
+            <View style={{ flex: 1 }}>
 
                 <Tabs.Container
                     ref={tabRef}
+                    cancelLazyFadeIn
                     snapThreshold={0.3}
                     minHeaderHeight={MIN_HEADER_HEIGHT}
                     headerHeight={HEADER_HEIGHT}
-                    lazy
+                    // lazy
                     renderHeader={() => <Header />}
                     onIndexChange={handleIndexChanged}
                     renderTabBar={(props) => {
@@ -178,17 +170,20 @@ export default function HomeAdmin() {
                 >
                     <Tabs.Tab name={routes[0].title}>
                         <Tabs.FlatList
-                            nestedScrollEnabled={true}
+                            // nestedScrollEnabled={true}
                             showsVerticalScrollIndicator={false}
                             style={{ padding: 16 }}
                             data={onGoingHandler.spbLists}
-                            refreshing={(Platform.OS === "ios") ? manualRefresh : undefined}
-                            onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(0) : undefined}
+                            // refreshing={(Platform.OS === "ios") ? manualRefresh : false}
+                            // onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(0) : undefined}
+                            keyExtractor={(_, index) => index.toString()}
+                            refreshing={manualRefresh}
+                            onRefresh={() => handleIndexChanged(0)}
                             onEndReached={onGoingHandler.fetchNext}
                             ListEmptyComponent={EmptySPBStateAdmin}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             renderItem={(item) => {
-                                if (refreshing || manualRefresh) {
+                                if (manualRefresh) {
                                     return <View style={{ marginBottom: 16 }}>
                                         <SPBListShimmer />
                                     </View>
@@ -213,17 +208,20 @@ export default function HomeAdmin() {
                     </Tabs.Tab>
                     <Tabs.Tab name={routes[1].title}>
                         <Tabs.FlatList
-                            nestedScrollEnabled={true}
+                            // nestedScrollEnabled={true}
                             showsVerticalScrollIndicator={false}
                             style={{ padding: 16 }}
                             data={completedHandler.spbLists}
-                            refreshing={(Platform.OS === "ios") ? manualRefresh : undefined}
-                            onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(1) : undefined}
+                            keyExtractor={(_, index) => index.toString()}
+                            // refreshing={(Platform.OS === "ios") ? manualRefresh : refreshing}
+                            // onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(1) : undefined}
+                            refreshing={manualRefresh}
+                            onRefresh={() => handleIndexChanged(1)}
                             onEndReached={completedHandler.fetchNext}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             ListEmptyComponent={EmptySPBStateAdmin}
                             renderItem={(item) => {
-                                if (refreshing || manualRefresh) {
+                                if (manualRefresh) {
                                     return <View style={{ marginBottom: 16 }}>
                                         <SPBListShimmer />
                                     </View>
@@ -247,9 +245,9 @@ export default function HomeAdmin() {
 
                 </Tabs.Container>
 
-            </ScrollView>
+            </View>
 
-            <Stack spacing={12} style={{ position: 'absolute', left: 16, right: 16, top: getStatusBarHeight() + 16 }}>
+            <Stack spacing={12} style={{ position: 'absolute', left: 16, right: 16, top: getStatusBarHeight() }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Image
                         source={require("../../assets/icons/ic_logo/ic_logo.png")}
@@ -292,11 +290,7 @@ export default function HomeAdmin() {
                         searchKey.current = "";
                         onGoingHandler.setQuery(searchKey.current)
                         completedHandler.setQuery(searchKey.current)
-                        if (index == 0) {
-                            setTimeout(onGoingHandler.refresh, 1000)
-                        } else {
-                            setTimeout(completedHandler.refresh, 1000)
-                        }
+                        handleIndexChanged(index)
                     }}
                     onFocus={() => {
                         tabRef.current?.setIndex(index)
@@ -304,11 +298,12 @@ export default function HomeAdmin() {
                     onSubmitEditing={() => {
                         onGoingHandler.setQuery(searchKey.current)
                         completedHandler.setQuery(searchKey.current)
-                        if (index == 0) {
-                            setTimeout(onGoingHandler.refresh, 1000)
-                        } else {
-                            setTimeout(completedHandler.refresh, 1000)
-                        }
+                        handleIndexChanged(index)
+                        // if (index == 0) {
+                        //     setTimeout(onGoingHandler.refresh, 1000)
+                        // } else {
+                        //     setTimeout(completedHandler.refresh, 1000)
+                        // }
                     }}
                     onChangeText={(text) => {
                         searchKey.current = text

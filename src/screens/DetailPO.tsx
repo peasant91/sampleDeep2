@@ -213,7 +213,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                         <Typography type={"body4"}>{moment(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
-                            <Typography type={"body4"} style={{marginRight: 32}} numberOfLines={1}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
+                            <Typography type={"body4"} style={{ marginRight: 32 }} numberOfLines={1}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
                         </View>
                     </Stack>
                     {/* <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} /> */}
@@ -255,7 +255,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 <Typography style={{ flex: 1 }} type={"label2"}>{data.no_spb}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
                             </View>
-                            
+
                             <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
                                 <Typography type={"label2"}>{moment(data.spb_created_at).format("DD MMMM YYYY")}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
@@ -349,7 +349,10 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography> */}
                                     <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount_title")}</Typography>
-                                    <CurrencyText value={data.total_discount} />
+                                    <Stack direction='row'>
+                                        <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>- </Typography>
+                                        <CurrencyText value={data.total_discount} />
+                                    </Stack>
                                 </View>
                             }
 
