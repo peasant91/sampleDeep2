@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Page, Stack, TextField, useTheme } from '../../../tmd';
 import { _spbMock } from '../../../tmd/data/_mock';
 import { colors, transparent, white } from '../../../tmd/styles/colors';
-import { CollapsibleRef, MaterialTabBar, Tabs, useCurrentTabScrollY } from 'react-native-collapsible-tab-view'
+import { CollapsibleRef, MaterialTabBar, Tabs, useCurrentTabScrollY, useFocusedTab } from 'react-native-collapsible-tab-view'
 import SpbList, { StatusSPB } from '../components/item/SpbList';
 import { normalizeSize } from '../../../tmd/utils/normalizeSize';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
@@ -18,6 +18,8 @@ import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { useIsFocused } from '@react-navigation/native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { FlatList } from 'react-native-gesture-handler';
+import { SpbListItem } from '../../models/spb/spb';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -50,6 +52,9 @@ export default function HomeAdmin() {
 
     const searchKey = useRef<string>("")
     const tabRef = useRef<CollapsibleRef>(null)
+    const flatListRef = useRef<FlatList<SpbListItem>>(null);
+    const scrollPositionRef = useRef<number>();
+
 
     const { logout, isLoadingLogout } = useAuth();
 
@@ -87,12 +92,15 @@ export default function HomeAdmin() {
     } = useBottomSheet();
 
     useEffect(() => {
-    }, [index])
-
-    useEffect(() => {
         if (_isFocus) {
             if (index == 0) {
                 onGoingHandler.refetch()
+                console.log("ANJENG", scrollPositionRef.current);
+                
+                // if (scrollPositionRef.current > 0) {
+                //     console.log(scrollPositionRef.current)
+                //     flatListRef.current?.scrollToIndex({ animated: false, index: scrollPositionRef.current ?? 0 })
+                // }
             } else {
                 completedHandler.refetch()
             }
@@ -103,6 +111,8 @@ export default function HomeAdmin() {
         const scrollY = useCurrentTabScrollY()
 
         const opacityStyle = useAnimatedStyle(() => {
+            scrollPositionRef.current = scrollY.value
+
             const style = interpolate(parseFloat(scrollY.value.toFixed(2)), [0, MIN_HEADER_HEIGHT], [0, 1])
             return { opacity: style }
         })
@@ -171,6 +181,7 @@ export default function HomeAdmin() {
                     <Tabs.Tab name={routes[0].title}>
                         <Tabs.FlatList
                             // nestedScrollEnabled={true}
+                            ref={flatListRef}
                             showsVerticalScrollIndicator={false}
                             style={{ padding: 16 }}
                             data={onGoingHandler.spbLists}
@@ -200,6 +211,7 @@ export default function HomeAdmin() {
                                                 spbID: item.item.no_spb,
                                                 isAdminPage: true
                                             })
+                                            
                                         }}
                                     />
                                 )
