@@ -175,7 +175,6 @@ PODS:
   - GoogleUtilities/UserDefaults (7.8.0):
     - GoogleUtilities/Logger
   - hermes-engine (0.11.0)
-  - InputMask (6.1.0)
   - libevent (2.1.12)
   - libwebp (1.2.3):
     - libwebp/demux (= 1.2.3)
@@ -445,10 +444,6 @@ PODS:
     - RCTTypeSafety
     - React
     - ReactCommon/turbomodule/core
-  - react-native-text-input-mask (3.1.4):
-    - InputMask (~> 6.1.0)
-    - React-Core
-    - React-RCTText
   - react-native-webview (11.23.0):
     - React-Core
   - React-perflogger (0.68.2)
@@ -650,7 +645,6 @@ DEPENDENCIES:
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
-  - react-native-text-input-mask (from `../node_modules/react-native-text-input-mask`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -701,7 +695,6 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - hermes-engine
-    - InputMask
     - libevent
     - libwebp
     - nanopb
@@ -776,8 +769,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
-  react-native-text-input-mask:
-    :path: "../node_modules/react-native-text-input-mask"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -859,7 +850,6 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   hermes-engine: 84e3af1ea01dd7351ac5d8689cbbea1f9903ffc3
-  InputMask: 71d291dc54d2deaeac6512afb6ec2304228c0bb7
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
@@ -890,7 +880,6 @@ SPEC CHECKSUMS:
   react-native-maps: de23d141fa0289d1896739d0ddc8c5d11d9ca800
   react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
-  react-native-text-input-mask: 36a546b378fadd2efe1b7484a859d34bc2c80395
   react-native-webview: e771bc375f789ebfa02a26939a57dbc6fa897336
   React-perflogger: a18b4f0bd933b8b24ecf9f3c54f9bf65180f3fe6
   React-RCTActionSheet: 547fe42fdb4b6089598d79f8e1d855d7c23e2162

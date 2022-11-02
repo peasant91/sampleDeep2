@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, ScrollView, StatusBar, useWindowDimensions, View } from 'react-native'
+import { Dimensions, Image, Platform, ScrollView, StatusBar, useWindowDimensions, View } from 'react-native'
 import { useDispatch } from 'react-redux';
 import { Button, Page, Stack, TextField, useTheme } from '../../../tmd';
 import { _spbMock } from '../../../tmd/data/_mock';
@@ -20,6 +20,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { FlatList } from 'react-native-gesture-handler';
 import { SpbListItem } from '../../models/spb/spb';
+import { useScrollToTop } from '@react-navigation/native';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -40,6 +41,13 @@ export const useRefresh = () => {
             setIsRefreshing(true)
         },
     ] as const
+}
+
+export function _HomeAdmin() {
+    return (
+        <Page>
+        </Page>
+    );
 }
 
 export default function HomeAdmin() {
@@ -96,7 +104,7 @@ export default function HomeAdmin() {
             if (index == 0) {
                 onGoingHandler.refetch()
                 console.log("ANJENG", scrollPositionRef.current);
-                
+
                 // if (scrollPositionRef.current > 0) {
                 //     console.log(scrollPositionRef.current)
                 //     flatListRef.current?.scrollToIndex({ animated: false, index: scrollPositionRef.current ?? 0 })
@@ -148,7 +156,7 @@ export default function HomeAdmin() {
                 <Tabs.Container
                     ref={tabRef}
                     cancelLazyFadeIn
-                    snapThreshold={0.3}
+                    snapThreshold={(Platform.OS == "android") ? 0.3 : null}
                     minHeaderHeight={MIN_HEADER_HEIGHT}
                     headerHeight={HEADER_HEIGHT}
                     // lazy
@@ -211,7 +219,7 @@ export default function HomeAdmin() {
                                                 spbID: item.item.no_spb,
                                                 isAdminPage: true
                                             })
-                                            
+
                                         }}
                                     />
                                 )
@@ -305,7 +313,10 @@ export default function HomeAdmin() {
                         handleIndexChanged(index)
                     }}
                     onFocus={() => {
-                        tabRef.current?.setIndex(index)
+                        if (Platform.OS == "android") {
+                            tabRef.current?.setIndex(index)
+                        } else {
+                        }
                     }}
                     onSubmitEditing={() => {
                         onGoingHandler.setQuery(searchKey.current)

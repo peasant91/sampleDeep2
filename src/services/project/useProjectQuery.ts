@@ -36,6 +36,7 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
     });
   }, {
     keepPreviousData: false,
+    refetchOnWindowFocus: 'always',
     getNextPageParam: (lastPage) => {
       if (lastPage.meta.current_page >= lastPage.meta.last_page) {
         return null
