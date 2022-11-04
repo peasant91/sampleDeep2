@@ -13,8 +13,8 @@
  * NPM IS SUCKS
  */
 
-import React, { useState } from "react";
-import { DefaultTheme, Provider as ThemeProvider } from "./tmd";
+import React, { useEffect, useState } from "react";
+import { Alert, DefaultTheme, Provider as ThemeProvider } from "./tmd";
 import AppNavigation from "./src/navigations/AppNavigation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheetProvider from "./tmd/providers/BottomSheetProvider";
@@ -28,17 +28,45 @@ import { persistor, store } from "./src/redux/stores/store";
 import { PersistGate } from "redux-persist/integration/react";
 import ModalProvider from "./tmd/providers/ModalProvider";
 import SplashScreen from "./src/screens/SplashScreen";
+import messaging from '@react-native-firebase/messaging';
 
 // Create a client
 const queryClient = new QueryClient();
 const App = () => {
   const [gateLifted, setGateLifted] = useState(false)
 
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
+  async function registerAppWithFCM() {
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+    console.log("ANJENG TANAH", token)
+  }
+
   const onBeforeLift = () => {
     setTimeout(() => {
       setGateLifted(true)
     }, 3000)
   }
+
+  useEffect(() => {
+    requestUserPermission()
+    registerAppWithFCM()
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    });
+
+    return unsubscribe;
+  }, [])
+
 
   return (
     <Provider store={store}>

@@ -55,6 +55,7 @@ export default function ImagePicker({
         setIsOpen(true);
       });
     } else {
+      console.log("ANJENG TANAH" )
       requestPermissions([CAMERA_PERMISSIONS, STORAGE_PERMISSIONS], () => {
         setIsOpen(true);
       });

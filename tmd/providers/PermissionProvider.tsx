@@ -45,6 +45,7 @@ const PermissionProvider = ({ children }: any) => {
   };
 
   const requestPermissions = (permissions: PermissionOS[], onGranted?: () => void) => {
+    console.log("ANJENG TANAH", permissions)
     const isAndroid = Platform.OS == "android";
     let osPermissions: Permission[];
     if (isAndroid) {
@@ -55,6 +56,7 @@ const PermissionProvider = ({ children }: any) => {
     requestMultiple(osPermissions)
       .then((statuses) => {
         const results = osPermissions.map(it => statuses[it] == "granted");
+        console.log("ANJENG", results)
         if (!results.includes(false)) {
           if (onGranted) {
             onGranted();
@@ -62,6 +64,7 @@ const PermissionProvider = ({ children }: any) => {
         } else {
           //get first that are not granted
           const notGranted = osPermissions.find(it => statuses[it] != "granted");
+          console.log("ANEJNG", notGranted)
           const type = getPermissionType(notGranted);
 
           //select which one you want to use

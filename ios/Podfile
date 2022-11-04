@@ -1,10 +1,29 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+$RNFirebaseAsStaticFramework = true
 platform :ios, '11.0'
 # install! 'cocoapods', :deterministic_uuids => false
 
+  # use_frameworks!
+  use_frameworks! :linkage => :static
+  
+  # Convert all permission pods into static libraries
+  pre_install do |installer|
+    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+
+    installer.pod_targets.each do |pod|
+      if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
+        def pod.build_type;
+          # Uncomment the line corresponding to your CocoaPods version
+           Pod::BuildType.static_library # >= 1.11.3
+        end
+      end
+    end
+  end
+
 target 'ReactNativeStarterKit' do
+  
   config = use_native_modules!
 
   permissions_path = '../node_modules/react-native-permissions/ios'
@@ -14,9 +33,9 @@ target 'ReactNativeStarterKit' do
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text', :modular_headers => true
-  pod 'Firebase', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
-  pod 'FirebaseCoreInternal', :modular_headers => true
+#  pod 'Firebase', :modular_headers => true
+#  pod 'FirebaseCore', :modular_headers => true
+#  pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
 
 
@@ -30,7 +49,7 @@ target 'ReactNativeStarterKit' do
     # :fabric_enabled => flags[:fabric_enabled],
     # An absolute path to your application root.
     # :app_path => "#{Pod::Config.instance.installation_root}/.."
-    :hermes_enabled => true
+    :hermes_enabled => false
   )
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
@@ -42,7 +61,7 @@ target 'ReactNativeStarterKit' do
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-
+  
   target 'ReactNativeStarterKitTests' do
     inherit! :complete
     # Pods for testing
@@ -52,9 +71,9 @@ target 'ReactNativeStarterKit' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
-  use_flipper!()
+#  use_flipper!()
 
-  # use_frameworks! :linkage => :static
+#   use_frameworks! :linkage => :static
 
   post_install do |installer|
     react_native_post_install(installer)

@@ -1,34 +1,49 @@
 {
   "project_info": {
-    "project_number": "992506026123",
-    "project_id": "finitree",
-    "storage_bucket": "finitree.appspot.com"
+    "project_number": "19570267278",
+    "project_id": "adi-jaya",
+    "storage_bucket": "adi-jaya.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:992506026123:android:5c391b5f11518d75449c8e",
+        "mobilesdk_app_id": "1:19570267278:android:d7af5a47883a15e181a5df",
         "android_client_info": {
-          "package_name": "net.timedoor.reactnativestarterkit"
+          "package_name": "com.adijayautama.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "115744996514398005810",
+          "client_id": "19570267278-jp5jurgj7mfqh7rhjif8iesm6h37t1tk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adijayautama.app",
+            "certificate_hash": "0eef8a92743d47a174333297226229f80165e9fb"
+          }
+        },
+        {
+          "client_id": "19570267278-smf1nb42f9rsb5srakbjpdqvmesoa0r7.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCt4afESlgffh9_MT6EmYHEksNrd_JGsDM"
+          "current_key": "AIzaSyB_JRJ-sk4CmvXqQ-idQ_IUoa3MHywIO1g"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "115744996514398005810",
+              "client_id": "19570267278-smf1nb42f9rsb5srakbjpdqvmesoa0r7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "19570267278-b0njafcnkje1f9aiobcp0hmaogb9ij7m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.adijayautama.app"
+              }
             }
           ]
         }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>19570267278-b0njafcnkje1f9aiobcp0hmaogb9ij7m.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.19570267278-b0njafcnkje1f9aiobcp0hmaogb9ij7m</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBCnppzGM53Qqk7DlAz2AulgxkdaBbsN-Q</string>
+	<key>GCM_SENDER_ID</key>
+	<string>19570267278</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.adijayautama.app</string>
+	<key>PROJECT_ID</key>
+	<string>adi-jaya</string>
+	<key>STORAGE_BUCKET</key>
+	<string>adi-jaya.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:19570267278:ios:5bb0cf397504a50b81a5df</string>
+</dict>
+</plist>
