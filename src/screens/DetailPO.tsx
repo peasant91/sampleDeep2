@@ -138,7 +138,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                     showAlertBS({
                         dismissible: false,
                         title: `Sukses`,
-                        description: `PO ${data.no_po} dari ${data.no_spb} telah dibatalkan`,
+                        description: `PO ${data.no_po} dari ${data.no_spb} telah ditolak`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
                             hideAlertBS()
@@ -147,17 +147,16 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                     })
                 }
             })
-
     }
 
-    const totalPO = async () => {
-        await patchPOStatus(data.no_spb, data.no_po, StatusPO.rejected)
+    const cancelPO = async () => {
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.cancel)
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
                         dismissible: false,
                         title: `Sukses`,
-                        description: `PO ${data.no_po} dari ${data.no_spb} telah ditolak`,
+                        description: `PO ${data.no_po} dari ${data.no_spb} telah dibatalkan`,
                         buttonPrimaryTitle: "OK",
                         buttonPrimaryAction: () => {
                             hideAlertBS()
@@ -449,7 +448,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                             size='lg'
                             variant='secondary'
                             onPress={() => {
-                                totalPO()
+                                rejectPO()
                             }}
                         >{t("tolak")}</Button>
 
@@ -492,7 +491,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                     buttonPrimaryTitle: t("cancel_title"),
                                     buttonSecondaryTitle: t("back"),
                                     buttonPrimaryAction: ((text) => {
-                                        rejectPO()
+                                        cancelPO()
                                         hideConfirmationBS()
                                     })
                                 })

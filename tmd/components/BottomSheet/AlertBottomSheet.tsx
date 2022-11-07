@@ -147,6 +147,7 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
                   label={t("note")}
                   placeholder={t("note_placeholder")}
                   name={"note"}
+                  defaultValue={""}
                 />
               }
               <Stack

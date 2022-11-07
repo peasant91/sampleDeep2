@@ -18,19 +18,19 @@ interface Props {
 
 export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
     const { t } = useTranslation()
-    const [qty, setQty] = useState(1)
+    const [qty, setQty] = useState("1")
 
-    useEffect(() => setQty(item.quantity), [])
+    useEffect(() => setQty(String(item.quantity)), [])
     useEffect(() => {
-        method.setValue('quantity', qty)
+        method.setValue('quantity', parseFloat(qty))
     }, [qty])
-    
+
 
     const schema = yup.object({
         name: yup.string().required().label(t("nama_bahan")),
         unit: yup.string().required().label(t("unit_bahan")),
         note: yup.string().optional().label(t("note_bahan")),
-        quantity: yup.number().required().label(t("jumlah"))
+        quantity: yup.string().required().label(t("jumlah"))
     }).required();
 
     var method = useForm({
@@ -41,12 +41,27 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
     const { handleSubmit } = method;
 
     const onSubmit = (data: BahanModel) => {
+        data["quantity"] = parseFloat(updateNumber(0))
         onSave(data)
     };
 
     const onError = (errors: any) => {
         console.log(errors)
     };
+
+    const updateNumber = (num: number) => {
+        const _num = parseFloat(qty) + num
+        if (Math.round(_num) != _num && _num > 0) {
+            setQty(_num.toFixed(2).replace(/\.*0+$/, ''))
+        } else if (_num < 0) {
+            setQty("0")
+        } else {
+            setQty(_num.toFixed(0))
+        }
+
+        return _num.toFixed(2).replace(/\.*0+$/, '')
+
+    }
 
     return (
         <FormProvider {...method}>
@@ -82,12 +97,7 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                                     icon={"remove-outline"}
                                     variant={'secondary'}
                                     onPress={() => {
-                                        console.log(qty)
-                                        if (qty == 1) {
-                                            setQty(1)
-                                        } else {
-                                            setQty(qty - 1)
-                                        }
+                                        updateNumber(-1)
                                     }}
                                 />
 
@@ -99,13 +109,16 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                                             return <TextField
                                                 onBlur={onBlur}
                                                 onChangeText={(text) => {
-                                                    console.log(text)
-                                                    if (text !== '') {
-                                                        setQty(parseInt(text))
+                                                    if (text[0] == "0" && text.length > 1 && text[1] != ".") {
+                                                        setQty(text.substring(1))
+                                                    } else if (text !== '') {
+                                                        if (text.match(/^([0-9]{1,})?(\.)?([0-9]{1,})?$/)) {
+                                                            setQty(text)
+                                                        }
                                                         onChange(text)
                                                     } else {
-                                                        setQty(0)
-                                                        onChange(0)
+                                                        setQty("0")
+                                                        onChange("0")
                                                     }
                                                     return
                                                 }}
@@ -114,14 +127,14 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                                                 error={fieldState.error != undefined}
                                                 underlineColor={colors.primary.main}
                                                 mode={'flat'}
-                                                style={{textAlign: 'center'}}
+                                                style={{ textAlign: 'center' }}
                                                 textAlign="center"
                                                 errorText={
                                                     fieldState.error?.message?.charAt(0).toUpperCase() +
                                                     (fieldState.error?.message?.slice(1) ?? "")
                                                 }
                                                 // defaultValue={String(qty)}
-                                                keyboardType={Platform.OS == "android" ? "numeric" : "number-pad"}
+                                                keyboardType={Platform.OS == "android" ? "decimal-pad" : "decimal-pad"}
                                                 numberOfLines={1}
                                             />
                                         }}
@@ -133,7 +146,7 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                                     icon={"add-outline"}
                                     variant={'secondary'}
                                     onPress={() => {
-                                        setQty(qty + 1)
+                                        updateNumber(1)
                                     }}
                                 />
                             </View>
