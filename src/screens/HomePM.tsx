@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, View, ViewStyle, FlatList } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -20,6 +20,7 @@ import moment from "moment";
 import { SPBListShimmer } from "./components/shimmer/shimmer";
 import { useBottomSheet } from "../../tmd/providers/BottomSheetProvider";
 import { useAuth } from "../providers/AuthProvider";
+import messaging from '@react-native-firebase/messaging';
 
 enum StatusProject {
   inProgress = "in_progress",

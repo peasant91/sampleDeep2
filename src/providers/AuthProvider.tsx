@@ -13,6 +13,7 @@ import { getAPI } from "../services/baseService";
 
 export type AuthContextType = {
   login: (credential: string, password: string) => void;
+  updateFirebase: (token: string) => void;
   logout: () => void;
   isLoadingLogin: boolean;
   isLoadingLogout: boolean;
@@ -30,7 +31,7 @@ const AuthProvider = ({ children }: any) => {
   const user = useSelector(state => state.authReducer.user);
 
   const dispatch = useDispatch();
-  const { postAPI } = useBaseService();
+  const { postAPI, patchAPI } = useBaseService();
   const { showErrorBS } = useBottomSheet();
   const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   const [isLoadingLogout, setIsLoadingLogout] = useState(false);
@@ -61,7 +62,7 @@ const AuthProvider = ({ children }: any) => {
       setIsLoadingLogin(false);
     } catch (e) {
       setIsLoadingLogin(false)
-      throw(e)
+      throw (e)
       showErrorBS(e);
       setIsLoadingLogin(false);
     }
@@ -83,10 +84,21 @@ const AuthProvider = ({ children }: any) => {
     }
   };
 
+  const updateFirebase = async (token: string) => {
+    try {
+      const res = await patchAPI("user/firebase-token", {
+        "firebase_token": token
+      });
+    } catch (e) {
+      throw (e)
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
         login,
+        updateFirebase,
         logout,
         isLoadingLogin,
         isLoadingLogout,

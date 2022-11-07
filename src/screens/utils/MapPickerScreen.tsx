@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocale } from "../../providers/LocaleProvider";
 import { SelectedMap } from "../../../tmd/components/picker/MapPicker";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { Button, Page, Skeleton, useTheme } from "../../../tmd";
 import Geocoder from "@timwangdev/react-native-geocoder";
 import Config from "react-native-config";
@@ -70,6 +70,7 @@ export default function MapPickerScreen({ route }: NativeStackScreenProps<AppNav
 
   useEffect(() => {
     if (initial?.location) {
+      console.log("ANJENG", initial)
       setAddressObj(initial);
       handleCameraChanges(initial?.location?.latitude, initial?.location?.longitude);
     } else {
@@ -123,13 +124,13 @@ export default function MapPickerScreen({ route }: NativeStackScreenProps<AppNav
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-                <View style={{
+                {/* <View style={{
                   zIndex: 200,
                   marginBottom: 52,
                 }}>
                   <Image
                     source={require("../../../src/assets/icons/ic_marker/ic_marker.png")} />
-                </View>
+                </View> */}
 
                 <MapView
                   showsCompass={false}
@@ -140,10 +141,18 @@ export default function MapPickerScreen({ route }: NativeStackScreenProps<AppNav
                   ref={mapRef}
                   showsUserLocation={true}
                   showsMyLocationButton={false}
-                  onRegionChangeComplete={(r, d) => {
-                    handleAddressChange(r.latitude, r.longitude);
-                  }}
+
+                // onRegionChangeComplete={(r, d) => {
+                //   handleAddressChange(r.latitude, r.longitude);
+                // }}
                 >
+                  <Marker
+                    coordinate={{ latitude: initial?.location?.latitude ?? 0, longitude: initial?.location?.longitude ?? 0 }}
+                  >
+                    <Image
+                      source={require("../../../src/assets/icons/ic_marker/ic_marker.png")} />
+
+                  </Marker>
 
                 </MapView>
               </View>

@@ -49,7 +49,6 @@ const App = () => {
   async function registerAppWithFCM() {
     await messaging().registerDeviceForRemoteMessages();
     const token = await messaging().getToken();
-    console.log("ANJENG TANAH", token)
   }
 
   const onBeforeLift = () => {

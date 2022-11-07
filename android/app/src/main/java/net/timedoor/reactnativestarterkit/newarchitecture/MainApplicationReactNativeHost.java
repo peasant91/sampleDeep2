@@ -1,4 +1,4 @@
-package net.timedoor.reactnativestarterkit.newarchitecture;
+package com.adijayautama.app.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import net.timedoor.reactnativestarterkit.BuildConfig;
-import net.timedoor.reactnativestarterkit.newarchitecture.components.MainComponentsRegistry;
-import net.timedoor.reactnativestarterkit.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.adijayautama.app.BuildConfig;
+import com.adijayautama.app.newarchitecture.components.MainComponentsRegistry;
+import com.adijayautama.app.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Image, SafeAreaView, StyleSheet, TouchableNativeFeedback, View } from "react-native";
 import { FlatList, GestureDetector, ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { SlideInLeft } from "react-native-reanimated";
-import { Button, Divider, Icon, IconButton, Page, Skeleton, Stack, Toolbar } from "../../tmd";
+import { Alert, Button, Divider, Icon, IconButton, Page, Skeleton, Stack, Toolbar } from "../../tmd";
 import TextButton from "../../tmd/components/Button/TextButton";
 import ImageViewerModal from "../../tmd/components/Modal/ImageViewerModal";
 import Typography from "../../tmd/components/Typography/Typography";
@@ -232,6 +232,18 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
         )
     }
 
+    const getInfoString = (status: string) => {
+        if (status == StatusSPB.approved) {
+            return "Disetujui oleh:" + data.updated_by
+        } else if (status == StatusSPB.rejected) {
+            return "Ditolak oleh:" + data.updated_by
+        } else if (status == StatusSPB.revision) {
+            return "Direvisi oleh:" + data.updated_by
+        }
+        return ""
+    }
+
+
     const header = () => {
         return (
             <>
@@ -256,6 +268,18 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                         status={data.spb_status}
                     />
                 </View>
+
+                {data.updated_by && (
+                    data.spb_status == StatusSPB.revision ||
+                    data.spb_status == StatusSPB.rejected||
+                    data.spb_status == StatusSPB.approved
+                ) &&
+                    <Alert
+                        variant='info'
+                        type='outlined'
+                        description={getInfoString(data.spb_status)}
+                    />
+                }
 
                 <Divider />
 

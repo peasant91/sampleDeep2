@@ -2,7 +2,7 @@
  * Created by Widiana Putra on 27/05/2022
  * Copyright (c) 2022 - Made with love
  */
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import ButtonScreen from "../screens/components/ButtonScreen";
@@ -51,10 +51,11 @@ import FormSPB from "../screens/FormSPB";
 import AddBahan from "../screens/AddBahan";
 import SuccessPage from "../screens/SuccessPage";
 import HomeAdmin from "../screens/admin/HomeAdmin";
+import messaging from '@react-native-firebase/messaging';
 
 const AppNavigation = () => {
   const Stack = createNativeStackNavigator<AppNavigationType>();
-  const { isAuthenticated, isPM, isHeadAdmin } = useAuth();
+  const { isAuthenticated, isPM, isHeadAdmin, updateFirebase } = useAuth();
   const NavTheme = {
     ...DefaultTheme,
     colors: {
@@ -62,6 +63,22 @@ const AppNavigation = () => {
       background: "white",
     },
   };
+
+  const updateToken = useCallback(async (loggedIn: boolean) => {
+    const token = await messaging().getToken();
+    if (loggedIn) {
+      updateFirebase(token)
+    } else {
+      updateFirebase("")
+    }
+  },
+    [],
+  )
+
+  useEffect(() => {
+    updateToken(isAuthenticated)
+  }, [isAuthenticated])
+
   return (
     <NavigationContainer
       ref={navigationRef}

@@ -4,6 +4,7 @@
  */
 const StorageKey = {
   LOCALE: "locale",
+  FIREBASE_TOKEN: "firebase_token",
   ACCESS_TOKEN: "access_token",
   PROJECT_DATA: "project_data"
 };

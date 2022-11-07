@@ -53,6 +53,7 @@ export interface SPBDetailModel {
   photo?: string
   image?: string
   estimated_date?: string
+  updated_by?: string
 }
 
 

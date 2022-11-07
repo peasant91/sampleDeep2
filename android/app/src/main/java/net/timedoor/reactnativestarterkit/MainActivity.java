@@ -1,4 +1,4 @@
-package net.timedoor.reactnativestarterkit;
+package com.adijayautama.app;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

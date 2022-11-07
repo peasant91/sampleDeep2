@@ -204,6 +204,19 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             })
     }
 
+    const getInfoString = (status: string) => {
+        if (status == StatusPO.approved) {
+            return "Disetujui oleh:" + data.updated_by
+        } else if (status == StatusPO.rejected) {
+            return "Ditolak oleh:" + data.updated_by
+        } else if (status == StatusPO.complaint) {
+            return "Dikomplain oleh:" + data.updated_by
+        } else if (status == StatusPO.cancel) {
+            return "Dibatalkan oleh:" + data.updated_by
+        }
+        return ""
+    }
+
     const header = () => {
         return (
             <>
@@ -233,11 +246,11 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                 <View style={[_s.padding]}>
                     <Stack spacing={16}>
-                        {data.last_updated &&
+                        {data.created_by && (data.po_status == StatusPO.approved || data.po_status == StatusPO.rejected || data.po_status == StatusPO.complaint || data.po_status == StatusPO.cancel) &&
                             <Alert
                                 variant='info'
                                 type='outlined'
-                                description={t("last_updated_desc", { date: moment(data.last_updated).format("Do MMMM YYYY, HH:mm") })}
+                                description={getInfoString(data.po_status)}
                             />
                         }
                         {/* <View>
@@ -290,10 +303,22 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("estimated_delivery")}</Typography>
                             </View>
                             <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
+                                {data.created_by && (
+                                    <>
+                                        <Typography style={{ flex: 1 }} type={"label2"}>{data.created_by}</Typography>
+                                        <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>Pembuat PO</Typography>
+                                    </>
+                                )}
                             </View>
                         </View>
 
-
+                        {data.last_updated &&
+                            <Alert
+                                variant='info'
+                                type='outlined'
+                                description={t("last_updated_desc", { date: moment(data.last_updated).format("Do MMMM YYYY, HH:mm") })}
+                            />
+                        }
 
                     </Stack>
                 </View>
