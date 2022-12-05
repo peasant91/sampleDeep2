@@ -60,7 +60,6 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
   // }, [watch])
 
   const onSubmit = (data: any) => {
-    console.log(JSON.stringify(data, null, 2));
     if (props.buttonPrimaryAction) {
       props.buttonPrimaryAction(data.note)
     }
@@ -77,6 +76,7 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
   };
 
   const handleOpen = () => {
+    method.reset()
     modalizeRef?.current?.open();
   };
 

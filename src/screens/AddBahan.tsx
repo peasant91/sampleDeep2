@@ -27,7 +27,7 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
         name: yup.string().required().label(t("nama_bahan")),
         unit: yup.string().required().label(t("unit_bahan")),
         notes: yup.string().optional().label(t("note_bahan")),
-        quantity: yup.number().required().label(t("jumlah"))
+        quantity: yup.string().required().label(t("jumlah"))
     }).required();
 
     const arrayOfSchema = yup.object({
@@ -77,10 +77,22 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     }
 
     const onSubmit = (data: any) => {
-        const items: BahanModel[] = data['values']
+        // const items: BahanModel[] = data['values']
+        var items: BahanModel[] = []
+        for (let index = 0; index < data['values'].length; index++) {
+            const element = data['values'][index];
+            element["quantity"] = parseFloat(updateNumber(element['quantity'],0))
+            items[index] = element
+        }
         save(items)
         goBack()
     };
+
+    const updateNumber = (qty: string, num: number) => {
+        const _num = parseFloat(qty) + num
+        return _num.toFixed(2).replace(/\.*0+$/, '')
+
+    }
 
     const onError = (errors: any) => {
         console.log(JSON.stringify(errors, null, 2));
@@ -113,8 +125,8 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
     return (
         <Page>
             <Toolbar title={t("add_bahan")} />
-            <View style={{ flex: 1}}>
-                <ScrollView style={{ flex: 1}}>
+            <View style={{ flex: 1 }}>
+                <ScrollView style={{ flex: 1 }}>
                     <Stack>
                         <FormProvider {...method}>
                             {listBahan.map(function (item, index) {
@@ -149,9 +161,9 @@ export default function AddBahan({ route }: NativeStackScreenProps<AppNavigation
                                 style={{ padding: 16 }}
                                 onPress={addMore}
                             >{t("add_more")}</Button>
-                        </FormProvider> 
+                        </FormProvider>
 
-                        <View style={{height: 130 }} />
+                        <View style={{ height: 130 }} />
                     </Stack>
 
                 </ScrollView>

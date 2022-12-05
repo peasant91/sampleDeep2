@@ -205,13 +205,13 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
     const getInfoString = (status: string) => {
         if (status == StatusPO.approved) {
-            return "Disetujui oleh:" + data.updated_by
+            return "Disetujui oleh: " + data.updated_by
         } else if (status == StatusPO.rejected) {
-            return "Ditolak oleh:" + data.updated_by
+            return "Ditolak oleh: " + data.updated_by
         } else if (status == StatusPO.complaint) {
-            return "Dikomplain oleh:" + data.updated_by
+            return "Disetujui oleh: " + data.updated_by
         } else if (status == StatusPO.cancel) {
-            return "Dibatalkan oleh:" + data.updated_by
+            return "Dibatalkan oleh: " + data.updated_by
         }
         return ""
     }

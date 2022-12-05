@@ -23,7 +23,7 @@ interface Props {
 export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, onDelete }: Props) {
     const { t } = useTranslation()
     const { control, setValue, getValues } = useFormContext()
-    const [qty, setQty] = useState(1)
+    const [qty, setQty] = useState("1")
 
     useEffect(() => setValue(yQty, qty), [qty])
     useEffect(() => {
@@ -31,6 +31,20 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
             setQty(getValues(yQty))
         }, 100)
     }, [])
+
+    const updateNumber = (num: number) => {
+        const _num = parseFloat(qty) + num
+        if (Math.round(_num) != _num && _num > 0) {
+            setQty(_num.toFixed(2).replace(/\.*0+$/, ''))
+        } else if (_num < 0) {
+            setQty("0")
+        } else {
+            setQty(_num.toFixed(0))
+        }
+
+        return _num.toFixed(2).replace(/\.*0+$/, '')
+
+    }
 
 
     return (
@@ -75,11 +89,7 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                             icon={"remove-outline"}
                             variant={'secondary'}
                             onPress={() => {
-                                if (qty == 1) {
-                                    setQty(1)
-                                } else {
-                                    setQty(qty - 1)
-                                }
+                                updateNumber(-1)
                             }}
                         />
 
@@ -91,17 +101,22 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                                     return <TextField
                                         onBlur={onBlur}
                                         onChangeText={(text) => {
-                                            if (text !== '') {
-                                                setQty(parseInt(text))
+                                            text = text.replace(",", ".")
+                                            if (text[0] == "0" && text.length > 1 && text[1].match(/^([0-9])?$/)) {
+                                                setQty(text.substring(1))
+                                            } else if (text !== '') {
+                                                if (text.match(/^([0-9]{1,})?(\.)?([0-9]{1,})?$/)) {
+                                                    setQty(text)
+                                                }
                                                 onChange(text)
                                             } else {
-                                                setQty(0)
-                                                onChange(0)
+                                                setQty("0")
+                                                onChange("0")
                                             }
                                             return
                                         }}
-                                        value={String(parseInt(getValues(yQty)))}
-                                        defaultValue={String(getValues(yQty))}
+                                        value={String(qty)}
+                                        defaultValue={String(qty)}
                                         error={fieldState.error != undefined}
                                         underlineColor={colors.primary.main}
                                         textAlign={'center'}
@@ -111,7 +126,7 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                                             fieldState.error?.message?.charAt(0).toUpperCase() +
                                             (fieldState.error?.message?.slice(1) ?? "")
                                         }
-                                        keyboardType={Platform.OS == "android" ? "numeric" : "number-pad"}
+                                        keyboardType={"decimal-pad"}
                                         numberOfLines={1}
                                     />
                                 }}
@@ -123,7 +138,8 @@ export default function AddBahanCell({ item, index, yName, yUnit, yNote, yQty, o
                             icon={"add-outline"}
                             variant={'secondary'}
                             onPress={() => {
-                                setQty(qty + 1)
+                                // setQty(qty + 1)
+                                updateNumber(1)
                             }}
                         />
                     </View>

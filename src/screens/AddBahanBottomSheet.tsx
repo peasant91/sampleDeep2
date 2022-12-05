@@ -109,7 +109,8 @@ export default function AddBahanBottomSheet({ item, index, onSave }: Props) {
                                             return <TextField
                                                 onBlur={onBlur}
                                                 onChangeText={(text) => {
-                                                    if (text[0] == "0" && text.length > 1 && text[1] != ".") {
+                                                    text = text.replace(",", ".")
+                                                    if (text[0] == "0" && text.length > 1 && text[1].match(/^([0-9])?$/)) {
                                                         setQty(text.substring(1))
                                                     } else if (text !== '') {
                                                         if (text.match(/^([0-9]{1,})?(\.)?([0-9]{1,})?$/)) {

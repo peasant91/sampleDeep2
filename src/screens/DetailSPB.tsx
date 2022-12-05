@@ -234,11 +234,11 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
     const getInfoString = (status: string) => {
         if (status == StatusSPB.approved) {
-            return "Disetujui oleh:" + data.updated_by
+            return "Disetujui oleh: " + data.updated_by
         } else if (status == StatusSPB.rejected) {
-            return "Ditolak oleh:" + data.updated_by
+            return "Ditolak oleh: " + data.updated_by
         } else if (status == StatusSPB.revision) {
-            return "Direvisi oleh:" + data.updated_by
+            return "Direvisi oleh: " + data.updated_by
         }
         return ""
     }
@@ -271,14 +271,16 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
 
                 {data.updated_by && (
                     data.spb_status == StatusSPB.revision ||
-                    data.spb_status == StatusSPB.rejected||
+                    data.spb_status == StatusSPB.rejected ||
                     data.spb_status == StatusSPB.approved
                 ) &&
-                    <Alert
-                        variant='info'
-                        type='outlined'
-                        description={getInfoString(data.spb_status)}
-                    />
+                    <View style={{paddingHorizontal: 16, paddingBottom: 16}}>
+                        <Alert
+                            variant='info'
+                            type='outlined'
+                            description={getInfoString(data.spb_status)}
+                        />
+                    </View>
                 }
 
                 <Divider />
