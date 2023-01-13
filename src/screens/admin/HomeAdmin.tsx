@@ -200,6 +200,7 @@ export default function HomeAdmin() {
                             // nestedScrollEnabled={true}
                             ref={flatListRef}
                             showsVerticalScrollIndicator={true}
+                            persistentScrollbar={true}
                             style={{ padding: 16 }}
                             data={spbHandler.spbLists}
                             // refreshing={(Platform.OS === "ios") ? manualRefresh : false}
@@ -239,6 +240,7 @@ export default function HomeAdmin() {
                         <Tabs.FlatList
                             // nestedScrollEnabled={true}
                             showsVerticalScrollIndicator={true}
+                            persistentScrollbar={true}
                             style={{ padding: 16 }}
                             data={poHandler.poLists}
                             keyExtractor={(_, index) => index.toString()}
@@ -275,13 +277,14 @@ export default function HomeAdmin() {
                         <Tabs.FlatList
                             // nestedScrollEnabled={true}
                             showsVerticalScrollIndicator={true}
+                            persistentScrollbar={true}
                             style={{ padding: 16 }}
                             data={receivedHandler.poLists}
                             keyExtractor={(_, index) => index.toString()}
                             // refreshing={(Platform.OS === "ios") ? manualRefresh : refreshing}
                             // onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(1) : undefined}
                             refreshing={manualRefresh}
-                            onRefresh={() => handleIndexChanged(1)}
+                            onRefresh={() => handleIndexChanged(2)}
                             onEndReached={receivedHandler.fetchNext}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             ListEmptyComponent={EmptyPOState}

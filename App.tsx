@@ -169,6 +169,10 @@ const App = () => {
     notifee.onForegroundEvent(({ type, detail }) => {
     })
   }, [])
+  useEffect(() => {
+    // App launched, remove the badge count
+    notifee.setBadgeCount(0).then(() => console.log('Badge count removed'));
+  }, []);
 
   return (
     <Provider store={store}>
