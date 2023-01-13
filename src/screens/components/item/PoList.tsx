@@ -84,7 +84,7 @@ const POListItem = ({ item, index, type, onPress, withProjectName }: Props) => {
                         <IcPO />
                     </View>
                     <Stack spacing={4} style={{ justifyContent: 'space-between', flexShrink: 1 }}>
-                        <Typography type={"title3"} numberOfLines={1}>{item.no_po}</Typography>
+                        <Typography type={"title3"} numberOfLines={2}>{item.no_po}</Typography>
                         <Typography type={"body4"}>{moment(item.created_at).format("Do MMM YYYY")}</Typography>
                     </Stack>
                 </Stack>

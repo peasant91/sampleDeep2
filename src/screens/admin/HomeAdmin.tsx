@@ -13,7 +13,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { navigate } from '../../navigations/RootNavigation';
 import useProjectInfiniteQuery from '../../services/project/useProjectQuery';
 import { SPBListShimmer } from '../components/shimmer/shimmer';
-import { EmptySPBStateAdmin } from '../components/EmptyState';
+import { EmptyPOState, EmptySPBStateAdmin } from '../components/EmptyState';
 import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
 import { useAuth } from '../../providers/AuthProvider';
 import { useIsFocused } from '@react-navigation/native';
@@ -21,6 +21,8 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { FlatList } from 'react-native-gesture-handler';
 import { SpbListItem } from '../../models/spb/spb';
 import { useScrollToTop } from '@react-navigation/native';
+import useProjectInfiniteQueryPO from '../../services/project/useProjectQueryPO';
+import POListItem from '../components/item/PoList';
 
 export const useRefresh = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
@@ -66,8 +68,11 @@ export default function HomeAdmin() {
 
     const { logout, isLoadingLogout } = useAuth();
 
-    const onGoingHandler = useProjectInfiniteQuery({ status: "in_progress" })
-    const completedHandler = useProjectInfiniteQuery({ status: "done" })
+    // const onGoingHandler = useProjectInfiniteQuery({ status: "in_progress" })
+    // const completedHandler = useProjectInfiniteQuery({ status: "done" })
+    const spbHandler = useProjectInfiniteQuery({ status: "" })
+    const poHandler = useProjectInfiniteQueryPO("po-lists",{ status: "" })
+    const receivedHandler = useProjectInfiniteQueryPO("received-lists",{ status: StatusSPB.received })
 
     const theme = useTheme()
 
@@ -77,19 +82,24 @@ export default function HomeAdmin() {
     const _isFocus = useIsFocused()
 
     const [routes] = useState([
-        { key: "first", title: t("project_ongoing") },
-        { key: "second", title: t("project_done") },
+        { key: "first", title: "SPB" },
+        { key: "second", title: "PO" },
+        { key: "third", title: t("received") },
     ]);
 
     const handleIndexChanged = async (index: number) => {
         setIndex(index)
         setManualRefresh(true)
-        if (index == 0) {
-            await onGoingHandler.refetch()
-            // onGoingHandler.refresh()
-        } else {
-            await completedHandler.refetch()
-            // completedHandler.refresh()
+        switch (index) {
+            case 0: {
+                await spbHandler.refetch()
+            }
+            case 1: {
+                await poHandler.refetch()
+            }
+            default: {
+                await receivedHandler.refetch()
+            }
         }
         setManualRefresh(false)
     }
@@ -101,16 +111,16 @@ export default function HomeAdmin() {
 
     useEffect(() => {
         if (_isFocus) {
-            if (index == 0) {
-                onGoingHandler.refetch()
-                console.log("ANJENG", scrollPositionRef.current);
-
-                // if (scrollPositionRef.current > 0) {
-                //     console.log(scrollPositionRef.current)
-                //     flatListRef.current?.scrollToIndex({ animated: false, index: scrollPositionRef.current ?? 0 })
-                // }
-            } else {
-                completedHandler.refetch()
+            switch (index) {
+                case 0: {
+                    spbHandler.refetch()
+                }
+                case 1: {
+                    poHandler.refetch()
+                }
+                default: {
+                    receivedHandler.refetch()
+                }
             }
         }
     }, [_isFocus])
@@ -159,7 +169,7 @@ export default function HomeAdmin() {
                     snapThreshold={(Platform.OS == "android") ? 0.3 : null}
                     minHeaderHeight={MIN_HEADER_HEIGHT}
                     headerHeight={HEADER_HEIGHT}
-                    // lazy
+                    lazy
                     renderHeader={() => <Header />}
                     onIndexChange={handleIndexChanged}
                     renderTabBar={(props) => {
@@ -175,13 +185,12 @@ export default function HomeAdmin() {
                             }}
                             style={{
                                 backgroundColor: colors.neutral.neutral_10,
-                                width: "auto",
                             }}
                             onTabPress={function (name: string): void {
                                 props.onTabPress(name)
                             }}
-                            indicatorStyle={{ backgroundColor: colors.primary.main, height: 2, alignSelf: 'flex-start', width: '20%' }}
-                            tabStyle={{ alignSelf: 'flex-start', justifyContent: 'flex-start', flexDirection: 'row', width: 'auto', padding: 0, marginRight: 18, }}
+                            indicatorStyle={{ backgroundColor: colors.primary.main, height: 3, width: '20%' }}
+                            tabStyle={{ width: Dimensions.get('window').width / 3 }}
                             scrollEnabled={true}
                         />
                     }}
@@ -190,15 +199,15 @@ export default function HomeAdmin() {
                         <Tabs.FlatList
                             // nestedScrollEnabled={true}
                             ref={flatListRef}
-                            showsVerticalScrollIndicator={false}
+                            showsVerticalScrollIndicator={true}
                             style={{ padding: 16 }}
-                            data={onGoingHandler.spbLists}
+                            data={spbHandler.spbLists}
                             // refreshing={(Platform.OS === "ios") ? manualRefresh : false}
                             // onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(0) : undefined}
                             keyExtractor={(_, index) => index.toString()}
                             refreshing={manualRefresh}
                             onRefresh={() => handleIndexChanged(0)}
-                            onEndReached={onGoingHandler.fetchNext}
+                            onEndReached={spbHandler.fetchNext}
                             ListEmptyComponent={EmptySPBStateAdmin}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             renderItem={(item) => {
@@ -229,36 +238,72 @@ export default function HomeAdmin() {
                     <Tabs.Tab name={routes[1].title}>
                         <Tabs.FlatList
                             // nestedScrollEnabled={true}
-                            showsVerticalScrollIndicator={false}
+                            showsVerticalScrollIndicator={true}
                             style={{ padding: 16 }}
-                            data={completedHandler.spbLists}
+                            data={poHandler.poLists}
                             keyExtractor={(_, index) => index.toString()}
                             // refreshing={(Platform.OS === "ios") ? manualRefresh : refreshing}
                             // onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(1) : undefined}
                             refreshing={manualRefresh}
                             onRefresh={() => handleIndexChanged(1)}
-                            onEndReached={completedHandler.fetchNext}
+                            onEndReached={poHandler.fetchNext}
                             ListFooterComponent={<View style={{ height: 32 }} />}
-                            ListEmptyComponent={EmptySPBStateAdmin}
+                            ListEmptyComponent={EmptyPOState}
                             renderItem={(item) => {
                                 if (manualRefresh) {
                                     return <View style={{ marginBottom: 16 }}>
                                         <SPBListShimmer />
                                     </View>
                                 }
-                                return <SpbList
-                                    isAdmin={true}
-                                    isPM={false}
+                                return <POListItem
                                     item={item.item}
                                     index={item.index}
-                                    withProjectName={true}
+                                    type={"PO"}
                                     onPress={() => {
-                                        navigate("DetailSPB", {
+                                        navigate("DetailPO", {
+                                            isAdminPage: true,
+                                            isPMPage: false,
                                             spbID: item.item.no_spb,
-                                            isAdminPage: true
+                                            poID: item.item.no_po
                                         })
                                     }}
                                 />
+                            }}
+                        />
+                    </Tabs.Tab>
+                    <Tabs.Tab name={routes[2].title}>
+                        <Tabs.FlatList
+                            // nestedScrollEnabled={true}
+                            showsVerticalScrollIndicator={true}
+                            style={{ padding: 16 }}
+                            data={receivedHandler.poLists}
+                            keyExtractor={(_, index) => index.toString()}
+                            // refreshing={(Platform.OS === "ios") ? manualRefresh : refreshing}
+                            // onRefresh={() => (Platform.OS === "ios") ? handleIndexChanged(1) : undefined}
+                            refreshing={manualRefresh}
+                            onRefresh={() => handleIndexChanged(1)}
+                            onEndReached={receivedHandler.fetchNext}
+                            ListFooterComponent={<View style={{ height: 32 }} />}
+                            ListEmptyComponent={EmptyPOState}
+                            renderItem={(item) => {
+                                if (manualRefresh) {
+                                    return <View style={{ marginBottom: 16 }}>
+                                        <SPBListShimmer />
+                                    </View>
+                                }
+                                return <POListItem
+                                item={item.item}
+                                index={item.index}
+                                type={"PO"}
+                                onPress={() => {
+                                    navigate("DetailPO", {
+                                        isAdminPage: true,
+                                        isPMPage: false,
+                                        spbID: item.item.no_spb,
+                                        poID: item.item.no_po
+                                    })
+                                }}
+                            />
                             }}
                         />
                     </Tabs.Tab>
@@ -308,8 +353,9 @@ export default function HomeAdmin() {
                     search
                     onClear={() => {
                         searchKey.current = "";
-                        onGoingHandler.setQuery(searchKey.current)
-                        completedHandler.setQuery(searchKey.current)
+                        spbHandler.setQuery(searchKey.current)
+                        poHandler.setQuery(searchKey.current)
+                        receivedHandler.setQuery(searchKey.current)
                         handleIndexChanged(index)
                     }}
                     onFocus={() => {
@@ -319,8 +365,9 @@ export default function HomeAdmin() {
                         }
                     }}
                     onSubmitEditing={() => {
-                        onGoingHandler.setQuery(searchKey.current)
-                        completedHandler.setQuery(searchKey.current)
+                        spbHandler.setQuery(searchKey.current)
+                        poHandler.setQuery(searchKey.current)
+                        receivedHandler.setQuery(searchKey.current)
                         handleIndexChanged(index)
                         // if (index == 0) {
                         //     setTimeout(onGoingHandler.refresh, 1000)

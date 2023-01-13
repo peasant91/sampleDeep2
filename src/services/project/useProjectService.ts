@@ -65,6 +65,16 @@ export default function useProjectService() {
         // return getAPI<SpbListResponse>(`project/list-spb?spb_status=${query["spb_status"]}&query=${query.query}&page=${page}`)
     };
 
+    const getPOsList = (page: number = 1, query: any) => {
+        return getAPI<PoListResponse>(`project/list-po`, {
+            params: {
+                page: page,
+                ...query,
+            }
+        });
+        // return getAPI<SpbListResponse>(`project/list-spb?spb_status=${query["spb_status"]}&query=${query.query}&page=${page}`)
+    };
+
     const getSPBDetail = async (id: string) => {
         try {
             setIsLoading(true);
@@ -144,6 +154,7 @@ export default function useProjectService() {
         getSPB,
         getSPBDetail,
 
+        getPOsList,
         getPOList,
         getPODetail,
         patchPOStatus,

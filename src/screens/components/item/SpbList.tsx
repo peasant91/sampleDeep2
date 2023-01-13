@@ -25,7 +25,8 @@ export enum StatusSPB {
     cancel = "cancel",
     complaint = "complaint",
     revision = "revision",
-    finish = "finish"
+    finish = "finish",
+    received = "received"
 }
 
 type StatusType = {
@@ -130,7 +131,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                             <IcProject height={40} width={40} style={{ alignSelf: 'center' }} />
                             <View style={{ flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1, marginLeft: 8, marginRight: 8, flex: 1 }}>
                                 <Typography type="label1" style={{ color: colors.neutral.neutral_90 }}>{item.name}</Typography>
-                                <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{item.location.address}</Typography>
+                                <Typography type="body3" style={{ color: colors.neutral.neutral_80 }}>{item.location?.address ?? "-"}</Typography>
                             </View>
                         </View>
                         <Divider />

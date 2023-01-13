@@ -7,14 +7,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SpbListItem, SpbListResponse } from "../../models/spb/spb";
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 import { _spbMock } from "../../../tmd/data/_mock";
+import { PoListResponse } from "../../models/spb/po";
 
 type QueryKey = {
   // search: string
   status: string
 }
 
-export default function useProjectInfiniteQuery({ status }: QueryKey) {
-  const { getSPB } = useProjectService();
+export default function useProjectInfiniteQueryPO(key: string,{ status }: QueryKey) {
+  const { getPOsList } = useProjectService();
   const { showErrorBS } = useBottomSheet();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const searchKey = useRef<string>("")
@@ -29,10 +30,10 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
     isRefetching,
     isFetchingNextPage,
     ...rest
-  } = useInfiniteQuery<SpbListResponse>(["spb-lists",status], (par) => {
-    return getSPB(par.pageParam, {
+  } = useInfiniteQuery<PoListResponse>([key,status], (par) => {
+    return getPOsList(par.pageParam, {
       "query": searchKey.current,
-      "spb_status": status
+      "po_status": status
     });
   }, {
     keepPreviousData: false,
@@ -76,7 +77,7 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
 
   return {
     setQuery: setQuery,
-    spbLists: data?.pages.map(page => page.data).flat(),
+    poLists: data?.pages.map(page => page.data).flat(),
     isLoadingCatalog: isLoading,
     fetchNext,
     refresh,

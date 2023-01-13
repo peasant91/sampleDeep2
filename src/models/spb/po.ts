@@ -19,6 +19,7 @@ export interface PoListResponse extends BaseModel {
 export interface POList {
   id: number
   no_po: string
+  no_spb?: string
   created_at: string
   po_status: string
   items: POItem[]
