@@ -23,6 +23,7 @@ import { goBack, navigate } from "../navigations/RootNavigation";
 import usePOListQuery from "../services/project/usePOListQuery";
 import useProjectService from "../services/project/useProjectService";
 import useSPBDetailQuery from "../services/project/useSPBDetailQuery";
+import { momentWita } from "../utils/Helper";
 import StorageKey from "../utils/StorageKey";
 import { EmptyPOState } from "./components/EmptyState";
 import ItemList from "./components/item/itemList";
@@ -250,7 +251,7 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name ?? data.project.name}</Typography>
-                        <Typography type={"body4"}>{moment(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
+                        <Typography type={"body4"}>{momentWita(projectData.current?.created_at ?? data.project.created_at).format("DD MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
                             <Typography type={"body4"} style={{ marginRight: 32 }} numberOfLines={1}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
@@ -291,14 +292,14 @@ export default function DetailSPB({ route }: NativeStackScreenProps<AppNavigatio
                         <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_spb")}</Typography>
                     </View>
                     <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
-                        <Typography type={"label2"}>{moment(data.created_at).format("DD MMMM YYYY")}</Typography>
+                        <Typography type={"label2"}>{momentWita(data.created_at).format("DD MMMM YYYY, HH:mm")}</Typography>
                         <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
                     </View>
                 </View>
 
                 <View style={[_s.padding, { flexDirection: 'row' }]}>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
-                        <Typography type={"label2"}>{moment(data.estimated_date ?? data.created_at).format("DD MMMM YYYY")}</Typography>
+                        <Typography type={"label2"}>{momentWita(data.estimated_date ?? data.created_at).format("DD MMMM YYYY")}</Typography>
                         <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("spb_bahan_date")}</Typography>
                     </View>
                 </View>

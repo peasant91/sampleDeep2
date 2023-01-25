@@ -178,7 +178,7 @@ export default function FormSPB({ route }: NativeStackScreenProps<AppNavigationT
     const onSubmit = (data: any) => {
         if (items.length == 0) {
             showAlertBS({
-                title: "Daftar Bahan harus lebih dari 1"
+                title: "Daftar Bahan minimal 1"
             })
             return
         }

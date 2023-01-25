@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next"
 import { t } from "i18next"
 import { POItem, POList, StatusPO } from "../../../models/spb/po"
 import moment from "moment"
+import { momentWita } from "../../../utils/Helper"
 
 type StatusType = {
     status: string;
@@ -77,7 +78,7 @@ interface Props {
 
 const POListItem = ({ item, index, type, onPress, withProjectName }: Props) => {
     return (
-        <Stack style={{ borderWidth: 1, borderRadius: 16, borderColor: colors.neutral.neutral_40, backgroundColor: colors.neutral.neutral_10 }}>
+        <Stack style={{ borderWidth: 1, borderRadius: 16, borderColor: colors.neutral.neutral_40, backgroundColor: colors.neutral.neutral_10,marginBottom:16 }}>
             <View style={{ paddingVertical: 12, paddingHorizontal: 12, flexDirection: "row", justifyContent: 'space-between', flexWrap: 'nowrap' }}>
                 <Stack spacing={8} style={{ flexShrink: 1 }} direction="row">
                     <View style={{ alignSelf: 'center' }}>
@@ -85,7 +86,7 @@ const POListItem = ({ item, index, type, onPress, withProjectName }: Props) => {
                     </View>
                     <Stack spacing={4} style={{ justifyContent: 'space-between', flexShrink: 1 }}>
                         <Typography type={"title3"} numberOfLines={2}>{item.no_po}</Typography>
-                        <Typography type={"body4"}>{moment(item.created_at).format("Do MMM YYYY")}</Typography>
+                        <Typography type={"body4"}>{momentWita(item.created_at).format("Do MMM YYYY HH:mm")}</Typography>
                     </Stack>
                 </Stack>
 

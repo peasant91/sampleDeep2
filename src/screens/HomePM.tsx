@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, View, ViewStyle, FlatList } from "react-native";
+import { Image, KeyboardAvoidingView, Platform, RefreshControl, StatusBar, View, ViewStyle, FlatList, Animated } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import { useDispatch } from "react-redux";
@@ -71,6 +71,13 @@ export default function HomePM() {
     hideConfirmationBS,
   } = useBottomSheet();
 
+  const scrollY = new Animated.Value(0)
+  const showBackground = scrollY.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+    extrapolate: 'clamp'
+  });
+
   useFocusEffect(
     useCallback(() => {
       refresh() // fetch Riwayat SPB
@@ -117,37 +124,11 @@ export default function HomePM() {
       <View style={{
         top: 0,
         left: 0,
-        right: 0
+        right: 0,
       }}>
         <Image
           style={{ width: "100%" }}
-          source={require("../assets/icons/ic_header/header.png")} />
-
-        <Button
-          style={{ position: "absolute", right: 16, top: getStatusBarHeight() + 16 }}
-          buttonStyle={{ backgroundColor: white }}
-          size={"sm"}
-          shape={"rounded"}
-          variant={"tertiary"}
-          icon={{
-            icon: "exit"
-          }}
-          onPress={() => {
-            showConfirmationBS({
-              title: t("confirmation_logout_title"),
-              description: t("confirmation_logout_desc"),
-              buttonPrimaryTitle: t("sure"),
-              buttonSecondaryTitle: t("cancel"),
-              buttonPrimaryAction: (async (text) => {
-                logout()
-                hideConfirmationBS()
-                dispatch({
-                  type: "LOGOUT",
-                })
-              })
-            })
-          }}
-        >Keluar</Button>
+          source={require("../assets/icons/ic_header_nologo/header.png")} />
       </View>
     )
   }
@@ -272,52 +253,114 @@ export default function HomePM() {
                 </ScrollView>
 
               ) : (
-
-                <FlatList
-                  style={{ flex: 1, zIndex: 1000 }}
-                  ListHeaderComponent={Header}
-                  ListFooterComponent={() => <View style={{ height: 80 }} />}
-                  ListEmptyComponent={EmptySPBState}
-                  ItemSeparatorComponent={() => {
-                    return <View style={{ height: 16 }} />
-                  }}
-                  keyExtractor={(item, index) => index.toString()}
-                  refreshing={isRefreshing}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={isRefreshing}
-                      onRefresh={() => {
-                        refresh()
-                        refetch()
-                      }}
-                    />
-                  }
-                  onRefresh={() => {
-                    setIsRefreshing(true)
-                  }}
-                  data={spbLists}
-                  renderItem={(item) => {
-                    return (
-                      <View style={{ paddingHorizontal: 16 }}>
-
-                        {(spbLists) ?
-                          <SpbList
-                            isAdmin={false}
-                            isPM={true}
-                            onPress={() => navigate("DetailSPB", {
-                              spbID: item.item.no_spb,
-                              isPMPage: true
-                            })}
-                            item={item.item}
-                            index={item.index} />
-                          :
-                          <View>
-                          </View>}
-
+                <>
+                  <View style={{
+                    position: 'absolute', top: 0,
+                    width: '100%',
+                    zIndex: 10
+                  }}>
+                    <Animated.View style={{
+                      backgroundColor: 'white', width: '100%', height: '100%', shadowColor: 'black',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 2,
+                      shadowOpacity: 0.16,
+                      elevation: 2,
+                      opacity: showBackground,
+                      position: 'absolute',
+                      top: 0
+                    }} />
+                    <Stack direction="row" style={{ padding: 16 }}>
+                      <View style={{ flex: 1 }}>
+                        <Image
+                          source={require("../assets/icons/ic_logo/ic_logo.png")} />
                       </View>
-                    )
-                  }}
-                />
+                      <Button
+                        buttonStyle={{
+                          backgroundColor: white,
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowRadius: 2,
+                          shadowOpacity: 0.16,
+                          elevation: 2,
+                        }}
+                        size={"sm"}
+                        shape={"rounded"}
+                        variant={"tertiary"}
+                        icon={{
+                          icon: "exit"
+                        }}
+                        onPress={() => {
+                          showConfirmationBS({
+                            title: t("confirmation_logout_title"),
+                            description: t("confirmation_logout_desc"),
+                            buttonPrimaryTitle: t("sure"),
+                            buttonSecondaryTitle: t("cancel"),
+                            buttonPrimaryAction: (async (text) => {
+                              logout()
+                              hideConfirmationBS()
+                              dispatch({
+                                type: "LOGOUT",
+                              })
+                            })
+                          })
+                        }}
+                      >Keluar</Button>
+                    </Stack>
+                  </View>
+                  <FlatList
+                    onScroll={
+                      Animated.event([{
+                        nativeEvent: {
+                          contentOffset: {
+                            y: scrollY
+                          }
+                        }
+                      }])
+                    }
+                    style={{ flex: 1, zIndex: 1000 }}
+                    ListHeaderComponent={Header}
+                    ListFooterComponent={() => <View style={{ height: 80 }} />}
+                    ListEmptyComponent={EmptySPBState}
+                    ItemSeparatorComponent={() => {
+                      return <View style={{ height: 16 }} />
+                    }}
+                    keyExtractor={(item, index) => index.toString()}
+                    refreshing={isRefreshing}
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={() => {
+                          refresh()
+                          refetch()
+                        }}
+                      />
+                    }
+                    onRefresh={() => {
+                      setIsRefreshing(true)
+                    }}
+                    data={spbLists}
+                    renderItem={(item) => {
+                      return (
+                        <View style={{ paddingHorizontal: 16 }}>
+
+                          {(spbLists) ?
+                            <SpbList
+                              isAdmin={false}
+                              isPM={true}
+                              onPress={() => navigate("DetailSPB", {
+                                spbID: item.item.no_spb,
+                                isPMPage: true
+                              })}
+                              item={item.item}
+                              index={item.index} />
+                            :
+                            <View>
+                            </View>}
+
+                        </View>
+                      )
+                    }}
+                  />
+                </>
               )}
           </View>
 

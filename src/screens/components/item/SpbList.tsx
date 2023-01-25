@@ -14,6 +14,7 @@ import { EmptySPBState } from "../EmptyState"
 import { POItem } from "../../../models/spb/po"
 import { number } from "yup/lib/locale"
 import { JumpingTransition } from "react-native-reanimated"
+import { momentWita } from "../../../utils/Helper"
 
 export enum StatusSPB {
     inProgress = "in_progress",
@@ -146,7 +147,7 @@ const SpbList = ({ item, index, type, onPress, withProjectName, isPM, isAdmin }:
                     </View>
                     <Stack spacing={4} style={{ justifyContent: 'space-between', flexShrink: 1 }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{item.no_spb}</Typography>
-                        <Typography type={"body4"}>{moment(item.created_at).format("DD MMM YYYY")}</Typography>
+                        <Typography type={"body4"}>{momentWita(item.created_at).format("DD MMM YYYY HH:mm")}</Typography>
                     </Stack>
                 </Stack>
 

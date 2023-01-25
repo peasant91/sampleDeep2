@@ -21,6 +21,7 @@ import AppNavigationType from '../navigations/AppNavigationType'
 import { goBack } from '../navigations/RootNavigation'
 import usePODetailQuery from '../services/project/usePODetailQuery'
 import useProjectService from '../services/project/useProjectService'
+import { momentWita } from '../utils/Helper'
 import StorageKey from '../utils/StorageKey'
 import ItemList from './components/item/itemList'
 import { StatusButton } from './components/item/PoList'
@@ -209,7 +210,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
         } else if (status == StatusPO.rejected) {
             return "Ditolak oleh: " + data.updated_by
         } else if (status == StatusPO.complaint) {
-            return "Disetujui oleh: " + data.updated_by
+            return ""
         } else if (status == StatusPO.cancel) {
             return "Dibatalkan oleh: " + data.updated_by
         }
@@ -222,7 +223,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData.current?.name ?? data.project.name}</Typography>
-                        <Typography type={"body4"}>{moment(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
+                        <Typography type={"body4"}>{momentWita(projectData.current?.created_at ?? data.project.created_at).format("Do MMMM YYYY")}</Typography>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Icon icon={"location"} />
                             <Typography type={"body4"} style={{ marginRight: 32 }} numberOfLines={1}>{projectData.current?.location.address ?? data.project.location.address}</Typography>
@@ -245,7 +246,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                 <View style={[_s.padding]}>
                     <Stack spacing={16}>
-                        {data.created_by && (data.po_status == StatusPO.approved || data.po_status == StatusPO.rejected || data.po_status == StatusPO.complaint || data.po_status == StatusPO.cancel) &&
+                        {data.created_by && ( [StatusPO.approved,StatusPO.rejected,StatusPO.cancel].includes(data.po_status)) &&
                             <Alert
                                 variant='info'
                                 type='outlined'
@@ -269,7 +270,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                             </View>
 
                             <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
-                                <Typography type={"label2"}>{moment(data.spb_created_at).format("DD MMMM YYYY")}</Typography>
+                                <Typography type={"label2"}>{momentWita(data.spb_created_at).format("DD MMMM YYYY, HH:mm")}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
                             </View>
                         </View>
@@ -280,7 +281,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("id_po")}</Typography>
                             </View>
                             <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
-                                <Typography style={{}} type={"label2"}>{moment(data.po_created_at).format("Do MMMM YYYY")}</Typography>
+                                <Typography style={{}} type={"label2"}>{momentWita(data.po_created_at).format("DD MMMM YYYY, HH:mm")}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_po")}</Typography>
                             </View>
                         </View>
@@ -298,7 +299,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, flexDirection: 'column' }}>
-                                <Typography style={{ flex: 1 }} type={"label2"}>{moment(data.delivery_estimation).format("Do MMMM YYYY")}</Typography>
+                                <Typography style={{ flex: 1 }} type={"label2"}>{momentWita(data.delivery_estimation).format("DD MMMM YYYY")}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("estimated_delivery")}</Typography>
                             </View>
                             <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
@@ -315,7 +316,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                             <Alert
                                 variant='info'
                                 type='outlined'
-                                description={t("last_updated_desc", { date: moment(data.last_updated).format("Do MMMM YYYY, HH:mm") })}
+                                description={t("last_updated_desc", { date: momentWita(data.last_updated).format("Do MMMM YYYY, HH:mm") })}
                             />
                         }
 
