@@ -251,6 +251,9 @@ export default function HomeAdmin() {
                             onEndReached={poHandler.fetchNext}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             ListEmptyComponent={EmptyPOState}
+                            ItemSeparatorComponent={() => {
+                                return <View style={{ height: 16 }} />
+                            }}
                             renderItem={(item) => {
                                 if (manualRefresh) {
                                     return <View style={{ marginBottom: 16 }}>
@@ -288,6 +291,9 @@ export default function HomeAdmin() {
                             onEndReached={receivedHandler.fetchNext}
                             ListFooterComponent={<View style={{ height: 32 }} />}
                             ListEmptyComponent={EmptyPOState}
+                            ItemSeparatorComponent={() => {
+                                return <View style={{ height: 16 }} />
+                            }}
                             renderItem={(item) => {
                                 if (manualRefresh) {
                                     return <View style={{ marginBottom: 16 }}>

@@ -212,11 +212,11 @@ export default function HomePM() {
         <Stack style={{ flex: 1 }}>
           <StatusBar
             translucent={false}
-            // backgroundColor={transparent}
+            backgroundColor={Platform.OS == 'ios' ? 'white' : 'black'}
             hidden={false}
           />
 
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1,zIndex:5 }}>
             {(isLoadingCatalog || isRefetchingProject) ?
               (
                 <ScrollView
@@ -255,19 +255,21 @@ export default function HomePM() {
               ) : (
                 <>
                   <View style={{
-                    position: 'absolute', top: 0,
+                    position: 'absolute', 
                     width: '100%',
-                    zIndex: 10
+                    zIndex: 10,
+                    paddingTop:Platform.OS == 'ios' ? getStatusBarHeight() : 0
                   }}>
                     <Animated.View style={{
-                      backgroundColor: 'white', width: '100%', height: '100%', shadowColor: 'black',
+                      backgroundColor: 'white', width: '100%', shadowColor: 'black',
                       shadowOffset: { width: 0, height: 2 },
                       shadowRadius: 2,
                       shadowOpacity: 0.16,
                       elevation: 2,
                       opacity: showBackground,
                       position: 'absolute',
-                      top: 0
+                      top: 0,
+                      bottom:0
                     }} />
                     <Stack direction="row" style={{ padding: 16 }}>
                       <View style={{ flex: 1 }}>
@@ -316,7 +318,7 @@ export default function HomePM() {
                         }
                       }])
                     }
-                    style={{ flex: 1, zIndex: 1000 }}
+                    style={{ flex: 1, zIndex: 1 }}
                     ListHeaderComponent={Header}
                     ListFooterComponent={() => <View style={{ height: 80 }} />}
                     ListEmptyComponent={EmptySPBState}
