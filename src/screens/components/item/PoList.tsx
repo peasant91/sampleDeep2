@@ -22,7 +22,7 @@ const Item = ({ item, index }: { item: POItem, index: number }) => {
     const _item: POItem = item;
     return (
         <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Typography type="body3">{item.name}</Typography>
+            <Typography type="body3" style={{flex:1}}>{item.name}</Typography>
             <Typography type="body3">x{item.quantity} {item.unit}</Typography>
         </View>
     )

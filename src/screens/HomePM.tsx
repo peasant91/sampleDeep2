@@ -368,7 +368,7 @@ export default function HomePM() {
 
           {!isLoadingProject &&
             <Button
-              style={{ alignSelf: 'center', position: 'absolute', bottom: 32 }}
+              style={{ alignSelf: 'center', position: 'absolute', bottom: 32,zIndex:1000 }}
               variant="primary"
               shape="rounded"
               size="lg"

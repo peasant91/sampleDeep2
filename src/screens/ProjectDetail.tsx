@@ -21,6 +21,7 @@ import useProjectInfiniteQuery from '../services/project/useProjectQuery'
 import { useFocusEffect } from '@react-navigation/native'
 import { SPBListShimmer } from './components/shimmer/shimmer'
 import { SelectedMap } from '../../tmd/components/picker/MapPicker'
+import { momentWita } from '../utils/Helper'
 
 export default function ProjectDetail() {
     const { t } = useTranslation()
@@ -99,7 +100,7 @@ export default function ProjectDetail() {
                 <View style={[{ flexDirection: "row", justifyContent: 'space-between' }, _s.padding]}>
                     <Stack spacing={8} style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
                         <Typography type={"title3"} style={{ flexWrap: 'wrap' }}>{projectData?.name}</Typography>
-                        <Typography type={"body4"}>{moment(projectData?.created_at).format("Do MMMM YYYY")}</Typography>
+                        <Typography type={"body4"}>{momentWita(projectData?.created_at).format("DD MMMM YYYY")}</Typography>
                     </Stack>
                     <View style={{ width: '25%' }}>
                         <Image style={{ aspectRatio: 1 }} borderRadius={4} source={{ uri: projectData?.photo }} />
