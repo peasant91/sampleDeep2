@@ -70,13 +70,13 @@ const App = () => {
   //     [],
   //   )
 
-    // registerAppWithFCM()
-    // const unsubscribe = messaging().onMessage(async remoteMessage => {
-    // });
-    // messaging().onMessage(onMessageReceived);
-    // messaging().setBackgroundMessageHandler(onMessageReceived);
+  // registerAppWithFCM()
+  // const unsubscribe = messaging().onMessage(async remoteMessage => {
+  // });
+  // messaging().onMessage(onMessageReceived);
+  // messaging().setBackgroundMessageHandler(onMessageReceived);
 
-    // return unsubscribe;
+  // return unsubscribe;
   // }, [])
 
   // const onMessageReceived = async (message: FirebaseMessagingTypes.RemoteMessage) => {
@@ -142,7 +142,7 @@ const App = () => {
 
     // Listen to whether the token changes
     return messaging().onTokenRefresh(token => {
-        console.log(token);
+      console.log(token);
       // saveFirebaseToken(token);
     });
   }, []);
@@ -176,30 +176,36 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <PersistGate persistor={persistor} onBeforeLift={onBeforeLift}>
-        {!gateLifted ?
-          <SplashScreen />
-          :
-          <GestureHandlerRootView style={{ flex: 1 }}>{/* content */}
-            <QueryClientProvider client={queryClient}>
-              <ThemeProvider theme={DefaultTheme}>
-                <LocaleProvider>
-                  <Host>
-                    <AuthProvider>
-                      <BottomSheetProvider>
-                        <ModalProvider>
-                          <PermissionProvider>
-                            <AppNavigation />
-                          </PermissionProvider>
-                        </ModalProvider>
-                      </BottomSheetProvider>
-                    </AuthProvider>
-                  </Host>
-                </LocaleProvider>
-              </ThemeProvider>
-            </QueryClientProvider>
-          </GestureHandlerRootView>
-        }
+      <PersistGate persistor={persistor}>
+        <GestureHandlerRootView style={{ flex: 1 }}>{/* content */}
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider theme={DefaultTheme}>
+              <LocaleProvider>
+                <Host>
+                  <AuthProvider>
+                    <BottomSheetProvider>
+                      <ModalProvider>
+                        <PermissionProvider>
+                          {
+                            !gateLifted ?
+                              <SplashScreen
+                                onFinish={() => {
+                                  setTimeout(() => {
+                                    setGateLifted(true)
+                                  }, 1000);
+                                }}
+                              /> :
+                              <AppNavigation />
+                          }
+                        </PermissionProvider>
+                      </ModalProvider>
+                    </BottomSheetProvider>
+                  </AuthProvider>
+                </Host>
+              </LocaleProvider>
+            </ThemeProvider>
+          </QueryClientProvider>
+        </GestureHandlerRootView>
       </PersistGate>
     </Provider>
   );

@@ -61,7 +61,7 @@ target 'ReactNativeStarterKit' do
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-  
+
   target 'ReactNativeStarterKitTests' do
     inherit! :complete
     # Pods for testing
