@@ -398,7 +398,7 @@ PODS:
     - React-Core
   - RNCClipboard (1.5.1):
     - React-Core
-  - RNDeviceInfo (10.3.0):
+  - RNDeviceInfo (10.6.0):
     - React-Core
   - RNFastImage (8.5.11):
     - React-Core
@@ -407,7 +407,7 @@ PODS:
   - RNFBApp (16.4.1):
     - Firebase/CoreOnly (= 10.1.0)
     - React-Core
-  - RNFBMessaging (16.4.1):
+  - RNFBMessaging (16.7.0):
     - Firebase/Messaging (= 10.1.0)
     - FirebaseCoreExtension (= 10.1.0)
     - React-Core
@@ -735,10 +735,10 @@ SPEC CHECKSUMS:
   ReactCommon: 095366164a276d91ea704ce53cb03825c487a3f2
   RNCAsyncStorage: 466b9df1a14bccda91da86e0b7d9a345d78e1673
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
-  RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
+  RNDeviceInfo: 475a4c447168d0ad4c807e48ef5e0963a0f4eb1b
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   RNFBApp: cc6bee7e8e44fc2201897f7f0f0309e9f8464fd3
-  RNFBMessaging: 32a30b6c83988053938e55cdbb95f4fc252b352f
+  RNFBMessaging: b1603f9776d473d30dc0e0fe1dd4b27411fcc7a1
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 61628a2c859172551aa2100d3e73d1e57878392f
   RNImageCropPicker: ffbba608264885c241cbf3a8f78eb7aeeb978241
@@ -753,6 +753,6 @@ SPEC CHECKSUMS:
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: 99652481fcd320aefa4a7ef90095b95acd181952
 
-PODFILE CHECKSUM: 072d6eeee5d14e3ae08ac7ba99a5fcd534c07812
+PODFILE CHECKSUM: b24dded302b338b1e65e05851ff7b7ff01367dee
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
