@@ -79,6 +79,7 @@
       "image": "Foto"
     },
     "search": "Cari",
+    "search_spb": "Cari No. SPB",
     "select_location": "Pilih Lokasi",
     "date_range": "Jarak Hari",
     "choose_time": "Pilih Waktu",
@@ -95,6 +96,8 @@
     "change_photo": "Ubah Foto",
     "latest_search": "Pencarian Terakhir",
     "clear_history": "Hapus Riwayat",
-    "see_more": "Lihat lainnya"
+    "see_more": "Lihat lainnya",
+    "all": "Semua",
+    "in_process": "Dalam Proses"
   }
 }

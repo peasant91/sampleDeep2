@@ -20,6 +20,8 @@ import { SPBListShimmer } from "./components/shimmer/shimmer";
 import { EmptySPBState } from "./components/EmptyState";
 import { SpbListItem } from "../models/spb/spb";
 import { useFocusEffect } from "@react-navigation/native";
+import SearchToolbar from "../../tmd/components/Toolbar/SearchToolbar";
+import SearchSpbToolbar from "./components/components/SearchSpbToolbar";
 
 export default function ListSPB() {
     const {
@@ -42,7 +44,7 @@ export default function ListSPB() {
 
     return (
         <Page>
-            <Toolbar title={t("list_spb")} center />
+            <SearchSpbToolbar />
 
             <View style={{
                 flex: 1,

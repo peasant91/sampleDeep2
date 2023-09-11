@@ -84,6 +84,7 @@
       "image": "Image"
     },
     "search": "Search",
+    "search_spb": "Search SPB Number",
     "select_location": "Select Location",
     "date_range": "Date Range",
     "choose_time": "Choose Time",
@@ -212,6 +213,8 @@
     "spb_confirm_title": "Setujui SPB?",
     "spb_revision_title": "Revisi SPB?",
     "spb_reject_desc": "Mohon cek kembali SPB yang dikirim oleh PM.\n Aksi ini tidak dapat dikembalikan",
-    "spb_bahan_date": "Tanggal Pengiriman"
+    "spb_bahan_date": "Tanggal Pengiriman",
+    "all": "All",
+    "in_process": "In Process"
   }
 }

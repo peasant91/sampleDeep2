@@ -23,3 +23,9 @@ interface Meta {
   to: number;
   total: number;
 }
+
+export interface FilterModel {
+  id: number;
+  name: string;
+  value: string;
+}

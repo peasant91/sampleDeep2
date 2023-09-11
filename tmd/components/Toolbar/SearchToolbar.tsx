@@ -3,7 +3,7 @@ import { IconButton, Stack, Surface, useTheme } from "../../index";
 import Color from "color";
 import { goBack, navigationRef } from "../../../src/navigations/RootNavigation";
 import { View } from "react-native";
-import TextField from "../TextInput/TextField";
+import TextField, { TextInputProps } from "../TextInput/TextField";
 import Typography from "../Typography/Typography";
 import { useLocale } from "../../../src/providers/LocaleProvider";
 
@@ -16,6 +16,7 @@ interface Props {
   searchPlaceholder?: string;
   onTextChange?: (text: string) => void;
   onPressSearch?: (text: string) => void;
+  searchStyle?: TextInputProps;
 }
 
 export default function SearchToolbar(
@@ -26,6 +27,7 @@ export default function SearchToolbar(
     center,
     elevation,
     onPressSearch, onTextChange, searchPlaceholder,
+    ...rest
   }: Props,
 ) {
   const { colors, toolbar } = useTheme();
@@ -66,9 +68,9 @@ export default function SearchToolbar(
                     }}
                     fitIcon={false}
                     icon={"arrow-back"} color={usedTitleColor} style={{
-                    backgroundColor: "transparent",
-                    marginLeft: -8,
-                  }} />
+                      backgroundColor: "transparent",
+                      marginLeft: -8,
+                    }} />
                 </View>
               )
             }
@@ -118,9 +120,9 @@ export default function SearchToolbar(
                   }}
                   fitIcon={false}
                   icon={"arrow-back"} color={usedTitleColor} style={{
-                  backgroundColor: "transparent",
-                  marginLeft: -8,
-                }} />
+                    backgroundColor: "transparent",
+                    marginLeft: -8,
+                  }} />
               </View>
             )
           }
@@ -141,7 +143,9 @@ export default function SearchToolbar(
             search
             style={{
               flex: 1,
-            }} />
+            }}
+            {...rest.searchStyle}
+          />
         </Stack>
 
       </Stack>
