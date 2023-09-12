@@ -17,6 +17,7 @@ interface Props {
   onTextChange?: (text: string) => void;
   onPressSearch?: (text: string) => void;
   searchStyle?: TextInputProps;
+  children?: React.ReactNode;
 }
 
 export default function SearchToolbar(
@@ -147,6 +148,20 @@ export default function SearchToolbar(
             {...rest.searchStyle}
           />
         </Stack>
+
+        {
+          rest.children &&
+          <Stack
+            spacing={8}
+            style={{
+              paddingHorizontal: 16,
+              paddingBottom: 8,
+              paddingTop: 4
+            }}
+          >
+            {rest.children}
+          </Stack>
+        }
 
       </Stack>
     </Surface>
