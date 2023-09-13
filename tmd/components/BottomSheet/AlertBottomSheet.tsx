@@ -159,7 +159,7 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
                         icon:'add-circle'
                       }
                     }}
-                    crop={true}
+                    crop={false}
                     buttonTitle={t("ambil_foto")}
                     style={{ marginVertical: 8 }}
                   />

@@ -29,7 +29,7 @@ export interface ImagePickerBSProps {
 }
 
 
-export default function ImagePickerBottomSheet({ selectedImage,camera = true, gallery = true, ...props }: ImagePickerBSProps) {
+export default function ImagePickerBottomSheet({ selectedImage, camera = true, gallery = true, ...props }: ImagePickerBSProps) {
   const modalizeRef = useRef<Modalize>(null);
   const { t } = useTranslation();
   const [currentImage, setCurrentImage] = useState(selectedImage);
@@ -64,6 +64,7 @@ export default function ImagePickerBottomSheet({ selectedImage,camera = true, ga
       width: imageCropSize.width,
       height: imageCropSize.height,
       cropping: props.crop ?? true,
+      compressImageQuality: 0.5
     }).then(image => {
       if (props.onChangeImage) {
         setCurrentImage(image?.path);
@@ -79,6 +80,7 @@ export default function ImagePickerBottomSheet({ selectedImage,camera = true, ga
       width: imageCropSize.width,
       height: imageCropSize.height,
       cropping: props.crop ?? true,
+      compressImageQuality: 0.5
     }).then(image => {
       if (props.onChangeImage) {
         setCurrentImage(image?.path);
