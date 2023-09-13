@@ -13,6 +13,8 @@ import { useTranslation } from "react-i18next";
 import { FormProvider, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { colors } from "../../styles/colors";
+import ImagePicker from "../picker/ImagePicker";
 export interface BSProps {
   open: boolean;
   imageNode?: React.ReactNode;
@@ -21,12 +23,13 @@ export interface BSProps {
   buttonPrimaryTitle?: string;
   buttonSecondary?: boolean;
   buttonSecondaryTitle?: string;
-  buttonPrimaryAction?: (text?: string) => void;
+  buttonPrimaryAction?: (text?: string, image?: string) => void;
   buttonSecondaryAction?: () => void;
   onClose: () => void;
   dismissible?: boolean;
-  withNotes?: boolean
-  noteIsRequired?: boolean
+  withNotes?: boolean;
+  noteIsRequired?: boolean;
+  withImage?: boolean;
 }
 
 export default function AlertBottomSheet({ dismissible = true, ...props }: BSProps) {
@@ -44,11 +47,13 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
 
   const schema = yup.object({
     note: (props.noteIsRequired) ? yup.string().required().label(t("note")) : yup.string().optional(),
+    image: yup.string().optional()
   }).required()
 
   const method = useForm({
     defaultValues: {
-      note: ""
+      note: "",
+      image: ""
     }, resolver: yupResolver(schema)
   })
 
@@ -61,7 +66,7 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
 
   const onSubmit = (data: any) => {
     if (props.buttonPrimaryAction) {
-      props.buttonPrimaryAction(data.note)
+      props.buttonPrimaryAction(data.note, data.image)
     }
   };
 
@@ -82,7 +87,6 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
 
   const theme = useTheme();
   return (
-    <Portal>
       <Modalize
         handlePosition={"inside"}
         modalStyle={{
@@ -137,6 +141,31 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
 
               </Stack>
               {
+                props.withImage &&
+                <>
+                  <Typography type='title3' style={{ color: colors.neutral.neutral_100, marginTop: 8 }}>{t("item_photo")}</Typography>
+
+                  <ImagePicker
+                    onDelete={() => {
+                      method.setValue("image", "")
+                    }}
+                    onChangeImageUrl={(url) => {
+                      method.setValue("image", url)
+                    }}
+                    initialImageUrl={method.getValues("image")}
+                    description={t("pick_image_desc")}
+                    buttonProps={{
+                      icon:{
+                        icon:'add-circle'
+                      }
+                    }}
+                    crop={true}
+                    buttonTitle={t("ambil_foto")}
+                    style={{ marginVertical: 8 }}
+                  />
+                </>
+              }
+              {
                 props.withNotes &&
                 <RHFTextField
                   mode="contained"
@@ -190,6 +219,5 @@ export default function AlertBottomSheet({ dismissible = true, ...props }: BSPro
         </SafeAreaView>
 
       </Modalize>
-    </Portal>
   );
 }

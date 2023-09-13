@@ -137,6 +137,7 @@ export default function useProjectService() {
     poID: string,
     status: StatusPO,
     notes?: string,
+    image?:string
   ) => {
     try {
       setIsLoading(true);
@@ -145,6 +146,11 @@ export default function useProjectService() {
       if (notes) {
         query.notes = notes;
       }
+
+      if(image){
+        query.photo = image
+      }
+
       const res = await patchAPI(`project/spb/${spbID}/po/${poID}`, query);
       setIsLoading(false);
       return res;

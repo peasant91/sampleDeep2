@@ -3,7 +3,7 @@ import { IconButton, Stack, Surface, useTheme } from "../../index";
 import Color from "color";
 import { goBack, navigationRef } from "../../../src/navigations/RootNavigation";
 import { View } from "react-native";
-import TextField, { TextInputProps } from "../TextInput/TextField";
+import TextField, { TextInputProps, TextInputShape } from "../TextInput/TextField";
 import Typography from "../Typography/Typography";
 import { useLocale } from "../../../src/providers/LocaleProvider";
 
@@ -16,11 +16,12 @@ interface Props {
   searchPlaceholder?: string;
   onTextChange?: (text: string) => void;
   onPressSearch?: (text: string) => void;
-  searchStyle?: TextInputProps;
+  onClearSearch?: () => void;
   children?: React.ReactNode;
+  searchShape?: TextInputShape
 }
 
-export default function SearchToolbar(
+const SearchToolbar = (
   {
     title,
     backgroundColor,
@@ -30,7 +31,7 @@ export default function SearchToolbar(
     onPressSearch, onTextChange, searchPlaceholder,
     ...rest
   }: Props,
-) {
+) => {
   const { colors, toolbar } = useTheme();
   const { t } = useLocale();
   const usedBg = backgroundColor || colors.neutral.neutral_10;
@@ -145,7 +146,12 @@ export default function SearchToolbar(
             style={{
               flex: 1,
             }}
-            {...rest.searchStyle}
+            onClear={() => {
+              if (rest.onClearSearch) {
+                rest.onClearSearch()
+              }
+            }}
+            shape={rest.searchShape}
           />
         </Stack>
 
@@ -167,3 +173,5 @@ export default function SearchToolbar(
     </Surface>
   );
 }
+
+export default SearchToolbar

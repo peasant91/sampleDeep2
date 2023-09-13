@@ -214,7 +214,15 @@
     "spb_revision_title": "Revisi SPB?",
     "spb_reject_desc": "Mohon cek kembali SPB yang dikirim oleh PM.\n Aksi ini tidak dapat dikembalikan",
     "spb_bahan_date": "Tanggal Pengiriman",
-    "all": "All",
-    "in_process": "In Process"
+    "all": "Semua",
+    "in_process": "Dalam Proses",
+    "empty_spb_filter_title": "Tidak ada hasil pencarian",
+    "empty_spb_filter_desc": "Coba menggunakan kata kunci lain atau reset filter untuk menemukan SPB yang Anda cari.",
+    "reset_filter": "Reset Filter",
+    "no_phone_supplier": "No. Telepon Supplier",
+    "contact_supplier": "Kontak Supplier",
+    "ambil_foto":"Ambil Foto",
+    "po_photo":"Foto PO",
+    "alert_po_complaint":"Jika komplain di proses oleh admin maka PO akan berubah menjadi menunggu konfirmasi."
   }
 }

@@ -31,18 +31,18 @@ interface Props {
 }
 
 export default function ImagePicker({
-                                      initialImageUrl,
-                                      buttonProps,
-                                      description,
-                                      buttonTitle,
-                                      pickerTitle,
-                                      editable = true,
-                                      error,
-                                      errorText,
-                                      style,
-                                      onChangeImageUrl,
-                                      ...rest
-                                    }: Props & ImagePickerBSProps) {
+  initialImageUrl,
+  buttonProps,
+  description,
+  buttonTitle,
+  pickerTitle,
+  editable = true,
+  error,
+  errorText,
+  style,
+  onChangeImageUrl,
+  ...rest
+}: Props & ImagePickerBSProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isShowViewer, setIsShowViewer] = useState(false);
   const { colors, roundness } = useTheme();
@@ -51,11 +51,12 @@ export default function ImagePicker({
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined);
   const handleOpenImagePicker = () => {
     if (Platform.OS == "android") {
+      console.log("ANJENG TANAH")
+      setIsOpen(true);
       requestPermissions([CAMERA_PERMISSIONS, STORAGE_PERMISSIONS], () => {
-        setIsOpen(true);
+        console.log("ANJENG TANAH 2")
       });
     } else {
-      console.log("ANJENG TANAH" )
       requestPermissions([CAMERA_PERMISSIONS, STORAGE_PERMISSIONS], () => {
         setIsOpen(true);
       });
@@ -120,30 +121,6 @@ export default function ImagePicker({
 
   return (
     <>
-      <ImageViewerModal
-        images={[{image: selectedImageUrl ?? ""}]}
-        onClose={() => {
-        setIsShowViewer(false)
-      }} open={isShowViewer}/>
-
-      <ImagePickerBottomSheet
-        selectedImage={selectedImageUrl}
-        onDelete={() => {
-          setSelectedImageUrl("");
-        }}
-        camera={rest.camera}
-        gallery={rest.gallery}
-        ratio={rest.ratio}
-        crop={rest.crop}
-        open={isOpen}
-        onChangeImage={(image) => {
-          setIsOpen(false);
-          setSelectedImageUrl(image.path);
-        }}
-        onClose={() => {
-          setIsOpen(false);
-        }} />
-
       <View style={[style]}>
         {
           rest.label &&
@@ -234,6 +211,30 @@ export default function ImagePicker({
           }
         </View>
       </View>
+
+      <ImageViewerModal
+        images={[{ image: selectedImageUrl ?? "" }]}
+        onClose={() => {
+          setIsShowViewer(false)
+        }} open={isShowViewer} />
+
+      <ImagePickerBottomSheet
+        selectedImage={selectedImageUrl}
+        onDelete={() => {
+          setSelectedImageUrl("");
+        }}
+        camera={rest.camera}
+        gallery={rest.gallery}
+        ratio={rest.ratio}
+        crop={rest.crop}
+        open={isOpen}
+        onChangeImage={(image) => {
+          setIsOpen(false);
+          setSelectedImageUrl(image.path);
+        }}
+        onClose={() => {
+          setIsOpen(false);
+        }} />
     </>
   );
 }

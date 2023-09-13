@@ -19,6 +19,7 @@ interface Props {
   dismissable?: boolean;
   withNotes?: boolean
   noteIsRequired?: boolean
+  withImage?: boolean;
 }
 
 export default function ConfirmationBottomSheet({ open, buttonPrimaryTitle, buttonSecondaryTitle, ...rest }: Props) {

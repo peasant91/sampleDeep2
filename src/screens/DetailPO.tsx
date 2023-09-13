@@ -4,9 +4,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import moment from 'moment'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FlatList, Image, StyleSheet, View } from 'react-native'
+import { FlatList, Image, Linking, StyleSheet, View } from 'react-native'
 import NumberFormat from 'react-number-format'
-import { Alert, Button, Colors, Divider, Icon, Page, Skeleton, Stack, Toolbar } from '../../tmd'
+import { Alert, Button, Colors, Divider, Icon, IconButton, Page, Skeleton, Stack, Toolbar } from '../../tmd'
 import AlertBottomSheet from '../../tmd/components/BottomSheet/AlertBottomSheet'
 import TextButton from '../../tmd/components/Button/TextButton'
 import { CurrencyText } from '../../tmd/components/TextInput/helpers'
@@ -25,6 +25,8 @@ import { momentWita } from '../utils/Helper'
 import StorageKey from '../utils/StorageKey'
 import ItemList from './components/item/itemList'
 import { StatusButton } from './components/item/PoList'
+import RNFS from 'react-native-fs'
+import ImageViewerModal from '../../tmd/components/Modal/ImageViewerModal'
 
 export default function DetailPO({ route }: NativeStackScreenProps<AppNavigationType, "DetailPO">) {
     const isAdminPage = route.params.isAdminPage
@@ -45,6 +47,8 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     const [imageLoaded, setImageLoaded] = useState(false)
     const [showAll, setShowAll] = useState(false)
     const [buttonTitle, setButtonTitle] = useState("")
+    const [isImageViewerOpen, setIsImageViewerOpen] = useState(false)
+
     const { data, isLoading, refetchPO, isRefetchingPO } = usePODetailQuery(spbID, poID)
     const { isLoadingProject, patchPOStatus } = useProjectService()
 
@@ -168,8 +172,9 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             })
     }
 
-    const complaintPO = async (text: string) => {
-        await patchPOStatus(data.no_spb, data.no_po, StatusPO.complaint, text)
+    const complaintPO = async (text: string, image: string) => {
+        const base64 = await RNFS.readFile(image, 'base64').then(val => val)
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.complaint, text, base64)
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
@@ -186,8 +191,9 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             })
     }
 
-    const receivedPO = async (text: string) => {
-        await patchPOStatus(data.no_spb, data.no_po, StatusPO.received, text)
+    const receivedPO = async (text: string, image: string) => {
+        const base64 = await RNFS.readFile(image, 'base64').then(val => val)
+        await patchPOStatus(data.no_spb, data.no_po, StatusPO.received, text, base64)
             .then((response) => {
                 if (response != undefined) {
                     showAlertBS({
@@ -215,6 +221,10 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             return "Dibatalkan oleh: " + data.updated_by
         }
         return ""
+    }
+
+    const contactSupplier = () => {
+        Linking.openURL(`tel:${data.supplier.phone_number}`)
     }
 
     const header = () => {
@@ -246,7 +256,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                 <View style={[_s.padding]}>
                     <Stack spacing={16}>
-                        {data.created_by && ( [StatusPO.approved,StatusPO.rejected,StatusPO.cancel].includes(data.po_status)) &&
+                        {data.created_by && ([StatusPO.approved, StatusPO.rejected, StatusPO.cancel].includes(data.po_status)) &&
                             <Alert
                                 variant='info'
                                 type='outlined'
@@ -288,12 +298,18 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, flexDirection: 'column' }}>
-                                <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.name}</Typography>
+                                <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.phone_number}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("order_recipient")}</Typography>
                             </View>
                             <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
                                 <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.address}</Typography>
-                                <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("address")}</Typography>
+                                <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("no_phone_supplier")}</Typography>
+                                <TextButton
+                                    onPress={contactSupplier}
+                                    underline
+                                >
+                                    {t("contact_supplier")}
+                                </TextButton>
                             </View>
                         </View>
 
@@ -422,10 +438,59 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                     <>
                         <View style={_s.padding}>
                             <Typography type="title3">{t("pm_note")}</Typography>
+                            <Typography style={{ marginTop: 16 }} type="title3">{t("po_photo")}</Typography>
+                            <View
+                                style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 12 }}>
+                                <Image
+                                    style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                                    source={{ uri: data.photo }}
+                                    onLoadStart={() => {
+                                        setImageLoaded(true);
+                                    }}
+                                />
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        alignSelf: 'center',
+                                        height: '100%',
+                                        justifyContent: 'center',
+                                    }}>
+                                    <IconButton
+                                        shape={'rounded'}
+                                        onPress={() => {
+                                            setIsImageViewerOpen(true)
+                                        }}
+                                        size={40}
+                                        variant={'tertiary'}
+                                        icon={'search'}
+                                    />
+                                </View>
+
+                                {!imageLoaded && (
+                                    <View
+                                        style={{
+                                            position: 'absolute',
+                                            borderRadius: 8,
+                                            height: '100%',
+                                            width: '100%',
+                                            backgroundColor: colors.neutral.neutral_50,
+                                        }}
+                                    />
+                                )}
+                            </View>
                             <View style={{ flexDirection: 'row', marginTop: 16 }}>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_70 }} type={"body3"}>{t("note_desc")}</Typography>
                                 <Typography style={{ flex: 2, color: colors.neutral.neutral_90 }} type={"body3"}>{data.notes ?? "-"}</Typography>
                             </View>
+                            {
+                                data.po_status == StatusPO.complaint &&
+                                <Alert
+                                    variant='info'
+                                    type='outlined'
+                                    style={{ marginTop: 16 }}
+                                    description={t("alert_po_complaint")}
+                                />
+                            }
                         </View>
 
                         <Divider />
@@ -517,11 +582,12 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                     title: t("po_complain_title"),
                                     description: t("po_complain_desc"),
                                     withNotes: true,
+                                    withImage: true,
                                     noteIsRequired: true,
                                     buttonPrimaryTitle: t("complain"),
                                     buttonSecondaryTitle: t("cancel"),
-                                    buttonPrimaryAction: ((text) => {
-                                        complaintPO(text ?? "")
+                                    buttonPrimaryAction: ((text, image) => {
+                                        complaintPO(text ?? "", image ?? "")
                                         hideConfirmationBS()
                                     })
                                 })
@@ -538,11 +604,12 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                     title: t("po_confirmation_title"),
                                     description: t("po_confirmation_desc"),
                                     withNotes: true,
+                                    withImage: true,
                                     noteIsRequired: false,
                                     buttonPrimaryTitle: t("confirm"),
                                     buttonSecondaryTitle: t("cancel"),
-                                    buttonPrimaryAction: ((text) => {
-                                        receivedPO(text ?? "")
+                                    buttonPrimaryAction: ((text, image) => {
+                                        receivedPO(text ?? "", image ?? "")
                                         hideConfirmationBS()
                                     })
                                 })
@@ -595,6 +662,14 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
 
             </View>
+
+            <ImageViewerModal
+                images={[{ image: data.photo ?? '' }]}
+                open={isImageViewerOpen}
+                onClose={() => {
+                    setIsImageViewerOpen(false)
+                }}
+            />
         </Page>
     )
 

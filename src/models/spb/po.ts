@@ -29,6 +29,7 @@ export interface POList {
 export interface SupplierPO {
   name: string
   address: string
+  phone_number: string
 }
 
 export interface POItem {
@@ -65,6 +66,7 @@ export interface PODetailModel {
   created_by?: string
   // total: number
   complaint?: string
+  photo?:string
   notes?: string
   payment_term: string[]
   last_updated?: string

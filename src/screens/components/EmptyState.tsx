@@ -4,7 +4,9 @@ import { View } from 'react-native'
 import Typography from '../../../tmd/components/Typography/Typography'
 import { colors } from '../../../tmd/styles/colors'
 import IllustSPBEmpty from '../../assets/illusts/empty_spb.svg'
+import IllustSPBFilterEmpty from '../../assets/illusts/empty_spb_filter.svg'
 import IllustPOEmpty from '../../assets/illusts/empty_po.svg'
+import { Button } from '../../../tmd'
 
 function EmptySPBStateAdmin() {
     const { t } = useTranslation()
@@ -28,6 +30,27 @@ function EmptySPBState() {
     )
 }
 
+function EmptySPBFilterState({ onReset }) {
+    const { t } = useTranslation()
+    return (
+        <View style={{ alignItems: 'center', padding: 16 }}>
+            <IllustSPBFilterEmpty />
+            <Typography type='title2' style={{ color: colors.neutral.neutral_100, marginTop: 24 }}>{t("empty_spb_filter_title")}</Typography>
+            <Typography type='body2' style={{ textAlign: 'center', color: colors.neutral.neutral_80, marginTop: 4 }}>{t("empty_spb_filter_desc")}</Typography>
+            <Button
+                shape='rounded'
+                size='lg'
+                variant='primary'
+                onPress={onReset}
+                fullWidth
+                style={{ marginTop: 16, alignSelf: 'stretch' }}
+            >
+                {t('reset_filter')}
+            </Button>
+        </View>
+    )
+}
+
 function EmptyPOState() {
     const { t } = useTranslation()
     return (
@@ -39,4 +62,4 @@ function EmptyPOState() {
     )
 }
 
-export { EmptySPBState, EmptyPOState, EmptySPBStateAdmin }
+export { EmptySPBState, EmptyPOState, EmptySPBStateAdmin, EmptySPBFilterState }

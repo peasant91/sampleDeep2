@@ -17,7 +17,10 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
   const { getSPB } = useProjectService();
   const { showErrorBS } = useBottomSheet();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
   const searchKey = useRef<string>("")
+  const statusKey = useRef<string>(status)
+
   const {
     data,
     isLoading,
@@ -29,10 +32,10 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
     isRefetching,
     isFetchingNextPage,
     ...rest
-  } = useInfiniteQuery<SpbListResponse>(["spb-lists",status], (par) => {
+  } = useInfiniteQuery<SpbListResponse>(["spb-lists", statusKey.current], (par) => {
     return getSPB(par.pageParam, {
       "query": searchKey.current,
-      "spb_status": status
+      "spb_status": statusKey.current
     });
   }, {
     keepPreviousData: false,
@@ -72,6 +75,19 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
 
   function setQuery(text: string) {
     searchKey.current = text
+    refresh()
+  }
+
+  function setStatus(status: string) {
+    statusKey.current = status
+    refresh()
+  }
+
+  function resetFilter() {
+    searchKey.current = ""
+    statusKey.current = status
+
+    refresh()
   }
 
   return {
@@ -84,6 +100,8 @@ export default function useProjectInfiniteQuery({ status }: QueryKey) {
     isRefreshing,
     isRefetching,
     isFetchingNextPage,
+    setStatus,
+    doResetFilter: resetFilter,
     ...rest,
   };
 }
