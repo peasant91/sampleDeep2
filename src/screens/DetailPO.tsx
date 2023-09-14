@@ -173,7 +173,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     }
 
     const complaintPO = async (text: string, image: string) => {
-        const base64 = await RNFS.readFile(image, 'base64').then(val => val)
+        const base64 = (image != "") ? await RNFS.readFile(image, 'base64').then(val => val) : ""
         await patchPOStatus(data.no_spb, data.no_po, StatusPO.complaint, text, base64)
             .then((response) => {
                 if (response != undefined) {
@@ -192,7 +192,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
     }
 
     const receivedPO = async (text: string, image: string) => {
-        const base64 = await RNFS.readFile(image, 'base64').then(val => val)
+        const base64 = (image != "") ? await RNFS.readFile(image, 'base64').then(val => val) : ""
         await patchPOStatus(data.no_spb, data.no_po, StatusPO.received, text, base64)
             .then((response) => {
                 if (response != undefined) {
@@ -441,41 +441,58 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                             <Typography style={{ marginTop: 16 }} type="title3">{t("po_photo")}</Typography>
                             <View
                                 style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 12 }}>
-                                <Image
-                                    style={{ width: '100%', height: '100%', borderRadius: 8 }}
-                                    source={{ uri: data.photo }}
-                                    onLoadStart={() => {
-                                        setImageLoaded(true);
-                                    }}
-                                />
-                                <View
-                                    style={{
-                                        position: 'absolute',
-                                        alignSelf: 'center',
-                                        height: '100%',
-                                        justifyContent: 'center',
-                                    }}>
-                                    <IconButton
-                                        shape={'rounded'}
-                                        onPress={() => {
-                                            setIsImageViewerOpen(true)
-                                        }}
-                                        size={40}
-                                        variant={'tertiary'}
-                                        icon={'search'}
-                                    />
-                                </View>
+                                {
+                                    data.photo &&
+                                    <>
+                                        <Image
+                                            style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                                            source={{ uri: data.photo }}
+                                            onLoadStart={() => {
+                                                setImageLoaded(true);
+                                            }}
+                                        />
+                                        <View
+                                            style={{
+                                                position: 'absolute',
+                                                alignSelf: 'center',
+                                                height: '100%',
+                                                justifyContent: 'center',
+                                            }}>
+                                            <IconButton
+                                                shape={'rounded'}
+                                                onPress={() => {
+                                                    setIsImageViewerOpen(true)
+                                                }}
+                                                size={40}
+                                                variant={'tertiary'}
+                                                icon={'search'}
+                                            />
+                                        </View>
+                                    </>
+                                }
 
                                 {!imageLoaded && (
-                                    <View
-                                        style={{
-                                            position: 'absolute',
-                                            borderRadius: 8,
-                                            height: '100%',
-                                            width: '100%',
-                                            backgroundColor: colors.neutral.neutral_50,
-                                        }}
-                                    />
+                                    <View style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        justifyContent: "center",
+                                        borderRadius: 8,
+                                        alignItems: "center",
+                                        backgroundColor: colors.primary.surface,
+                                    }}>
+                                        <View
+                                            style={{
+                                                width: 64,
+                                                height: 64,
+                                                borderRadius: 32,
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                backgroundColor: colors.primary.border
+                                            }}
+                                        >
+                                            <Icon icon={"image"} color={colors.primary.main} size={32} />
+                                        </View>
+                                    </View>
                                 )}
                             </View>
                             <View style={{ flexDirection: 'row', marginTop: 16 }}>
@@ -572,27 +589,30 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
             return (
                 <View style={_s.padding}>
                     <Stack direction='row' spacing={16}>
-                        <Button
-                            fullWidth={true}
-                            shape='rounded'
-                            size='lg'
-                            variant='secondary'
-                            onPress={() => {
-                                showConfirmationBS({
-                                    title: t("po_complain_title"),
-                                    description: t("po_complain_desc"),
-                                    withNotes: true,
-                                    withImage: true,
-                                    noteIsRequired: true,
-                                    buttonPrimaryTitle: t("complain"),
-                                    buttonSecondaryTitle: t("cancel"),
-                                    buttonPrimaryAction: ((text, image) => {
-                                        complaintPO(text ?? "", image ?? "")
-                                        hideConfirmationBS()
+                        {
+                            data.po_status == StatusPO.approved &&
+                            <Button
+                                fullWidth={true}
+                                shape='rounded'
+                                size='lg'
+                                variant='secondary'
+                                onPress={() => {
+                                    showConfirmationBS({
+                                        title: t("po_complain_title"),
+                                        description: t("po_complain_desc"),
+                                        withNotes: true,
+                                        withImage: true,
+                                        noteIsRequired: true,
+                                        buttonPrimaryTitle: t("complain"),
+                                        buttonSecondaryTitle: t("cancel"),
+                                        buttonPrimaryAction: ((text, image) => {
+                                            complaintPO(text ?? "", image ?? "")
+                                            hideConfirmationBS()
+                                        })
                                     })
-                                })
-                            }}
-                        >{t("complain")}</Button>
+                                }}
+                            >{t("complain")}</Button>
+                        }
 
                         <Button
                             fullWidth={true}
