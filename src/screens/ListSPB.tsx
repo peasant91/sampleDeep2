@@ -41,10 +41,12 @@ export default function ListSPB() {
     const { t } = useTranslation()
     const queryKey = useRef("")
     const statusKey = useRef(_spbsStatus[0].value)
+    const [search, setSearch] = useState("")
 
     const resetFilter = () => {
         queryKey.current = ""
         statusKey.current = ""
+        setSearch("")
 
         doResetFilter()
     }
@@ -63,6 +65,7 @@ export default function ListSPB() {
                         (queryKey.current != "" || statusKey.current != "")
                             ? <EmptySPBFilterState
                                 onReset={resetFilter}
+                                hasSearch={queryKey.current != ""}
                             />
                             : <EmptySPBState />
                     }
@@ -76,9 +79,13 @@ export default function ListSPB() {
         <Page>
             <SearchSpbToolbar
                 initialStatus={statusKey.current}
+                value={search}
                 onPressSearch={(text: string) => {
                     queryKey.current = text
                     setQuery(queryKey.current)
+                }}
+                onTextChange={(text)=>{
+                    setSearch(text)
                 }}
                 onClear={() => {
                     queryKey.current = ""
@@ -94,7 +101,7 @@ export default function ListSPB() {
                 flex: 1,
             }}>
                 {
-                    (isRefetching || isRefreshing) ?
+                    (isRefreshing) ?
                         (
                             <Stack
                                 spacing={16}

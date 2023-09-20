@@ -353,6 +353,13 @@ const TextField = React.forwardRef<TextInputHandles, TextInputProps>(
       }
     }, [focused, value, labeled, scale]);
 
+    React.useEffect(() => {
+      if (rest.value == "" && onClear) {
+        root.current?.clear();
+        onClear()
+      }
+    }, [rest.value])
+
     const onLeftAffixLayoutChange = (event: LayoutChangeEvent) => {
       setLeftLayout({
         height: event.nativeEvent.layout.height,
@@ -447,6 +454,7 @@ const TextField = React.forwardRef<TextInputHandles, TextInputProps>(
           maxFontSizeMultiplier={maxFontSizeMultiplier}
           onClear={() => {
             root.current?.clear();
+
             if (onClear) {
               onClear();
             }

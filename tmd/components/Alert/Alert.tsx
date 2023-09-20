@@ -99,7 +99,7 @@ export default function Alert({ title, description, dismissible, type, variant, 
               flexDirection: "row",
 
             }}>
-            <View style={{ marginRight: 6 }}>
+            <View style={{ marginRight: 6, alignSelf: 'flex-start' }}>
               <Icon
                 icon={iconName}
                 color={iconColor}

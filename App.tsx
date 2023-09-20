@@ -183,9 +183,9 @@ const App = () => {
               <LocaleProvider>
                 <Host>
                   <AuthProvider>
-                    <BottomSheetProvider>
-                      <ModalProvider>
-                        <PermissionProvider>
+                    <ModalProvider>
+                      <PermissionProvider>
+                        <BottomSheetProvider>
                           {
                             !gateLifted ?
                               <SplashScreen
@@ -197,9 +197,9 @@ const App = () => {
                               /> :
                               <AppNavigation />
                           }
-                        </PermissionProvider>
-                      </ModalProvider>
-                    </BottomSheetProvider>
+                        </BottomSheetProvider>
+                      </PermissionProvider>
+                    </ModalProvider>
                   </AuthProvider>
                 </Host>
               </LocaleProvider>

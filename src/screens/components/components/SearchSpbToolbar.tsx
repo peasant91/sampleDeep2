@@ -12,7 +12,8 @@ interface Props {
     onTextChange?: (text: string) => void;
     onPressSearch: (text: string) => void;
     onClear: () => void;
-    initialStatus: string
+    initialStatus: string;
+    value?:string;
 }
 
 export default function SearchSpbToolbar(
@@ -21,7 +22,8 @@ export default function SearchSpbToolbar(
         onStatusPressed,
         onTextChange,
         onClear,
-        initialStatus
+        initialStatus,
+        ...rest
     }: Props
 ) {
     const [status, setStatus] = useState(initialStatus)
@@ -63,6 +65,7 @@ export default function SearchSpbToolbar(
                 onPressSearch={onPressSearch}
                 onTextChange={onTextChange}
                 searchShape="rounded"
+                value={rest.value}
             >
                 <FlatList
                     data={_spbsStatus}

@@ -103,8 +103,14 @@ const TextInputFilled = ({
     backgroundColors = error ? colors.danger.surface : Colors.white
   }
 
-
   const isIconButtonVisible = password || isShowSearch;
+
+  React.useEffect(() => {
+    if (value == "") {
+      setIsShowSearch(false)
+    }
+  }, [value])
+
   return (
     <View style={viewStyle}>
       {

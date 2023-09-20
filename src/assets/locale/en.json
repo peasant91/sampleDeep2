@@ -84,7 +84,7 @@
       "image": "Image"
     },
     "search": "Search",
-    "search_spb": "Search SPB Number",
+    "search_spb": "Cari No. SPB",
     "select_location": "Select Location",
     "date_range": "Date Range",
     "choose_time": "Choose Time",
@@ -216,13 +216,16 @@
     "spb_bahan_date": "Tanggal Pengiriman",
     "all": "Semua",
     "in_process": "Dalam Proses",
-    "empty_spb_filter_title": "Tidak ada hasil pencarian",
-    "empty_spb_filter_desc": "Coba menggunakan kata kunci lain atau reset filter untuk menemukan SPB yang Anda cari.",
+    "empty_spb_search_title": "Tidak ada hasil pencarian",
+    "empty_spb_search_desc": "Coba menggunakan kata kunci lain atau reset filter untuk menemukan SPB yang Anda cari.",
+    "empty_spb_filter_title": "Tidak ada SPB sesuai filter",
+    "empty_spb_filter_desc": "Coba reset atau ubah filter untuk menemukan SPB.",
     "reset_filter": "Reset Filter",
     "no_phone_supplier": "No. Telepon Supplier",
     "contact_supplier": "Kontak Supplier",
-    "ambil_foto":"Ambil Foto",
-    "po_photo":"Foto PO",
-    "alert_po_complaint":"Jika komplain di proses oleh admin maka PO akan berubah menjadi menunggu konfirmasi."
+    "ambil_foto": "Ambil Foto",
+    "po_photo": "Foto PO",
+    "alert_po_complaint": "Mohon untuk menunggu komplain di proses oleh admin. Silahkan melakukan konfirmasi PO jika bahan sudah lengkap.",
+    "alert_empty_po_img": "Tidak ada foto untuk PO ini"
   }
 }

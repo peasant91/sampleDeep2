@@ -30,13 +30,16 @@ function EmptySPBState() {
     )
 }
 
-function EmptySPBFilterState({ onReset }) {
+function EmptySPBFilterState({ onReset, hasSearch }) {
     const { t } = useTranslation()
+    const title = hasSearch ? t('empty_spb_search_title') : t('empty_spb_filter_title')
+    const desc = hasSearch ? t('empty_spb_search_desc') : t('empty_spb_filter_desc')
+
     return (
         <View style={{ alignItems: 'center', padding: 16 }}>
             <IllustSPBFilterEmpty />
-            <Typography type='title2' style={{ color: colors.neutral.neutral_100, marginTop: 24 }}>{t("empty_spb_filter_title")}</Typography>
-            <Typography type='body2' style={{ textAlign: 'center', color: colors.neutral.neutral_80, marginTop: 4 }}>{t("empty_spb_filter_desc")}</Typography>
+            <Typography type='title2' style={{ color: colors.neutral.neutral_100, marginTop: 24 }}>{title}</Typography>
+            <Typography type='body2' style={{ textAlign: 'center', color: colors.neutral.neutral_80, marginTop: 4 }}>{desc}</Typography>
             <Button
                 shape='rounded'
                 size='lg'

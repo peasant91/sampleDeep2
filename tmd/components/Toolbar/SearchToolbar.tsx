@@ -18,7 +18,8 @@ interface Props {
   onPressSearch?: (text: string) => void;
   onClearSearch?: () => void;
   children?: React.ReactNode;
-  searchShape?: TextInputShape
+  searchShape?: TextInputShape;
+  value?:string
 }
 
 const SearchToolbar = (
@@ -146,6 +147,7 @@ const SearchToolbar = (
             style={{
               flex: 1,
             }}
+            value={rest.value}
             onClear={() => {
               if (rest.onClearSearch) {
                 rest.onClearSearch()

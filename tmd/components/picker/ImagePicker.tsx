@@ -52,8 +52,8 @@ export default function ImagePicker({
   const handleOpenImagePicker = () => {
     if (Platform.OS == "android") {
       console.log("ANJENG TANAH")
-      setIsOpen(true);
       requestPermissions([CAMERA_PERMISSIONS, STORAGE_PERMISSIONS], () => {
+        setIsOpen(true);
         console.log("ANJENG TANAH 2")
       });
     } else {

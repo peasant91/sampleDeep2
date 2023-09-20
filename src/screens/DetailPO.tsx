@@ -298,11 +298,11 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
 
                         <View style={{ flexDirection: 'row' }}>
                             <View style={{ flex: 1, flexDirection: 'column' }}>
-                                <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.phone_number}</Typography>
+                                <Typography type={"label2"}>{data.supplier.name}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("order_recipient")}</Typography>
                             </View>
                             <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
-                                <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.address}</Typography>
+                                <Typography style={{ flex: 1 }} type={"label2"}>{data.supplier.phone_number}</Typography>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("no_phone_supplier")}</Typography>
                                 <TextButton
                                     onPress={contactSupplier}
@@ -439,62 +439,51 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                         <View style={_s.padding}>
                             <Typography type="title3">{t("pm_note")}</Typography>
                             <Typography style={{ marginTop: 16 }} type="title3">{t("po_photo")}</Typography>
-                            <View
-                                style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 12 }}>
-                                {
-                                    data.photo &&
-                                    <>
-                                        <Image
-                                            style={{ width: '100%', height: '100%', borderRadius: 8 }}
-                                            source={{ uri: data.photo }}
-                                            onLoadStart={() => {
-                                                setImageLoaded(true);
+                            {
+                                data.photo &&
+                                <View style={{ aspectRatio: 343 / 180, width: '100%', marginTop: 12 }}>
+                                    <Image
+                                        style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                                        source={{ uri: data.photo }}
+                                        onLoadStart={() => {
+                                            setImageLoaded(true);
+                                        }}
+                                    />
+                                    <View
+                                        style={{
+                                            position: 'absolute',
+                                            alignSelf: 'center',
+                                            height: '100%',
+                                            justifyContent: 'center',
+                                        }}>
+                                        <IconButton
+                                            shape={'rounded'}
+                                            onPress={() => {
+                                                setIsImageViewerOpen(true)
                                             }}
+                                            size={40}
+                                            variant={'tertiary'}
+                                            icon={'search'}
                                         />
-                                        <View
-                                            style={{
-                                                position: 'absolute',
-                                                alignSelf: 'center',
-                                                height: '100%',
-                                                justifyContent: 'center',
-                                            }}>
-                                            <IconButton
-                                                shape={'rounded'}
-                                                onPress={() => {
-                                                    setIsImageViewerOpen(true)
-                                                }}
-                                                size={40}
-                                                variant={'tertiary'}
-                                                icon={'search'}
-                                            />
-                                        </View>
-                                    </>
-                                }
-
-                                {!imageLoaded && (
-                                    <View style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        justifyContent: "center",
-                                        borderRadius: 8,
-                                        alignItems: "center",
-                                        backgroundColor: colors.primary.surface,
-                                    }}>
-                                        <View
-                                            style={{
-                                                width: 64,
-                                                height: 64,
-                                                borderRadius: 32,
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                backgroundColor: colors.primary.border
-                                            }}
-                                        >
-                                            <Icon icon={"image"} color={colors.primary.main} size={32} />
-                                        </View>
                                     </View>
-                                )}
-                            </View>
+                                </View>
+                            }
+
+                            {!imageLoaded && (
+                                <View>
+                                    <Stack
+                                        direction='row'
+                                        items='center'
+                                        content='center'
+                                        style={{ paddingHorizontal: 12, paddingVertical: 8, marginTop: 12, marginBottom: 16, backgroundColor: colors.neutral.neutral_20, borderWidth: 1, borderRadius: 24, borderColor: colors.neutral.neutral_30 }}
+                                    >
+                                        <Icon icon='image' size={22} color={colors.neutral.neutral_90} />
+                                        <Typography type='body2' style={{ color: colors.neutral.neutral_90, marginStart: 8 }} >{t('alert_empty_po_img')}</Typography>
+                                    </Stack>
+                                    <Divider />
+                                </View>
+                            )}
+
                             <View style={{ flexDirection: 'row', marginTop: 16 }}>
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_70 }} type={"body3"}>{t("note_desc")}</Typography>
                                 <Typography style={{ flex: 2, color: colors.neutral.neutral_90 }} type={"body3"}>{data.notes ?? "-"}</Typography>
