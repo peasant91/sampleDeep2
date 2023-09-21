@@ -5,7 +5,7 @@
 import React, { ComponentProps, useEffect, useState } from "react";
 import { useTheme } from "../../core/theming";
 import { usePermission } from "../../providers/PermissionProvider";
-import { CAMERA_PERMISSIONS, STORAGE_PERMISSIONS } from "../../data/_permissionTypes";
+import { CAMERA_PERMISSIONS, MEDIA_PERMISSIONS, STORAGE_PERMISSIONS } from "../../data/_permissionTypes";
 import { ImageBackground, Platform, View, ViewStyle } from "react-native";
 import { Button, HelperText, Icon, IconButton } from "../../index";
 import ImagePickerBottomSheet, { ImagePickerBSProps } from "../BottomSheet/ImagePickerBottomSheet";
@@ -52,7 +52,8 @@ export default function ImagePicker({
   const handleOpenImagePicker = () => {
     if (Platform.OS == "android") {
       console.log("ANJENG TANAH")
-      requestPermissions([CAMERA_PERMISSIONS, STORAGE_PERMISSIONS], () => {
+      const storagePermission = (Platform.Version >= 33) ? [MEDIA_PERMISSIONS] : [STORAGE_PERMISSIONS]
+      requestPermissions([CAMERA_PERMISSIONS, ...storagePermission], () => {
         setIsOpen(true);
         console.log("ANJENG TANAH 2")
       });

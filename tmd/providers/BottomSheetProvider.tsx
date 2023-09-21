@@ -16,7 +16,7 @@ import ProgressBottomSheet from "../components/BottomSheet/ProgressBottomSheet";
 import { print } from "@gorhom/bottom-sheet/lib/typescript/utilities/logger";
 
 export type PermissionType =
-  "camera" | "storage" | "location" | "bluetooth" | "another";
+  "camera" | "storage" | "location" | "bluetooth" | "media" | "another";
 
 type ConfirmationBSContext = {
   imageNode?: React.ReactNode;

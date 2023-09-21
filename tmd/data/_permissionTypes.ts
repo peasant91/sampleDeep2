@@ -17,26 +17,36 @@ export const BLUETOOTH_PERMISSIONS = {
 };
 
 export const LOCATION_PERMISSIONS =
-  {
-    android: [
-      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
-      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-    ],
-    ios: [
-      PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-    ],
-  };
+{
+  android: [
+    PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+  ],
+  ios: [
+    PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+  ],
+};
 
 export const STORAGE_PERMISSIONS =
-  {
-    android: [
-      PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-    ],
-    ios: [
-      PERMISSIONS.IOS.PHOTO_LIBRARY,
-    ],
-  };
+{
+  android: [
+    PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+    PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+  ],
+  ios: [
+    PERMISSIONS.IOS.PHOTO_LIBRARY,
+  ],
+};
+
+export const MEDIA_PERMISSIONS =
+{
+  android: [
+    PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+  ],
+  ios: [
+    PERMISSIONS.IOS.PHOTO_LIBRARY
+  ]
+}
 
 export const CAMERA_PERMISSIONS = {
   android: [
@@ -74,6 +84,10 @@ const _permissionTypes: PermissionPackage[] = [
     type: "bluetooth",
     permissions: BLUETOOTH_PERMISSIONS,
   },
+  {
+    type: "media",
+    permissions: MEDIA_PERMISSIONS
+  }
 ];
 
 export default _permissionTypes;
