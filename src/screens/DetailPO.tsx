@@ -307,6 +307,7 @@ export default function DetailPO({ route }: NativeStackScreenProps<AppNavigation
                                 <TextButton
                                     onPress={contactSupplier}
                                     underline
+                                    labelStyle={{ fontSize: 12 }}
                                 >
                                     {t("contact_supplier")}
                                 </TextButton>
