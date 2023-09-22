@@ -166,7 +166,8 @@ const ModalProvider = ({ children }: any) => {
           };
           break;
         }
-        case "storage": {
+        case "storage":
+        case "media": {
           data = {
             imageNode: <IllustLocationPermission />,
             title: t("permissions.storage_title"),
