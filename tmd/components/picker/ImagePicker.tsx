@@ -2,18 +2,24 @@
  * Created by Widiana Putra on 04/07/2022
  * Copyright (c) 2022 - Made with love
  */
-import React, { ComponentProps, useEffect, useState } from "react";
-import { useTheme } from "../../core/theming";
-import { usePermission } from "../../providers/PermissionProvider";
-import { CAMERA_PERMISSIONS, MEDIA_PERMISSIONS, STORAGE_PERMISSIONS } from "../../data/_permissionTypes";
-import { ImageBackground, Platform, View, ViewStyle } from "react-native";
-import { Button, HelperText, Icon, IconButton } from "../../index";
-import ImagePickerBottomSheet, { ImagePickerBSProps } from "../BottomSheet/ImagePickerBottomSheet";
-import color from "color";
-import { useLocale } from "../../../src/providers/LocaleProvider";
-import LabelInput from "../TextInput/Label/LabelInput";
-import Typography from "../Typography/Typography";
-import ImageViewerModal from "../Modal/ImageViewerModal";
+import React, {ComponentProps, useEffect, useState} from 'react';
+import {useTheme} from '../../core/theming';
+import {usePermission} from '../../providers/PermissionProvider';
+import {
+  CAMERA_PERMISSIONS,
+  MEDIA_PERMISSIONS,
+  STORAGE_PERMISSIONS,
+} from '../../data/_permissionTypes';
+import {ImageBackground, Platform, View, ViewStyle} from 'react-native';
+import {Button, HelperText, Icon, IconButton} from '../../index';
+import ImagePickerBottomSheet, {
+  ImagePickerBSProps,
+} from '../BottomSheet/ImagePickerBottomSheet';
+import color from 'color';
+import {useLocale} from '../../../src/providers/LocaleProvider';
+import LabelInput from '../TextInput/Label/LabelInput';
+import Typography from '../Typography/Typography';
+import ImageViewerModal from '../Modal/ImageViewerModal';
 
 interface Props {
   label?: string;
@@ -45,17 +51,20 @@ export default function ImagePicker({
 }: Props & ImagePickerBSProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isShowViewer, setIsShowViewer] = useState(false);
-  const { colors, roundness } = useTheme();
-  const { t } = useLocale();
-  const { requestPermissions } = usePermission();
-  const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined);
+  const {colors, roundness} = useTheme();
+  const {t} = useLocale();
+  const {requestPermissions} = usePermission();
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(
+    undefined,
+  );
   const handleOpenImagePicker = () => {
-    if (Platform.OS == "android") {
-      console.log("ANJENG TANAH")
-      const storagePermission = (Platform.Version >= 33) ? [MEDIA_PERMISSIONS] : [STORAGE_PERMISSIONS]
+    if (Platform.OS == 'android') {
+      console.log('ANJENG TANAH');
+      const storagePermission =
+        Platform.Version >= 33 ? [MEDIA_PERMISSIONS] : [STORAGE_PERMISSIONS];
       requestPermissions([CAMERA_PERMISSIONS, ...storagePermission], () => {
         setIsOpen(true);
-        console.log("ANJENG TANAH 2")
+        console.log('ANJENG TANAH 2');
       });
     } else {
       requestPermissions([CAMERA_PERMISSIONS, STORAGE_PERMISSIONS], () => {
@@ -67,7 +76,7 @@ export default function ImagePicker({
 
   useEffect(() => {
     if (onChangeImageUrl) {
-      onChangeImageUrl(selectedImageUrl ?? "");
+      onChangeImageUrl(selectedImageUrl ?? '');
     }
   }, [selectedImageUrl]);
 
@@ -81,19 +90,19 @@ export default function ImagePicker({
     }
   }, [initialImageUrl]);
 
-
   const ImagePlaceHolderIcon = () => {
     const size = 70;
     return (
-      <View style={{
-        width: size,
-        height: size,
-        justifyContent: "center",
-        borderRadius: size / 2,
-        alignItems: "center",
-        backgroundColor: colors.primary.border,
-      }}>
-        <Icon icon={"image"} color={colors.primary.main} size={size / 2 + 10} />
+      <View
+        style={{
+          width: size,
+          height: size,
+          justifyContent: 'center',
+          borderRadius: size / 2,
+          alignItems: 'center',
+          backgroundColor: colors.primary.border,
+        }}>
+        <Icon icon={'image'} color={colors.primary.main} size={size / 2 + 10} />
       </View>
     );
   };
@@ -101,20 +110,25 @@ export default function ImagePicker({
   const ImageViewerButton = () => {
     const size = 70;
     return (
-      <View style={{
-        width: size,
-        height: size,
-        justifyContent: "center",
-        borderRadius: size / 2,
-        alignItems: "center",
-        backgroundColor: color(colors.primary.focus).alpha(0.2).rgb().string(),
-      }}>
+      <View
+        style={{
+          width: size,
+          height: size,
+          justifyContent: 'center',
+          borderRadius: size / 2,
+          alignItems: 'center',
+          backgroundColor: color(colors.primary.focus)
+            .alpha(0.2)
+            .rgb()
+            .string(),
+        }}>
         <IconButton
-          shape={"rounded"}
+          shape={'rounded'}
           onPress={handleOpenViewer}
           size={size / 3}
-          variant={"tertiary"}
-          icon={"search"} />
+          variant={'tertiary'}
+          icon={'search'}
+        />
         {/*<Icon icon={"image"} color={colors.primary.main} size={size / 2 + 10} />*/}
       </View>
     );
@@ -123,119 +137,120 @@ export default function ImagePicker({
   return (
     <>
       <View style={[style]}>
-        {
-          rest.label &&
+        {rest.label && (
           <View>
             <LabelInput
               style={{
                 marginBottom: 8,
               }}
               label={rest?.label}
-              required={rest?.requiredLabel} />
+              required={rest?.requiredLabel}
+            />
           </View>
-        }
-        <View style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          height: 160,
-          width: "100%",
-          borderRadius: roundness,
-          backgroundColor: colors.primary.surface,
-          position: "relative",
-        }}>
-          {
-            !selectedImageUrl
-              ? <ImagePlaceHolderIcon />
-              : <ImageBackground
-                borderRadius={roundness}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                source={{
-                  uri: selectedImageUrl,
-                }}
-              >
-                <ImageViewerButton />
-              </ImageBackground>
-          }
+        )}
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 160,
+            width: '100%',
+            borderRadius: roundness,
+            backgroundColor: colors.primary.surface,
+            position: 'relative',
+          }}>
+          {!selectedImageUrl ? (
+            <ImagePlaceHolderIcon />
+          ) : (
+            <ImageBackground
+              borderRadius={roundness}
+              style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              source={{
+                uri: selectedImageUrl,
+              }}>
+              <ImageViewerButton />
+            </ImageBackground>
+          )}
         </View>
-        <View style={{
-          flex: 1,
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-          {(description || errorText) &&
-            <View style={{
-              marginTop: 8,
-            }}>
-              {
-                (error && errorText) &&
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          {(description || errorText) && (
+            <View
+              style={{
+                marginTop: 8,
+              }}>
+              {error && errorText && (
                 <HelperText
                   style={{
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}
-                  type={"error"}>{errorText}</HelperText>
-              }
-              {
-                description &&
+                  type={'error'}>
+                  {errorText}
+                </HelperText>
+              )}
+              {description && (
                 <Typography
-                  type={"body3"}
+                  type={'body3'}
                   style={{
-                    textAlign: "center",
+                    textAlign: 'center',
                   }}>
                   {description}
                 </Typography>
-              }
+              )}
             </View>
-          }
-          {
-            editable &&
+          )}
+          {editable && (
             <Button
-              size={buttonProps?.size ?? "sm"}
+              size={buttonProps?.size ?? 'sm'}
               style={{
                 marginTop: 8,
               }}
-              variant={buttonProps?.variant ?? "secondary"}
+              variant={buttonProps?.variant ?? 'secondary'}
               onPress={handleOpenImagePicker}
-              {...buttonProps}
-            >
-              {
-                buttonTitle ??
-                t("pick_image")
-              }
+              {...buttonProps}>
+              {buttonTitle ?? t('pick_image')}
             </Button>
-          }
+          )}
         </View>
       </View>
 
       <ImageViewerModal
-        images={[{ image: selectedImageUrl ?? "" }]}
+        images={[{image: selectedImageUrl ?? ''}]}
         onClose={() => {
-          setIsShowViewer(false)
-        }} open={isShowViewer} />
+          setIsShowViewer(false);
+        }}
+        open={isShowViewer}
+      />
 
       <ImagePickerBottomSheet
         selectedImage={selectedImageUrl}
         onDelete={() => {
-          setSelectedImageUrl("");
+          setSelectedImageUrl('');
         }}
         camera={rest.camera}
         gallery={rest.gallery}
         ratio={rest.ratio}
         crop={rest.crop}
+        freestyleCropRatio={rest.freestyleCropRatio}
         open={isOpen}
-        onChangeImage={(image) => {
+        onChangeImage={image => {
           setIsOpen(false);
           setSelectedImageUrl(image.path);
         }}
         onClose={() => {
           setIsOpen(false);
-        }} />
+        }}
+      />
     </>
   );
 }
