@@ -39,7 +39,7 @@ export default function ImagePickerBottomSheet({
   const modalizeRef = useRef<Modalize>(null);
   const {t} = useTranslation();
   const [currentImage, setCurrentImage] = useState(selectedImage);
-  const imageSize = props.crop ? 800 : 400;
+  const imageSize = 800
   useEffect(() => {
     if (props.open) {
       handleOpen();

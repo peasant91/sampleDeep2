@@ -1,27 +1,27 @@
 import useBaseService from '../useBaseService';
-import {useBottomSheet} from '../../../tmd/providers/BottomSheetProvider';
-import {useState} from 'react';
+import { useBottomSheet } from '../../../tmd/providers/BottomSheetProvider';
+import { useState } from 'react';
 import {
   BaseSPBNumberModel,
   SPBDetailModel,
   SPBDetailResponse,
   SpbListResponse,
 } from '../../models/spb/spb';
-import {BaseProjectModel, ProjectModel} from '../../models/project/project';
+import { BaseProjectModel, ProjectModel } from '../../models/project/project';
 import {
   PODetailModel,
   PODetailResponse,
   PoListResponse,
   StatusPO,
 } from '../../models/spb/po';
-import {NOT_SUPPORTED} from 'react-native-maps/lib/decorateMapComponent';
-import {StatusSPB} from '../../screens/components/item/SpbList';
-import {string} from 'yup';
+import { NOT_SUPPORTED } from 'react-native-maps/lib/decorateMapComponent';
+import { StatusSPB } from '../../screens/components/item/SpbList';
+import { string } from 'yup';
 import { CatalogListResponse } from "../../models/catalog/Catalog";
 
 export default function useProjectService() {
-  const {getAPI, postAPI, patchAPI} = useBaseService();
-  const {showErrorBS} = useBottomSheet();
+  const { getAPI, postAPI, patchAPI } = useBaseService();
+  const { showErrorBS } = useBottomSheet();
   const [isLoadingProject, setIsLoading] = useState(false);
 
   const postSPB = async (noSPB: string, query: any) => {
@@ -137,7 +137,7 @@ export default function useProjectService() {
     poID: string,
     status: StatusPO,
     notes?: string,
-    image?:string
+    image?: string
   ) => {
     try {
       setIsLoading(true);
@@ -147,7 +147,7 @@ export default function useProjectService() {
         query.notes = notes;
       }
 
-      if(image){
+      if (image) {
         query.photo = image
       }
 
@@ -160,6 +160,45 @@ export default function useProjectService() {
       showErrorBS(e);
     }
   };
+
+  const postPOStatus = async (
+    spbID: string,
+    poID: string,
+    status: StatusPO,
+    notes?: string,
+    image?: string
+  ) => {
+    try {
+      setIsLoading(true);
+      const body = new FormData()
+
+      body.append('status', status)
+
+      if (image) {
+        body.append('photo', {
+          uri: image,
+          name: 'po_report.jpg',
+          type: 'image/jpg'
+        })
+      }
+
+      if (notes) {
+        body.append('notes', notes)
+      }
+
+      const res = await postAPI(`project/spb/${spbID}/po/${poID}`, body, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      });
+      setIsLoading(false);
+      return res;
+    } catch (e) {
+      setIsLoading(false);
+      console.log(e);
+      showErrorBS(e);
+    }
+  }
 
   const getProject = async () => {
     try {
@@ -193,6 +232,7 @@ export default function useProjectService() {
     getPOList,
     getPODetail,
     patchPOStatus,
+    postPOStatus,
 
     getProject,
     getSPBNumber,

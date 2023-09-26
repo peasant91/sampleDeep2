@@ -169,7 +169,7 @@ export default function AlertBottomSheet({
                       icon: 'add-circle',
                     },
                   }}
-                  freestyleCropRatio
+                  crop={false}
                   buttonTitle={t('ambil_foto')}
                   style={{marginVertical: 8}}
                 />

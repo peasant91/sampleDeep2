@@ -6,9 +6,9 @@ import { AxiosRequestConfig } from "axios";
  * Copyright (c) 2022 - Made with love
  */
 export default function useBaseService() {
-  const postAPI = async <E>(route: string, body?: any) => {
+  const postAPI = async <E>(route: string, body?: any, config?: AxiosRequestConfig) => {
     try {
-      return await client.post(route, body) as E;
+      return await client.post(route, body, config) as E;
     } catch (e) {
       throw e;
     }

@@ -38,7 +38,7 @@ export default function ProjectDetail() {
   const spbData: SpbListItem[] = _spbMock;
   const [projectData, setProjectData] = useState<ProjectModel>();
   const {spbLists, refetch, isRefetching, isFetchingNextPage, fetchNext} =
-    useProjectInfiniteQuery({status: StatusSPB.approved});
+    useProjectInfiniteQuery({status: StatusSPB.done});
 
   useEffect(() => {
     loadDefault();

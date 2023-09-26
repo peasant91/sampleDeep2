@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFocusEffect} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import moment from 'moment';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {FlatList, Image, Linking, StyleSheet, View} from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, Image, Linking, StyleSheet, View } from 'react-native';
 import NumberFormat from 'react-number-format';
 import {
   Alert,
@@ -20,7 +20,7 @@ import {
 } from '../../tmd';
 import AlertBottomSheet from '../../tmd/components/BottomSheet/AlertBottomSheet';
 import TextButton from '../../tmd/components/Button/TextButton';
-import {CurrencyText} from '../../tmd/components/TextInput/helpers';
+import { CurrencyText } from '../../tmd/components/TextInput/helpers';
 import Typography from '../../tmd/components/Typography/Typography';
 import {
   _poDetailMock,
@@ -29,19 +29,19 @@ import {
   _spbDetailMock,
   _spbMock,
 } from '../../tmd/data/_mock';
-import {useBottomSheet} from '../../tmd/providers/BottomSheetProvider';
-import {colors} from '../../tmd/styles/colors';
-import {ProjectModel} from '../models/project/project';
-import {PODetailModel, StatusPO} from '../models/spb/po';
-import {SPBDetailModel, SpbListItem} from '../models/spb/spb';
+import { useBottomSheet } from '../../tmd/providers/BottomSheetProvider';
+import { colors } from '../../tmd/styles/colors';
+import { ProjectModel } from '../models/project/project';
+import { PODetailModel, StatusPO } from '../models/spb/po';
+import { SPBDetailModel, SpbListItem } from '../models/spb/spb';
 import AppNavigationType from '../navigations/AppNavigationType';
-import {goBack} from '../navigations/RootNavigation';
+import { goBack } from '../navigations/RootNavigation';
 import usePODetailQuery from '../services/project/usePODetailQuery';
 import useProjectService from '../services/project/useProjectService';
-import {momentWita} from '../utils/Helper';
+import { momentWita } from '../utils/Helper';
 import StorageKey from '../utils/StorageKey';
 import ItemList from './components/item/itemList';
-import {StatusButton} from './components/item/PoList';
+import { StatusButton } from './components/item/PoList';
 import RNFS from 'react-native-fs';
 import ImageViewerModal from '../../tmd/components/Modal/ImageViewerModal';
 import ProgressModal from '../../tmd/components/Modal/ProgressModal';
@@ -53,10 +53,10 @@ export default function DetailPO({
   const isPMPage = route.params.isPMPage;
   const poID = route.params.poID;
   const spbID = route.params.spbID;
-  const {showConfirmationBS, hideConfirmationBS, showAlertBS, hideAlertBS} =
+  const { showConfirmationBS, hideConfirmationBS, showAlertBS, hideAlertBS } =
     useBottomSheet();
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const minItemShown: number = 3;
   var projectData = useRef<ProjectModel>();
   // const data: PODetailModel = _poDetailMock
@@ -66,16 +66,16 @@ export default function DetailPO({
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  const {data, isLoading, refetchPO, isRefetchingPO} = usePODetailQuery(
+  const { data, isLoading, refetchPO, isRefetchingPO } = usePODetailQuery(
     spbID,
     poID,
   );
-  const {isLoadingProject, patchPOStatus} = useProjectService();
+  const { isLoadingProject, patchPOStatus, postPOStatus } = useProjectService();
 
   useEffect(() => {
     if (!showAll) {
       setButtonTitle(
-        t('see_more_items', {count: data.total_item - minItemShown}),
+        t('see_more_items', { count: data.total_item - minItemShown }),
       );
     } else {
       setButtonTitle(t('see_less'));
@@ -88,7 +88,7 @@ export default function DetailPO({
 
   const DetailPOShimmer = () => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Stack spacing={16}>
           <View
             style={{
@@ -98,35 +98,35 @@ export default function DetailPO({
             }}>
             <Stack
               spacing={8}
-              style={{flex: 1, justifyContent: 'center', marginRight: 16}}>
+              style={{ flex: 1, justifyContent: 'center', marginRight: 16 }}>
               <Skeleton />
               <Skeleton />
               <Skeleton />
             </Stack>
-            <Skeleton style={{width: '20%', height: 60}} />
+            <Skeleton style={{ width: '20%', height: 60 }} />
           </View>
           <Divider />
 
-          <Stack spacing={16} direction="row" style={{paddingHorizontal: 16}}>
-            <Skeleton style={{flex: 1}} />
-            <Skeleton style={{flex: 1}} />
+          <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+            <Skeleton style={{ flex: 1 }} />
+            <Skeleton style={{ flex: 1 }} />
           </Stack>
 
           <Divider />
 
-          <Stack spacing={16} direction="row" style={{paddingHorizontal: 16}}>
-            <Skeleton style={{flex: 1}} />
-            <Skeleton style={{flex: 1}} />
+          <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+            <Skeleton style={{ flex: 1 }} />
+            <Skeleton style={{ flex: 1 }} />
           </Stack>
 
-          <Stack spacing={16} direction="row" style={{paddingHorizontal: 16}}>
-            <Skeleton style={{flex: 1}} />
-            <Skeleton style={{flex: 1}} />
+          <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+            <Skeleton style={{ flex: 1 }} />
+            <Skeleton style={{ flex: 1 }} />
           </Stack>
 
-          <Stack spacing={16} direction="row" style={{paddingHorizontal: 16}}>
-            <Skeleton style={{flex: 1}} />
-            <Skeleton style={{flex: 1}} />
+          <Stack spacing={16} direction="row" style={{ paddingHorizontal: 16 }}>
+            <Skeleton style={{ flex: 1 }} />
+            <Skeleton style={{ flex: 1 }} />
           </Stack>
         </Stack>
       </View>
@@ -138,7 +138,7 @@ export default function DetailPO({
       projectData.current = JSON.parse(
         (await AsyncStorage.getItem(StorageKey.PROJECT_DATA)) || '',
       );
-    } catch {}
+    } catch { }
   };
 
   useFocusEffect(
@@ -208,12 +208,12 @@ export default function DetailPO({
     const base64 =
       image != '' ? await RNFS.readFile(image, 'base64').then(val => val) : '';
     setIsUploading(true);
-    await patchPOStatus(
+    await postPOStatus(
       data.no_spb,
       data.no_po,
       StatusPO.complaint,
       text,
-      base64,
+      image,
     ).then(response => {
       setIsUploading(false);
       if (response != undefined) {
@@ -235,12 +235,12 @@ export default function DetailPO({
     const base64 =
       image != '' ? await RNFS.readFile(image, 'base64').then(val => val) : '';
     setIsUploading(true);
-    await patchPOStatus(
+    await postPOStatus(
       data.no_spb,
       data.no_po,
       StatusPO.received,
       text,
-      base64,
+      image,
     ).then(response => {
       setIsUploading(false);
       if (response != undefined) {
@@ -280,13 +280,13 @@ export default function DetailPO({
       <>
         <View
           style={[
-            {flexDirection: 'row', justifyContent: 'space-between'},
+            { flexDirection: 'row', justifyContent: 'space-between' },
             _s.padding,
           ]}>
           <Stack
             spacing={8}
-            style={{justifyContent: 'flex-start', flexShrink: 1}}>
-            <Typography type={'title3'} style={{flexWrap: 'wrap'}}>
+            style={{ justifyContent: 'flex-start', flexShrink: 1 }}>
+            <Typography type={'title3'} style={{ flexWrap: 'wrap' }}>
               {projectData.current?.name ?? data.project.name}
             </Typography>
             <Typography type={'body4'}>
@@ -303,7 +303,7 @@ export default function DetailPO({
               <Icon icon={'location'} />
               <Typography
                 type={'body4'}
-                style={{marginRight: 32}}
+                style={{ marginRight: 32 }}
                 numberOfLines={1}>
                 {projectData.current?.location.address ??
                   data.project.location.address}
@@ -312,9 +312,9 @@ export default function DetailPO({
           </Stack>
           {/* <Image style={{ aspectRatio: 1, width: '25%' }} borderRadius={4} source={require("../assets/icons/ic_header/header.png")} /> */}
           <Image
-            style={{aspectRatio: 1, width: '25%'}}
+            style={{ aspectRatio: 1, width: '25%' }}
             borderRadius={4}
-            source={{uri: projectData.current?.photo ?? data.project.image}}
+            source={{ uri: projectData.current?.photo ?? data.project.image }}
           />
         </View>
 
@@ -357,101 +357,101 @@ export default function DetailPO({
                                 <Typography style={{ flex: 1, color: colors.neutral.neutral_80 }} type={"body3"}>{t("date_spb")}</Typography>
                             </View>
                         </View> */}
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1, flexDirection: 'column'}}>
-                <Typography style={{flex: 1}} type={'label2'}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'column' }}>
+                <Typography style={{ flex: 1 }} type={'label2'}>
                   {data.no_spb}
                 </Typography>
                 <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_80}}
+                  style={{ flex: 1, color: colors.neutral.neutral_80 }}
                   type={'body3'}>
                   {t('id_spb')}
                 </Typography>
               </View>
 
-              <View style={{flex: 1, flexDirection: 'column', marginLeft: 8}}>
+              <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
                 <Typography type={'label2'}>
                   {momentWita(data.spb_created_at).format(
                     'DD MMMM YYYY, HH:mm',
                   )}
                 </Typography>
                 <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_80}}
+                  style={{ flex: 1, color: colors.neutral.neutral_80 }}
                   type={'body3'}>
                   {t('date_spb')}
                 </Typography>
               </View>
             </View>
 
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1, flexDirection: 'column'}}>
-                <Typography style={{flex: 1}} type={'label2'}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'column' }}>
+                <Typography style={{ flex: 1 }} type={'label2'}>
                   {data.no_po}
                 </Typography>
                 <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_80}}
+                  style={{ flex: 1, color: colors.neutral.neutral_80 }}
                   type={'body3'}>
                   {t('id_po')}
                 </Typography>
               </View>
-              <View style={{flex: 1, flexDirection: 'column', marginLeft: 8}}>
+              <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
                 <Typography style={{}} type={'label2'}>
                   {momentWita(data.po_created_at).format('DD MMMM YYYY, HH:mm')}
                 </Typography>
                 <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_80}}
+                  style={{ flex: 1, color: colors.neutral.neutral_80 }}
                   type={'body3'}>
                   {t('date_po')}
                 </Typography>
               </View>
             </View>
 
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1, flexDirection: 'column'}}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'column' }}>
                 <Typography type={'label2'}>{data.supplier.name}</Typography>
                 <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_80}}
+                  style={{ flex: 1, color: colors.neutral.neutral_80 }}
                   type={'body3'}>
                   {t('order_recipient')}
                 </Typography>
               </View>
-              <View style={{flex: 1, flexDirection: 'column', marginLeft: 8}}>
-                <Typography style={{flex: 1}} type={'label2'}>
+              <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
+                <Typography style={{ flex: 1 }} type={'label2'}>
                   {data.supplier.phone_number}
                 </Typography>
                 <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_80}}
+                  style={{ flex: 1, color: colors.neutral.neutral_80 }}
                   type={'body3'}>
                   {t('no_phone_supplier')}
                 </Typography>
                 <TextButton
                   onPress={contactSupplier}
                   underline
-                  labelStyle={{fontSize: 12}}>
+                  labelStyle={{ fontSize: 12 }}>
                   {t('contact_supplier')}
                 </TextButton>
               </View>
             </View>
 
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1, flexDirection: 'column'}}>
-                <Typography style={{flex: 1}} type={'label2'}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'column' }}>
+                <Typography style={{ flex: 1 }} type={'label2'}>
                   {momentWita(data.delivery_estimation).format('DD MMMM YYYY')}
                 </Typography>
                 <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_80}}
+                  style={{ flex: 1, color: colors.neutral.neutral_80 }}
                   type={'body3'}>
                   {t('estimated_delivery')}
                 </Typography>
               </View>
-              <View style={{flex: 1, flexDirection: 'column', marginLeft: 8}}>
+              <View style={{ flex: 1, flexDirection: 'column', marginLeft: 8 }}>
                 {data.created_by && (
                   <>
-                    <Typography style={{flex: 1}} type={'label2'}>
+                    <Typography style={{ flex: 1 }} type={'label2'}>
                       {data.created_by}
                     </Typography>
                     <Typography
-                      style={{flex: 1, color: colors.neutral.neutral_80}}
+                      style={{ flex: 1, color: colors.neutral.neutral_80 }}
                       type={'body3'}>
                       Pembuat PO
                     </Typography>
@@ -486,10 +486,10 @@ export default function DetailPO({
   const footer = () => {
     return (
       <>
-        <View style={{marginTop: 16, marginBottom: 12}}>
+        <View style={{ marginTop: 16, marginBottom: 12 }}>
           {data.items.length > minItemShown && (
             <TextButton
-              style={{alignSelf: 'center'}}
+              style={{ alignSelf: 'center' }}
               underline
               size="md"
               onPress={() => {
@@ -504,13 +504,13 @@ export default function DetailPO({
 
         {isAdminPage && (
           <>
-            <View style={{padding: 16}}>
+            <View style={{ padding: 16 }}>
               <Typography
                 type="title3"
-                style={{color: colors.neutral.neutral_90}}>
+                style={{ color: colors.neutral.neutral_90 }}>
                 {t('payment_rule')}
               </Typography>
-              <Stack spacing={12} style={{marginTop: 16}}>
+              <Stack spacing={12} style={{ marginTop: 16 }}>
                 {data.payment_term.map(function (item, index) {
                   return (
                     <Typography
@@ -525,18 +525,18 @@ export default function DetailPO({
 
             <Divider />
 
-            <Stack spacing={12} style={{padding: 16}}>
+            <Stack spacing={12} style={{ padding: 16 }}>
               <Typography
                 type="title3"
-                style={{color: colors.neutral.neutral_90}}>
+                style={{ color: colors.neutral.neutral_90 }}>
                 {t('payment_summary')}
               </Typography>
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Typography
                   type="body2"
-                  style={{color: colors.neutral.neutral_90}}>
-                  {t('po_subtotal', {count: data.total_item})}
+                  style={{ color: colors.neutral.neutral_90 }}>
+                  {t('po_subtotal', { count: data.total_item })}
                 </Typography>
                 <CurrencyText value={data.total_price} />
               </View>
@@ -549,13 +549,13 @@ export default function DetailPO({
                   {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography> */}
                   <Typography
                     type="body2"
-                    style={{color: colors.neutral.neutral_90}}>
+                    style={{ color: colors.neutral.neutral_90 }}>
                     {t('amount_discount_title')}
                   </Typography>
                   <Stack direction="row">
                     <Typography
                       type="body2"
-                      style={{color: colors.neutral.neutral_90}}>
+                      style={{ color: colors.neutral.neutral_90 }}>
                       -{' '}
                     </Typography>
                     <CurrencyText value={data.total_discount} />
@@ -572,7 +572,7 @@ export default function DetailPO({
                   {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_discount", { count: data.total_discount })}</Typography> */}
                   <Typography
                     type="body2"
-                    style={{color: colors.neutral.neutral_90}}>
+                    style={{ color: colors.neutral.neutral_90 }}>
                     PPN 11%
                   </Typography>
                   <CurrencyText value={data.total_ppn} />
@@ -587,10 +587,10 @@ export default function DetailPO({
 
               <Divider />
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Typography
                   type="label1"
-                  style={{color: colors.neutral.neutral_90}}>
+                  style={{ color: colors.neutral.neutral_90 }}>
                   {t('grand_total')}
                 </Typography>
                 <CurrencyText value={data.grand_total} />
@@ -605,124 +605,124 @@ export default function DetailPO({
           <View
             style={[
               _s.padding,
-              {flexDirection: 'row', justifyContent: 'space-between'},
+              { flexDirection: 'row', justifyContent: 'space-between' },
             ]}>
             <Typography
               type="title3"
-              style={{color: colors.neutral.neutral_90}}>
+              style={{ color: colors.neutral.neutral_90 }}>
               {t('total_bahan')}
             </Typography>
-            <Typography type="body1" style={{color: colors.neutral.neutral_90}}>
+            <Typography type="body1" style={{ color: colors.neutral.neutral_90 }}>
               {data.total_item} {t('bahan')}
             </Typography>
           </View>
         )}
 
         <View
-          style={{height: 16, backgroundColor: colors.neutral.neutral_20}}
+          style={{ height: 16, backgroundColor: colors.neutral.neutral_20 }}
         />
 
         {(data.po_status == StatusPO.received ||
           data.po_status == StatusPO.complaint) && (
-          <>
-            <View style={_s.padding}>
-              <Typography type="title3">{t('pm_note')}</Typography>
-              <Typography style={{marginTop: 16}} type="title3">
-                {t('po_photo')}
-              </Typography>
-              {data.photo && (
-                <View
-                  style={{
-                    aspectRatio: 343 / 180,
-                    width: '100%',
-                    marginTop: 12,
-                  }}>
-                  <Image
-                    style={{width: '100%', height: '100%', borderRadius: 8}}
-                    source={{uri: data.photo}}
-                    onLoadStart={() => {
-                      setImageLoaded(true);
-                    }}
-                  />
+            <>
+              <View style={_s.padding}>
+                <Typography type="title3">{t('pm_note')}</Typography>
+                <Typography style={{ marginTop: 16 }} type="title3">
+                  {t('po_photo')}
+                </Typography>
+                {data.photo && (
                   <View
                     style={{
-                      position: 'absolute',
-                      alignSelf: 'center',
-                      height: '100%',
-                      justifyContent: 'center',
-                    }}>
-                    <IconButton
-                      shape={'rounded'}
-                      onPress={() => {
-                        setIsImageViewerOpen(true);
-                      }}
-                      size={40}
-                      variant={'tertiary'}
-                      icon={'search'}
-                    />
-                  </View>
-                </View>
-              )}
-
-              {!imageLoaded && (
-                <View>
-                  <Stack
-                    direction="row"
-                    items="center"
-                    content="center"
-                    style={{
-                      paddingHorizontal: 12,
-                      paddingVertical: 8,
+                      aspectRatio: 343 / 180,
+                      width: '100%',
                       marginTop: 12,
-                      marginBottom: 16,
-                      backgroundColor: colors.neutral.neutral_20,
-                      borderWidth: 1,
-                      borderRadius: 24,
-                      borderColor: colors.neutral.neutral_30,
                     }}>
-                    <Icon
-                      icon="image"
-                      size={22}
-                      color={colors.neutral.neutral_90}
+                    <Image
+                      style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                      source={{ uri: data.photo }}
+                      onLoadStart={() => {
+                        setImageLoaded(true);
+                      }}
                     />
-                    <Typography
-                      type="body2"
+                    <View
                       style={{
-                        color: colors.neutral.neutral_90,
-                        marginStart: 8,
+                        position: 'absolute',
+                        alignSelf: 'center',
+                        height: '100%',
+                        justifyContent: 'center',
                       }}>
-                      {t('alert_empty_po_img')}
-                    </Typography>
-                  </Stack>
-                  <Divider />
+                      <IconButton
+                        shape={'rounded'}
+                        onPress={() => {
+                          setIsImageViewerOpen(true);
+                        }}
+                        size={40}
+                        variant={'tertiary'}
+                        icon={'search'}
+                      />
+                    </View>
+                  </View>
+                )}
+
+                {!imageLoaded && (
+                  <View>
+                    <Stack
+                      direction="row"
+                      items="center"
+                      content="center"
+                      style={{
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        marginTop: 12,
+                        marginBottom: 16,
+                        backgroundColor: colors.neutral.neutral_20,
+                        borderWidth: 1,
+                        borderRadius: 24,
+                        borderColor: colors.neutral.neutral_30,
+                      }}>
+                      <Icon
+                        icon="image"
+                        size={22}
+                        color={colors.neutral.neutral_90}
+                      />
+                      <Typography
+                        type="body2"
+                        style={{
+                          color: colors.neutral.neutral_90,
+                          marginStart: 8,
+                        }}>
+                        {t('alert_empty_po_img')}
+                      </Typography>
+                    </Stack>
+                    <Divider />
+                  </View>
+                )}
+
+                <View style={{ flexDirection: 'row', marginTop: 16 }}>
+                  <Typography
+                    style={{ flex: 1, color: colors.neutral.neutral_70 }}
+                    type={'body3'}>
+                    {t('note_desc')}
+                  </Typography>
+                  <Typography
+                    style={{ flex: 2, color: colors.neutral.neutral_90 }}
+                    type={'body3'}>
+                    {data.notes ?? '-'}
+                  </Typography>
                 </View>
-              )}
-
-              <View style={{flexDirection: 'row', marginTop: 16}}>
-                <Typography
-                  style={{flex: 1, color: colors.neutral.neutral_70}}
-                  type={'body3'}>
-                  {t('note_desc')}
-                </Typography>
-                <Typography
-                  style={{flex: 2, color: colors.neutral.neutral_90}}
-                  type={'body3'}>
-                  {data.notes ?? '-'}
-                </Typography>
+                {data.po_status == StatusPO.complaint && (
+                  <Alert
+                    variant="info"
+                    type="outlined"
+                    style={{ marginTop: 16 }}
+                    description={t('alert_po_complaint')}
+                  />
+                )}
               </View>
-              {data.po_status == StatusPO.complaint && (
-                <Alert
-                  variant="info"
-                  type="outlined"
-                  style={{marginTop: 16}}
-                  description={t('alert_po_complaint')}
-                />
-              )}
-            </View>
 
-            <Divider />
-          </>
-        )}
+              <Divider />
+            </>
+          )}
       </>
     );
   };
@@ -860,19 +860,19 @@ export default function DetailPO({
   return (
     <Page>
       <Toolbar elevation={2} title={t('po_detail')} />
-      <View style={{flex: 1, flexDirection: 'column'}}>
+      <View style={{ flex: 1, flexDirection: 'column' }}>
         {isLoading || isRefetchingPO ? (
           <DetailPOShimmer />
         ) : (
           <>
             <FlatList
-              style={{backgroundColor: Colors.white}}
+              style={{ backgroundColor: Colors.white }}
               ListHeaderComponent={header}
               ListFooterComponent={footer}
               extraData={showAll}
               data={showAll ? data.items : data.items.slice(0, minItemShown)}
               ItemSeparatorComponent={() => {
-                return <View style={{height: 12}} />;
+                return <View style={{ height: 12 }} />;
               }}
               renderItem={item => {
                 return (
@@ -893,7 +893,7 @@ export default function DetailPO({
       </View>
 
       <ImageViewerModal
-        images={[{image: data.photo ?? ''}]}
+        images={[{ image: data.photo ?? '' }]}
         open={isImageViewerOpen}
         onClose={() => {
           setIsImageViewerOpen(false);
