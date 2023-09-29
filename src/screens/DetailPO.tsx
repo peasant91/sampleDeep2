@@ -710,7 +710,7 @@ export default function DetailPO({
                     {data.notes ?? '-'}
                   </Typography>
                 </View>
-                {data.po_status == StatusPO.complaint && (
+                {(data.po_status == StatusPO.complaint && isPMPage) && (
                   <Alert
                     variant="info"
                     type="outlined"
