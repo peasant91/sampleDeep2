@@ -579,6 +579,16 @@ export default function DetailPO({
                 </View>
               )}
 
+              <View
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Typography
+                  type="body2"
+                  style={{ color: colors.neutral.neutral_90 }}>
+                  {t('shipping_fee')}
+                </Typography>
+                <CurrencyText value={data.shipping_fee} />
+              </View>
+
               {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}> */}
               {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_ppn", { count: data.total_discount })}</Typography> */}
               {/* <Typography type='body2' style={{ color: colors.neutral.neutral_90 }}>{t("amount_ppn")}</Typography> */}

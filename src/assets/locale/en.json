@@ -226,6 +226,7 @@
     "ambil_foto": "Ambil Foto",
     "po_photo": "Foto PO",
     "alert_po_complaint": "Mohon untuk menunggu komplain di proses oleh admin. Silahkan melakukan konfirmasi PO jika bahan sudah lengkap.",
-    "alert_empty_po_img": "Tidak ada foto untuk PO ini"
+    "alert_empty_po_img": "Tidak ada foto untuk PO ini",
+    "shipping_fee":"Ongkos Kirim"
   }
 }

@@ -66,9 +66,10 @@ export interface PODetailModel {
   created_by?: string
   // total: number
   complaint?: string
-  photo?:string
+  photo?: string
   notes?: string
   payment_term: string[]
   last_updated?: string
+  shipping_fee?: number
 }
 
