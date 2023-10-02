@@ -594,7 +594,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = C2QXLCT66R;
+				DEVELOPMENT_TEAM = H452SYZ6M2;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = ReactNativeStarterKit/Info.plist;
@@ -628,7 +628,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = C2QXLCT66R;
+				DEVELOPMENT_TEAM = H452SYZ6M2;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = ReactNativeStarterKit/Info.plist;
