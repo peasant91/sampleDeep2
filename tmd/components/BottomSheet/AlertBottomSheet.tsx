@@ -12,7 +12,7 @@ import {useTheme} from '../../core/theming';
 import {useTranslation} from 'react-i18next';
 import {FormProvider, useForm} from 'react-hook-form';
 import * as yup from 'yup';
-import {yupResolver} from '@hookform/resolvers/yup';
+import {Resolver, yupResolver} from '@hookform/resolvers/yup';
 import {colors} from '../../styles/colors';
 import ImagePicker from '../picker/ImagePicker';
 export interface BSProps {
