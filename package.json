@@ -44,7 +44,7 @@
     "react": "17.0.2",
     "react-hook-form": "^7.33.0",
     "react-i18next": "^11.17.2",
-    "react-native": "0.68.2",
+    "react-native": "0.69.12",
     "react-native-calendars": "^1.1284.0",
     "react-native-collapsible-tab-view": "^5.0.0-rc.13",
     "react-native-config": "^1.4.6",
